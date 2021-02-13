@@ -17,7 +17,7 @@ java:
       usePodIdentity: true
       secrets:
         - vsts-agent-secret
-    env:
-      AZP_URL: "https://hmctsreform.visualstudio.com/"
-      AZP_POOL: "vh-sds"
-      AZP_WORK: "_work"
+  environment:
+    AZP_URL: "https://hmctsreform.visualstudio.com/"
+    AZP_POOL: "vh-sds"
+    AZP_WORK: "_work"
