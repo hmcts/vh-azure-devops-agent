@@ -1,0 +1,23 @@
+---
+java:
+  image: 'sdshmctspublic.azurecr.io/hmi/azure-devops-agent:v0.1'
+  applicationPort: 8080
+  replicas: 2
+  ingressHost: vh-azure-devops-agent.{{ .Values.global.environment }}.platform.hmcts.net
+  releaseNameOverride: vh-azure-devops-agent
+  readinessPath: /healthcheck/health
+  livenessPath: /healthcheck/health
+  livenessDelay: 360
+  livenessPeriod: 120
+  aadIdentityName: vh-aad-identity
+  keyVaults:
+    vh-infra-core:
+      excludeEnvironmentSuffix: false
+      resourceGroup: vh-infra-core-{{ .Values.global.environment }}
+      usePodIdentity: true
+      secrets:
+        - vsts-agent-secret
+    env:
+      AZP_URL: "https://hmctsreform.visualstudio.com/"
+      AZP_POOL: "vh-sds"
+      AZP_WORK: "_work"
