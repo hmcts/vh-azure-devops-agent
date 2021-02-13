@@ -6,7 +6,7 @@ java:
   releaseNameOverride: vh-azure-devops-agent
   aadIdentityName: vh-aad-identity
   secrets: 
-    VSTSAGENTSECRET:
+    AZP_TOKEN:
         secretRef: vsts-agent-secret
         key: azpToken
   keyVaults:
