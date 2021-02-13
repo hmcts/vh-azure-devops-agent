@@ -10,6 +10,10 @@ java:
   livenessDelay: 360
   livenessPeriod: 120
   aadIdentityName: vh-aad-identity
+  secrets: 
+    VSTS-AGENT-SECRET:
+        secretRef: vsts-agent-secret
+        key: azpToken
   keyVaults:
     vh-infra-core:
       excludeEnvironmentSuffix: false
@@ -21,3 +25,4 @@ java:
     AZP_URL: "https://hmctsreform.visualstudio.com/"
     AZP_POOL: "vh-sds"
     AZP_WORK: "_work"
+
