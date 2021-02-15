@@ -30,7 +30,7 @@ keyVaults:
 - name: vh-infra-core-sbox
   tenantId: "531ff96d-0ae9-462a-8d2d-bec7c0b42082"
   secrets: 
-  - vsts-agent-secret
+  - azure-devops-agent-token
 
 azureDevOps:
   url: "https://hmctsreform.visualstudio.com/"
