@@ -1,30 +1,28 @@
 #!/bin/sh
 
 # Create directory & download agent files
-
-export AZP_AGENT_VERSION==$(curl -s https://api.github.com/repos/microsoft/azure-pipelines-agent/releases | jq -r '.[0].tag_name' | cut -d "v" -f 2)
+AZP_AGENT_VERSION=2.194.0
 su - vhadoagent -c "
-sudo apt install jq -y
-export AZP_AGENT_VERSION==$(curl -s https://api.github.com/repos/microsoft/azure-pipelines-agent/releases | jq -r '.[0].tag_name' | cut -d "v" -f 2)
 mkdir myagent && cd myagent
 wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
+ls -ltr
 tar zxvf vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz"
 
 #Install
 
 su - vhadoagent -c "
-./config.sh --unattended \
+~/myagent/config.sh --unattended \
   --agent "vh-devops-agent-self-hosted" \
   --url "https://hmctsreform.visualstudio.com" \
   --auth PAT \
-  --token "<PAT_Token>" \
+  --token "o2irf5uumopebjm6g7ohxcyaprufklijdnyv5hssgie66faraw2q" \
   --pool "vh-self-hosted" \
   --replace \
   --acceptTeeEula & wait $!"
 
 cd /home/vhadoagent/
 #Configure as a service
-sudo ./svc.sh install vhadoagent
+./svc.sh install vhadoagent
 
 #Start svc
-sudo ./svc.sh start
+./svc.sh start
