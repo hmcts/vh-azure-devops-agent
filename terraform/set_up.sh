@@ -15,7 +15,7 @@ su - vhadoagent -c "
   --agent "vh-devops-agent-self-hosted" \
   --url "https://hmctsreform.visualstudio.com" \
   --auth PAT \
-  --token "o2irf5uumopebjm6g7ohxcyaprufklijdnyv5hssgie66faraw2q" \
+  --token "PAT-TOKEN" \
   --pool "vh-self-hosted" \
   --replace \
   --acceptTeeEula & wait $!"
