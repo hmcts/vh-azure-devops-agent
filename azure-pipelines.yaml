@@ -15,9 +15,10 @@ parameters:
   - name: environment
     displayName: Environment (sbox default)
     type: string
-    default: sandbox
+    default: lower # USE upper and lower
     values:
-      - sandbox
+      - upper
+      - lower
 
 variables:
   - group: vh-azure-devops-agent
@@ -29,7 +30,6 @@ stages:
     jobs: 
       - template: pipeline-steps/terraform-prep.yaml
         parameters:
-          terraformPath: $(Build.SourcesDirectory)/terraform
           subscription: $(subscription)
           environment: ${{ parameters.environment }}
           resourceGroup: $(resourceGroup)
