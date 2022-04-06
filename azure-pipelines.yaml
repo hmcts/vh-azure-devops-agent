@@ -15,8 +15,9 @@ parameters:
   - name: environment
     displayName: Environment (sbox default)
     type: string
-    default: lower # USE upper and lower
+    default: sandbox # USE upper and lower
     values:
+      - sandbox
       - upper
       - lower
 
