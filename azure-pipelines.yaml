@@ -29,33 +29,35 @@ stages:
   - stage: Deploy_Agent
     displayName: Deploy_Agent
     jobs:
-      - job: Terraform
-        displayName: TF Apply
+      - job: Deploy_Terrafomrm
+        displayName: Deploy Terraform
         pool:
           vmImage: 'ubuntu-latest'
+        
+        steps:
+              
+          - template: pipeline-steps/terraform-prep.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              resourceGroup: $(resourceGroup)
+              location: $(location)
+              storageAccount: $(storageAccount)
+              containerName: $(containerName)
+              stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+              workingDirectory: $(System.DefaultWorkingDirectory)/terraform
 
-      - template: pipeline-steps/terraform-prep.yaml
-        parameters:
-          subscription: $(subscription)
-          environment: ${{ parameters.environment }}
-          resourceGroup: $(resourceGroup)
-          location: $(location)
-          storageAccount: $(storageAccount)
-          containerName: $(containerName)
-          stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-          workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+          - template: pipeline-steps/terraform-plan.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              tfVariables: $(tfVariables)
+              workingDirectory: $(System.DefaultWorkingDirectory)/terraform
 
-      - template: pipeline-steps/terraform-plan.yaml
-        parameters:
-          subscription: $(subscription)
-          environment: ${{ parameters.environment }}
-          tfVariables: $(tfVariables)
-          workingDirectory: $(System.DefaultWorkingDirectory)/terraform
-
-      - template: pipeline-steps/terraform-apply.yaml
-        parameters:
-          subscription: $(subscription)
-          environment: ${{ parameters.environment }}
-          planLocation: $(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan
-          outputName: '${{ parameters.environment }}.tfplan'
-          workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+          - template: pipeline-steps/terraform-apply.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              planLocation: $(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan
+              outputName: '${{ parameters.environment }}.tfplan'
+              workingDirectory: $(System.DefaultWorkingDirectory)/terraform

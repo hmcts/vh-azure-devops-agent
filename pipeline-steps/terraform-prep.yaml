@@ -28,7 +28,7 @@ parameters:
   - name: workingDirectory
     type: string
 
-# steps:
+steps:
 
   - task: TerraformInstaller@0
     displayName: Install Terraform ${{ parameters.terraformVersion }}
