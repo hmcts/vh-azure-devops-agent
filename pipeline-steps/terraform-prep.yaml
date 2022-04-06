@@ -27,30 +27,29 @@ parameters:
 
   - name: workingDirectory
     type: string
-jobs:
-  - job: prep
-    steps:
 
-    - task: TerraformInstaller@0
-      displayName: Install Terraform ${{ parameters.terraformVersion }}
-      inputs:
-        terraformVersion: ${{ parameters.terraformVersion }}
+steps:
 
-    - task: TerraformCLI@0
-      displayName: 'check terraform version'
-      inputs:
-        command: version
+- task: TerraformInstaller@0
+  displayName: Install Terraform ${{ parameters.terraformVersion }}
+  inputs:
+    terraformVersion: ${{ parameters.terraformVersion }}
 
-    - task: TerraformCLI@0
-      displayName: Terraform init
-      inputs:
-        command: init
-        commandOptions: -reconfigure
-        workingDirectory: ${{ parameters.workingDirectory }}
-        backendType: azurerm
-        backendServiceArm: ${{ parameters.subscription }}
-        backendAzureRmResourceGroupName: ${{ parameters.resourceGroup }}
-        backendAzureRmResourceGroupLocation: ${{ parameters.location }}
-        backendAzureRmStorageAccountName: ${{ parameters.storageAccount }}
-        backendAzureRmContainerName: ${{ parameters.containerName }}
-        backendAzureRmKey: ${{ parameters.stateKey }}
+- task: TerraformCLI@0
+  displayName: 'check terraform version'
+  inputs:
+    command: version
+
+- task: TerraformCLI@0
+  displayName: Terraform init
+  inputs:
+    command: init
+    commandOptions: -reconfigure
+    workingDirectory: ${{ parameters.workingDirectory }}
+    backendType: azurerm
+    backendServiceArm: ${{ parameters.subscription }}
+    backendAzureRmResourceGroupName: ${{ parameters.resourceGroup }}
+    backendAzureRmResourceGroupLocation: ${{ parameters.location }}
+    backendAzureRmStorageAccountName: ${{ parameters.storageAccount }}
+    backendAzureRmContainerName: ${{ parameters.containerName }}
+    backendAzureRmKey: ${{ parameters.stateKey }}

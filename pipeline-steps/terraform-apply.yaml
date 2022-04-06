@@ -1,17 +1,25 @@
-jobs:
-  - job: prep  
-    steps:
+parameters:
+  - name: subscription
+    type: string
+  - name: workingDirectory
+    type: string
+  - name: outputName
+    type: string
+  - name: environment
+    type: string
+  - name: planLocation
+    type: string
 
-    - download: current
-      artifact: '${{ parameters.outputName }}'
-      displayName: 'Download ${{ parameters.outputName }}.tfplan'
+steps:
 
-    - template: terraform-prep.yaml
+  - download: current
+    artifact: '${{ parameters.outputName }}'
+    displayName: 'Download ${{ parameters.outputName }}.tfplan'
 
-    - task: TerraformCLI@0
-      displayName: Terraform apply
-      inputs:
-        workingDirectory: ${{parameters.workingDirectory}}
-        command: apply
-        environmentServiceName: ${{ parameters.subscription }}
-        commandOptions: -auto-approve "${{ parameters.planLocation }}"
+  - task: TerraformCLI@0
+    displayName: Terraform apply
+    inputs:
+      workingDirectory: ${{parameters.workingDirectory}}
+      command: apply
+      environmentServiceName: ${{ parameters.subscription }}
+      commandOptions: -auto-approve "${{ parameters.planLocation }}"

@@ -25,10 +25,15 @@ variables:
   - group: vh-azure-devops-agent
 
 stages:
+  
+  - stage: Deploy_Agent
+    displayName: Deploy_Agent
+    jobs:
+      - job: Terraform
+        displayName: TF Apply
+        pool:
+          vmImage: 'ubuntu-latest'
 
-  - stage: TF Prep
-    displayName: 'Terraform install and validate'
-    jobs: 
       - template: pipeline-steps/terraform-prep.yaml
         parameters:
           subscription: $(subscription)
@@ -39,33 +44,18 @@ stages:
           containerName: $(containerName)
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
           workingDirectory: $(System.DefaultWorkingDirectory)/terraform
-  
-  - stage: Plan
-    displayName: TF Plan
-    jobs:
+
       - template: pipeline-steps/terraform-plan.yaml
         parameters:
           subscription: $(subscription)
           environment: ${{ parameters.environment }}
-          location: $(location)
-          resourceGroup: $(resourceGroup)
-          storageAccount: $(storageAccount)
-          containerName: $(containerName)
-          stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-          outputName: ${{ parameters.environment }}
+          tfVariables: $(tfVariables)
           workingDirectory: $(System.DefaultWorkingDirectory)/terraform
-            
-  - stage: Apply
-    displayName: TF Apply
-    jobs:
+
       - template: pipeline-steps/terraform-apply.yaml
         parameters:
           subscription: $(subscription)
-          location: $(location)
           environment: ${{ parameters.environment }}
-          resourceGroup: $(resourceGroup)
-          storageAccount: $(storageAccount)
-          containerName: $(containerName)
-          stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-          outputName: ${{ parameters.environment }}
-          workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
+          planLocation: $(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan
+          outputName: '${{ parameters.environment }}.tfplan'
+          workingDirectory: $(System.DefaultWorkingDirectory)/terraform

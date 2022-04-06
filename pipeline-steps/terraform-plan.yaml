@@ -7,14 +7,13 @@ parameters:
     type: string
   - name: environment
     type: string
-jobs:
-  - job: prep
-    steps:
 
-      - task: TerraformCLI@0
-        displayName: Terraform plan
-        inputs:
-          command: plan
-          workingDirectory: ${{ parameters.workingDirectory }}
-          environmentServiceName: ${{ parameters.subscription }}
-          commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan'
+steps:
+
+  - task: TerraformCLI@0
+    displayName: Terraform plan
+    inputs:
+      command: plan
+      workingDirectory: ${{ parameters.workingDirectory }}
+      environmentServiceName: ${{ parameters.subscription }}
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan'
