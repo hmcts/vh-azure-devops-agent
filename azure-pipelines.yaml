@@ -38,10 +38,6 @@ stages:
           containerName: $(containerName)
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
           workingDirectory: $(System.DefaultWorkingDirectory)/terraform
-
-      - template: templates/tests/terraform/allTests.yaml@templates
-        parameters:
-          terraformPath: $(Build.SourcesDirectory)/terraform
   
   - stage: Plan
     displayName: TF Plan
