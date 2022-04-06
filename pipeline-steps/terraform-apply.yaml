@@ -1,16 +1,17 @@
-  
-steps:
+jobs:
+  - job: prep  
+    steps:
 
-- download: current
-  artifact: '${{ parameters.outputName }}'
-  displayName: 'Download ${{ parameters.outputName }}.tfplan'
+    - download: current
+      artifact: '${{ parameters.outputName }}'
+      displayName: 'Download ${{ parameters.outputName }}.tfplan'
 
-- template: terraform-prep.yaml
+    - template: terraform-prep.yaml
 
-- task: TerraformCLI@0
-  displayName: Terraform apply
-  inputs:
-    workingDirectory: ${{parameters.workingDirectory}}
-    command: apply
-    environmentServiceName: ${{ parameters.subscription }}
-    commandOptions: -auto-approve "${{ parameters.planLocation }}"
+    - task: TerraformCLI@0
+      displayName: Terraform apply
+      inputs:
+        workingDirectory: ${{parameters.workingDirectory}}
+        command: apply
+        environmentServiceName: ${{ parameters.subscription }}
+        commandOptions: -auto-approve "${{ parameters.planLocation }}"

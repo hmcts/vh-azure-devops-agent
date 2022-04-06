@@ -62,7 +62,7 @@ stages:
           subscription: $(subscription)
           location: $(location)
           environment: ${{ parameters.environment }}
-          resourceGroup: ${{ parameters.resourceGroup}}
+          resourceGroup: $(resourceGroup)
           storageAccount: $(storageAccount)
           containerName: $(containerName)
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
