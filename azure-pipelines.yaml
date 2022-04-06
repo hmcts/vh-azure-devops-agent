@@ -41,7 +41,7 @@ stages:
 
       - template: templates/tests/terraform/allTests.yaml@templates
         parameters:
-          terraformPath: ${{ parameters.terraformPath }}
+          terraformPath: $(Build.SourcesDirectory)/terraform
   
   - stage: Plan
     displayName: TF Plan
