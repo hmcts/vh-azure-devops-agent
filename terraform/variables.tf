@@ -2,7 +2,7 @@ variable "rg_name" {
   type = string
 }
 
-variable "ENV" {
+variable "RG_NAME" {
   type = "string"
 }
 
