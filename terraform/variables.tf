@@ -1,9 +1,6 @@
 variable "rg_name" {
   type = string
-}
-
-variable "RG_NAME" {
-  type = string
+  default = RG_NAME
 }
 
 variable "location" {
