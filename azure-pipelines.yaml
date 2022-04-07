@@ -50,7 +50,7 @@ stages:
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
-              tfVariables: $(tfVariables)
+              tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
           - template: pipeline-steps/terraform-apply.yaml
