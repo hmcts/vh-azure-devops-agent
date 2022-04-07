@@ -9,5 +9,5 @@ resource "azurerm_subnet" "vh-devops-agent-subnet" {
   name                 = var.subnet_name_vh_agent
   resource_group_name  = azurerm_resource_group.vh-devops-agent-rg.name
   virtual_network_name = azurerm_virtual_network.vh-devops-agent-vnet.name
-  address_prefixes     = [var.subnet_name_vh_agent_address] # changed
+  address_prefixes     = [var.subnet_name_vh_agent_address]
 }
