@@ -11,9 +11,9 @@ parameters:
 steps:
 
   - task: TerraformCLI@0
-    displayName: Terraform apply
+    displayName: Terraform Destroy
     inputs:
+      command: destroy
       workingDirectory: ${{parameters.workingDirectory}}
-      command: apply
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: -auto-approve "${{ parameters.planLocation }}"
+

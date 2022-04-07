@@ -15,6 +15,11 @@ variable "vnet_name" {
   type = string
 }
 
+variable "VNET_NAME" {
+  type = string
+}
+
+
 variable "vnet_ip_address" {
   type = list(string)
 }
@@ -31,7 +36,15 @@ variable "key_vault_name" {
   type = string
 }
 
+variable "KV_NAME" {
+  type = string
+}
+
 variable "vm_name" {
+  type = string
+}
+
+variable "VM_NAME" {
   type = string
 }
 
@@ -52,5 +65,9 @@ variable "vm_osdisk_name" {
 }
 
 variable "nsg_name" {
+  type = string
+}
+
+variable "NSG_NAME" {
   type = string
 }

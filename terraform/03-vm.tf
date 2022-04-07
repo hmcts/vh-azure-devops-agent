@@ -22,7 +22,7 @@ resource "azurerm_network_interface" "vh-devops-nic" {
 }
 
 resource "azurerm_virtual_machine" "vh-devops-agent-vm" {
-  name                  = "${var.vm_name}-vm"
+  name                  = var.VM_NAME # "${var.vm_name}-vm"
   location              = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name   = azurerm_resource_group.vh-devops-agent-rg.name
   network_interface_ids = [azurerm_network_interface.vh-devops-nic.id]
@@ -44,7 +44,7 @@ resource "azurerm_virtual_machine" "vh-devops-agent-vm" {
 
 
   os_profile {
-    computer_name  = "${var.vm_name}-vm"
+    computer_name  = var.VM_NAME # "${var.vm_name}-vm"
     admin_username = var.vm_username
     admin_password = random_password.password.result
   }

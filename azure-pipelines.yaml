@@ -12,6 +12,14 @@ pr:
   #     endpoint: hmcts
 
 parameters:
+  - name: Run_Stage
+    displayName: Stage to Run
+    type: string
+    default: 'Deploy_Agent'
+    values:
+    - Deploy_Agent
+    - Destroy_Agent
+
   - name: environment
     displayName: Environment (sandbox default)
     type: string
@@ -25,6 +33,14 @@ variables:
   - group: vh-azure-devops-agent
   - name: TF_VAR_RG_NAME
     value: "vh-devops-agent-rg-${{ parameters.environment }}"
+  - name: TF_VAR_KV_NAME
+    value: "vh-devops-agent-kv-${{ parameters.environment }}"
+  - name: TF_VAR_VM_NAME
+    value: "vh-devops-agent-vm-${{ parameters.environment }}"
+  - name: TF_VAR_NSG_NAME
+    value: "vh-devops-vm-nsg-${{ parameters.environment }}"
+  - name: TF_VAR_VNET_NAME
+    value: "vh-devops-vm-vnet-${{ parameters.environment }}"
 
 stages:
   
@@ -61,5 +77,39 @@ stages:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
-              # outputName: ${{ parameters.environment }}
               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+
+  - stage: Destroy_Agent
+    displayName: Destroy_Agent
+    jobs:
+    - job: Destroy_Terraform
+      displayName: Destroy Terraform
+      pool:
+        vmImage: 'ubuntu-latest'
+      
+      steps:
+            
+        - template: pipeline-steps/terraform-prep.yaml
+          parameters:
+            terraformVersion: $(tfVersion)
+            subscription: $(subscription)
+            environment: ${{ parameters.environment }}
+            resourceGroup: $(resourceGroup)
+            location: $(location)
+            storageAccount: $(storageAccount)
+            containerName: $(containerName)
+            stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+        # - template: pipeline-steps/terraform-plan.yaml
+        #   parameters:
+        #     subscription: $(subscription)
+        #     environment: ${{ parameters.environment }}
+        #     tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+        #     workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+
+        - template: pipeline-steps/terraform-destroy.yaml
+          parameters:
+            subscription: $(subscription)
+            environment: ${{ parameters.environment }}
+            planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
