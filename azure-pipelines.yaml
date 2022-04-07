@@ -45,19 +45,18 @@ stages:
               storageAccount: $(storageAccount)
               containerName: $(containerName)
               stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-              workingDirectory: $(System.DefaultWorkingDirectory)/terraform
-
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
           - template: pipeline-steps/terraform-plan.yaml
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               tfVariables: $(tfVariables)
-              workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
           - template: pipeline-steps/terraform-apply.yaml
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
-              planLocation: $(System.DefaultWorkingDirectory)/terraform
+              planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
               # outputName: ${{ parameters.environment }}
-              workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
