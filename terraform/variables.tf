@@ -3,7 +3,7 @@ variable "rg_name" {
 }
 
 variable "RG_NAME" {
-  type = "string"
+  type = string
 }
 
 variable "location" {
