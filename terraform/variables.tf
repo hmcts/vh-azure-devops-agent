@@ -2,6 +2,10 @@ variable "rg_name" {
   type = string
 }
 
+variable "ENV" {
+  type = "string"
+}
+
 variable "location" {
   type    = string
   default = "uksouth"

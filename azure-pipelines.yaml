@@ -13,7 +13,7 @@ pr:
 
 parameters:
   - name: environment
-    displayName: Environment (sbox default)
+    displayName: Environment (sandbox default)
     type: string
     default: sandbox # USE upper and lower
     values:
@@ -23,7 +23,9 @@ parameters:
 
 variables:
   - group: vh-azure-devops-agent
-
+  - name: TF_VAR_ENV
+    value: ${{ parameters.environment }}
+    
 stages:
   
   - stage: Deploy_Agent
