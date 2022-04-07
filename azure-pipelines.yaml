@@ -45,6 +45,7 @@ variables:
 stages:
   
   - stage: Deploy_Agent
+    condition: eq(${{ parameters.Run_Stage }}, 'Deploy_Agent')
     displayName: Deploy_Agent
     jobs:
       - job: Deploy_Terraform
@@ -81,6 +82,7 @@ stages:
 
   - stage: Destroy_Agent
     displayName: Destroy_Agent
+    condition: eq(${{ parameters.Run_Stage }}, 'Destroy_Agent')
     jobs:
     - job: Destroy_Terraform
       displayName: Destroy Terraform
