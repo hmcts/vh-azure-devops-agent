@@ -58,6 +58,6 @@ stages:
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
-              planLocation: $(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}
+              planLocation: $(System.DefaultWorkingDirectory)/terraform
               outputName: ${{ parameters.environment }}
               workingDirectory: $(System.DefaultWorkingDirectory)/terraform

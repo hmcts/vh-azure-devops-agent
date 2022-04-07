@@ -16,4 +16,4 @@ steps:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan'
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=${{ parameters.workingDirectory }}/${{ parameters.environment }}.tfplan'
