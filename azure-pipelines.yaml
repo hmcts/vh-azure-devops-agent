@@ -34,13 +34,13 @@ variables:
   - name: TF_VAR_RG_NAME
     value: "vh-devops-agent-rg-${{ parameters.environment }}"
   - name: TF_VAR_KV_NAME
-    value: "vh-devops-agent-kv-${{ parameters.environment }}"
+    value: "vh-do-agent-kv-${{ parameters.environment }}"
   - name: TF_VAR_VM_NAME
     value: "vh-devops-agent-vm-${{ parameters.environment }}"
   - name: TF_VAR_NSG_NAME
     value: "vh-devops-vm-nsg-${{ parameters.environment }}"
   - name: TF_VAR_VNET_NAME
-    value: "vh-devops-vm-vnet-${{ parameters.environment }}"
+    value: "vh-devops-vnet-${{ parameters.environment }}"
 
 stages:
   
