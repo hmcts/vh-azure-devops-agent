@@ -45,8 +45,7 @@ variables:
 stages:
   
   - stage: Deploy_Agent
-    #condition: eq(${{ parameters.Run_Stage }}, Deploy_Agent)
-    condition: contains(${{ parameters.Run_Stage }}, 'Deploy_Agent')
+    condition: contains('${{ parameters.Run_Stage }}', 'Deploy_Agent')
     displayName: Deploy_Agent
     jobs:
       - job: Deploy_Terraform
