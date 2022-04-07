@@ -1,5 +1,5 @@
 # Create Resource Group
-#rg_name = RG_NAME #"vh-devops-agent-rg"
+rg_name = "vh-devops-agent-rg"
 
 # Create Virtual Network
 vnet_name                     = "vh-devops-agent-vnet"
