@@ -3,8 +3,8 @@ parameters:
     type: string
   - name: workingDirectory
     type: string
-  - name: outputName
-    type: string
+  # - name: outputName
+  #   type: string
   - name: environment
     type: string
   - name: planLocation
@@ -12,9 +12,9 @@ parameters:
 
 steps:
 
-  - download: current
-    artifact: '${{ parameters.outputName }}'
-    displayName: 'Download ${{ parameters.outputName }}.tfplan'
+  # - download: current
+  #   artifact: '${{ parameters.outputName }}'
+  #   displayName: 'Download ${{ parameters.outputName }}.tfplan'
 
   - task: TerraformCLI@0
     displayName: Terraform apply
