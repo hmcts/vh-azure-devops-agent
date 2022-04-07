@@ -38,6 +38,7 @@ stages:
               
           - template: pipeline-steps/terraform-prep.yaml
             parameters:
+              terraformVersion: $(tfVersion)
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               resourceGroup: $(resourceGroup)
