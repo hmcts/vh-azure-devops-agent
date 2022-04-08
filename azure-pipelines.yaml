@@ -105,7 +105,7 @@ stages:
             stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
-        - task: TerraformCLI
+        - task: TerraformCLI@0
           displayName: 'terraform destroy'
           inputs:
             command: destroy
