@@ -140,4 +140,4 @@ stages:
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
             script: |
               cd $(System.DefaultWorkingDirectory)/$(tfDirectory)
-              ls -als set-up.sh
+              ls -als
