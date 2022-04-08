@@ -90,28 +90,28 @@ stages:
       displayName: Destroy Terraform
       pool:
         vmImage: 'ubuntu-latest'
-      
-        steps:
-        
-          - template: pipeline-steps/terraform-prep.yaml
-            parameters:
-              terraformVersion: $(tfVersion)
-              subscription: $(subscription)
-              environment: ${{ parameters.environment }}
-              resourceGroup: $(resourceGroup)
-              location: $(location)
-              storageAccount: $(storageAccount)
-              containerName: $(containerName)
-              stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
-          - task: TerraformCLI@0
-            displayName: Terraform Destroy
-            inputs:
-              command: destroy
-              commandOptions: -auto-approve
-              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-              environmentServiceName: $(subscription)
+      steps:
+        
+        - template: pipeline-steps/terraform-prep.yaml
+          parameters:
+            terraformVersion: $(tfVersion)
+            subscription: $(subscription)
+            environment: ${{ parameters.environment }}
+            resourceGroup: $(resourceGroup)
+            location: $(location)
+            storageAccount: $(storageAccount)
+            containerName: $(containerName)
+            stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+
+        - task: TerraformCLI@0
+          displayName: Terraform apply
+          inputs:
+            workingDirectory: ${{parameters.workingDirectory}}
+            command: apply
+            environmentServiceName: ${{ parameters.subscription }}
+            commandOptions: -auto-approve "${{ parameters.planLocation }}"
 
   - stage: Check_Script
     displayName: Check_Script
