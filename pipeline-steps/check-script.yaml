@@ -33,10 +33,11 @@ steps:
       stateKey: ${{ parameters.stateKey}}
       workingDirectory: ${{parameters.workingDirectory}}
 
-  - task: TerraformCLI@0
-    displayName: Terraform Destroy
+  - task: Bash@3
+    displayName: 'Check permissions on agent script'
     inputs:
-      command: destroy
+      targetType: 'inline'
       workingDirectory: ${{parameters.workingDirectory}}
-      environmentServiceName: ${{ parameters.subscription }}
+      script: |
+        ls -als set-up.sh
 
