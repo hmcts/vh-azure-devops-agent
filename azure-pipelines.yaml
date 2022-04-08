@@ -92,6 +92,7 @@ stages:
         vmImage: 'ubuntu-latest'
       
         steps:
+        
           - template: pipeline-steps/terraform-prep.yaml
             parameters:
               terraformVersion: $(tfVersion)
