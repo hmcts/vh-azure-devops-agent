@@ -105,12 +105,11 @@ stages:
             stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
-        - task: TerraformCLI@0
-          displayName: Terraform apply
+        - task: TerraformCLI
+          displayName: 'terraform destroy'
           inputs:
-            workingDirectory: (System.DefaultWorkingDirectory)/$(tfDirectory)
             command: destroy
-            environmentServiceName: $(subscription)
+            providerAzureRmSubscriptionId: $(subscription)
             commandOptions: -auto-approve
 
   - stage: Check_Script
