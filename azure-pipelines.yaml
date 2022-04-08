@@ -108,10 +108,10 @@ stages:
         - task: TerraformCLI@0
           displayName: Terraform apply
           inputs:
-            workingDirectory: ${{parameters.workingDirectory}}
-            command: apply
-            environmentServiceName: ${{ parameters.subscription }}
-            commandOptions: -auto-approve "${{ parameters.planLocation }}"
+            workingDirectory: (System.DefaultWorkingDirectory)/$(tfDirectory)
+            command: destroy
+            environmentServiceName: $(subscription)
+            commandOptions: -auto-approve
 
   - stage: Check_Script
     displayName: Check_Script
