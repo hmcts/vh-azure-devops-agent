@@ -21,7 +21,7 @@ parameters:
 
 steps:
 
-  - template: pipeline-steps/terraform-prep.yaml
+  - template: terraform-prep.yaml
     parameters:
       terraformVersion: ${{ parameters.terraformVersion }}
       subscription: $${{ parameters.subscription }}
