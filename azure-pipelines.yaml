@@ -137,6 +137,5 @@ stages:
           displayName: 'Check permissions on agent script'
           inputs:
             targetType: 'inline'
-            workingDirectory: ${{parameters.workingDirectory}}
-            script: |
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
               ls -als set-up.sh
