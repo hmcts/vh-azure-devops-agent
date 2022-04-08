@@ -91,19 +91,25 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       
-      steps:
+        steps:
+          - template: pipeline-steps/terraform-prep.yaml
+            parameters:
+              terraformVersion: $(tfVersion)
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              resourceGroup: $(resourceGroup)
+              location: $(location)
+              storageAccount: $(storageAccount)
+              containerName: $(containerName)
+              stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
-        - template: pipeline-steps/terraform-destroy.yaml
-          parameters:
-            terraformVersion: $(tfVersion)
-            subscription: $(subscription)
-            environment: ${{ parameters.environment }}
-            resourceGroup: $(resourceGroup)
-            location: $(location)
-            storageAccount: $(storageAccount)
-            containerName: $(containerName)
-            stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+          - task: TerraformCLI@0
+            displayName: Terraform Destroy
+            inputs:
+              command: destroy
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              environmentServiceName: $(subscription)
 
   - stage: Check_Script
     displayName: Check_Script
@@ -115,8 +121,7 @@ stages:
         vmImage: 'ubuntu-latest'
       
       steps:
-
-        - template: pipeline-steps/check-script.yaml
+        - template: pipeline-steps/terraform-prep.yaml
           parameters:
             terraformVersion: $(tfVersion)
             subscription: $(subscription)
@@ -127,3 +132,11 @@ stages:
             containerName: $(containerName)
             stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+        
+        - task: Bash@3
+          displayName: 'Check permissions on agent script'
+          inputs:
+            targetType: 'inline'
+            workingDirectory: ${{parameters.workingDirectory}}
+            script: |
+              ls -als set-up.sh
