@@ -106,7 +106,7 @@ stages:
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
         - task: TerraformCLI@0
-          displayName: Terraform plan
+          displayName: Terraform plan destroy
           inputs:
             command: plan
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
