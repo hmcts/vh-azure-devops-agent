@@ -104,8 +104,6 @@ stages:
             containerName: $(containerName)
             stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-            planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
-            tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
 
   - stage: Check_Script
     displayName: Check_Script
@@ -129,5 +127,3 @@ stages:
             containerName: $(containerName)
             stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-            planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
-            tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
