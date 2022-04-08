@@ -45,7 +45,7 @@ variables:
 stages:
   
   - stage: Deploy_Agent
-    condition: eq('${{ parameters.Run_Stage  }}', 'Deploy_Agent')
+    condition: eq('${{ parameters.Run_Stage }}', 'Deploy_Agent')
     displayName: Deploy_Agent
     jobs:
       - job: Deploy_Terraform
@@ -66,6 +66,7 @@ stages:
               containerName: $(containerName)
               stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+
           - template: pipeline-steps/terraform-plan.yaml
             parameters:
               subscription: $(subscription)
@@ -82,7 +83,7 @@ stages:
 
   - stage: Destroy_Agent
     displayName: Destroy_Agent
-    condition: eq('${{ parameters.Run_Stage  }}', 'Destroy_Agent')
+    condition: eq('${{ parameters.Run_Stage }}', 'Destroy_Agent')
     jobs:
     - job: Destroy_Terraform
       displayName: Destroy Terraform
@@ -102,12 +103,13 @@ stages:
             containerName: $(containerName)
             stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-        # - template: pipeline-steps/terraform-plan.yaml
-        #   parameters:
-        #     subscription: $(subscription)
-        #     environment: ${{ parameters.environment }}
-        #     tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-        #     workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+
+        - template: pipeline-steps/terraform-plan.yaml
+          parameters:
+            subscription: $(subscription)
+            environment: ${{ parameters.environment }}
+            tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
         - template: pipeline-steps/terraform-destroy.yaml
           parameters:
