@@ -34,7 +34,7 @@ variables:
   - name: TF_VAR_RG_NAME
     value: "vh-devops-agent-rg-${{ parameters.environment }}"
   - name: TF_VAR_KV_NAME
-    value: "vhdevopsagentkv${{ parameters.environment }}"
+    value: "vhdoagentkv${{ parameters.environment }}"
   - name: TF_VAR_VM_NAME
     value: "vh-devops-agent-vm-${{ parameters.environment }}"
   - name: TF_VAR_NSG_NAME
