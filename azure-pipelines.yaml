@@ -106,6 +106,14 @@ stages:
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
         - task: TerraformCLI@0
+          displayName: Terraform plan
+          inputs:
+            command: plan
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+            environmentServiceName: $(subscription)
+            commandOptions: '-destroy -var-file=$(tfVariables)' #-out=${{ parameters.workingDirectory }}/${{ parameters.environment }}.tfplan'
+
+        - task: TerraformCLI@0
           displayName: 'terraform destroy'
           inputs:
             command: destroy
