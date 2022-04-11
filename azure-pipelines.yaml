@@ -117,7 +117,7 @@ stages:
           parameters:
             subscription: $(subscription)
             environment: ${{ parameters.environment }}
-            planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
+            planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory) 
 
   - stage: Check_Script
