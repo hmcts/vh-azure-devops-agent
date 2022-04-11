@@ -43,7 +43,7 @@ variables:
   - name: TF_VAR_VNET_NAME
     value: "vh-devops-vnet-${{ parameters.environment }}"
   - name: TF_VAR_PAT_TOKEN
-    value: $(PATtoken)
+    value: "$(PATtoken)"
 
 stages:
   
