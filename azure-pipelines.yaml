@@ -42,6 +42,8 @@ variables:
     value: "vh-devops-vm-nsg-${{ parameters.environment }}"
   - name: TF_VAR_VNET_NAME
     value: "vh-devops-vnet-${{ parameters.environment }}"
+  - name: TF_VAR_PAT_TOKEN
+    value: $(System.AccessToken)
 
 stages:
   
