@@ -113,12 +113,12 @@ stages:
             environmentServiceName: $(subscription)
             commandOptions: '-destroy -var-file=$(tfVariables) -out=$(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan'
 
-        - task: TerraformCLI@0
-          displayName: Terraform destroy
-          inputs:
-            command: destroy
-            providerAzureRmSubscriptionId: $(subscription)
-            commandOptions: '-auto-approve $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan' 
+        - template: pipeline-steps/terraform-apply.yaml
+          parameters:
+            subscription: $(subscription)
+            environment: ${{ parameters.environment }}
+            planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory) 
 
   - stage: Check_Script
     displayName: Check_Script
