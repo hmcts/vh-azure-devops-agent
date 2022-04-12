@@ -55,11 +55,6 @@ stages:
         
         steps:
 
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: echo '$(patToken)'
-
           - template: pipeline-steps/replace-token.yaml
             parameters:
               myConnection: $(patToken)
@@ -85,12 +80,12 @@ stages:
               tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
-          # - template: pipeline-steps/terraform-apply.yaml
-          #   parameters:
-          #     subscription: $(subscription)
-          #     environment: ${{ parameters.environment }}
-          #     planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
-          #     workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+          - template: pipeline-steps/terraform-apply.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
   - stage: Destroy_Agent
     displayName: Destroy_Agent

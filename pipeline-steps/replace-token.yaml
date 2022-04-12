@@ -12,7 +12,5 @@ steps:
       targetType: 'inline'
       workingDirectory: ${{parameters.workingDirectory}}
       script: |
-          echo 'in apply'
-          echo '${{parameters.myConnection}}' 
+          echo 'Replacing pat token'
           sed -i 's|REPLACE|${{parameters.myConnection}}|gI' 'set_up.sh'
-          less set_up.sh
