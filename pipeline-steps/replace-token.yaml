@@ -1,6 +1,8 @@
 parameters:
   - name: myConnection
     type: string
+  - name: workingDirectory
+    type: string
 
 steps:
 
