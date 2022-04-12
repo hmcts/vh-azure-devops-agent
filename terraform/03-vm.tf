@@ -63,10 +63,12 @@ resource "azurerm_virtual_machine_extension" "create-agent" {
 
   settings = <<SETTINGS
     {
-        "script": "${filebase64("set_up.sh")}"
+        "commandToExecute": "./set_up.sh"
     }
 SETTINGS
 }
  # "script": "${filebase64("set_up.sh")}"
  # "script": "${base64encode(templatefile("set_up.sh", { arg="test" }))}
  # $(System.AccessToken)
+ # "script": "${filebase64("set_up.sh")}"
+ # 
