@@ -1,5 +1,5 @@
 parameters:
-  - name: smyConnection
+  - name: myConnection
     type: string
 
 steps:
