@@ -1,6 +1,6 @@
 parameters:
-  - name: token
-    type: string
+  #- name: token
+  #  type: string
   - name: subscription
     type: string
   - name: workingDirectory
