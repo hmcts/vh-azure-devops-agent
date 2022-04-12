@@ -1,6 +1,7 @@
 parameters:
   - name: myConnection
     type: string
+    default: ""
   - name: subscription
     type: string
   - name: workingDirectory
