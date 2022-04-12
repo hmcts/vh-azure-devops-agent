@@ -63,6 +63,7 @@ stages:
           - template: pipeline-steps/replace-token.yaml
             parameters:
               myConnection: $(patToken)
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
               
           - template: pipeline-steps/terraform-prep.yaml
