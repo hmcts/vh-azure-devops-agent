@@ -1,4 +1,6 @@
 parameters:
+  - name: token
+    type: string
   - name: subscription
     type: string
   - name: workingDirectory
@@ -9,6 +11,15 @@ parameters:
     type: string
 
 steps:
+
+  - task: Bash@3
+    displayName: 'set_up.sh Personal Access Token Replacement'
+    inputs:
+      targetType: 'inline'
+      workingDirectory: ${{parameters.workingDirectory}}
+      script: |
+            
+            sed -i 's|TOKEN|${{parameters.token}}|gI' 'set_up.sh'
 
   - task: TerraformCLI@0
     displayName: Terraform apply

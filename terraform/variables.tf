@@ -71,7 +71,3 @@ variable "nsg_name" {
 variable "NSG_NAME" {
   type = string
 }
-
-variable "PAT_TOKEN"{
-  type = string
-}
