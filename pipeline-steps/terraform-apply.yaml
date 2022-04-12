@@ -1,5 +1,5 @@
 parameters:
-  - name: myToken
+  - name: myConnection
     type: string
   - name: subscription
     type: string
@@ -19,7 +19,7 @@ steps:
       workingDirectory: ${{parameters.workingDirectory}}
       script: |
           echo 'in apply'
-          echo '${{parameters.myToken}}' 
+          echo '${{parameters.myConnection}}' 
          
   #  #  sed -i 's|TOKEN|${{parameters.myToken}}|gI' 'set_up.sh'
   # - task: TerraformCLI@0

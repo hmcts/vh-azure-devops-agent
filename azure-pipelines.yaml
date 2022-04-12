@@ -82,7 +82,7 @@ stages:
 
           - template: pipeline-steps/terraform-apply.yaml
             parameters:
-              myToken: '$(patToken)'
+              myConnection: $(patToken)
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
