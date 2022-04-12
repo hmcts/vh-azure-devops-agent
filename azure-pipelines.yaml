@@ -17,7 +17,6 @@ parameters:
     type: string
     default: 'Deploy_Agent'
     values:
-    - Check_Script
     - Deploy_Agent
     - Destroy_Agent
 
@@ -121,34 +120,3 @@ stages:
             environment: ${{ parameters.environment }}
             planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
             workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory) 
-
-  - stage: Check_Script
-    displayName: Check_Script
-    condition: eq('${{ parameters.Run_Stage }}', 'Check_Script')
-    jobs:
-    - job: Check_Script_Permissions
-      displayName: Check_Script_Permissions
-      pool:
-        vmImage: 'ubuntu-latest'
-      
-      steps:
-        - template: pipeline-steps/terraform-prep.yaml
-          parameters:
-            terraformVersion: $(tfVersion)
-            subscription: $(subscription)
-            environment: ${{ parameters.environment }}
-            resourceGroup: $(resourceGroup)
-            location: $(location)
-            storageAccount: $(storageAccount)
-            containerName: $(containerName)
-            stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-        
-        - task: Bash@3
-          displayName: 'Check permissions on agent script'
-          inputs:
-            targetType: 'inline'
-            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-            script: |
-              cd $(System.DefaultWorkingDirectory)/$(tfDirectory)
-              ls -als
