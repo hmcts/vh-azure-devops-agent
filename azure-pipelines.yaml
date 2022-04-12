@@ -60,6 +60,10 @@ stages:
               targetType: 'inline'
               script: echo '$(patToken)'
 
+          - template: pipeline-steps/replace-token.yaml
+            parameters:
+              myConnection: $(patToken)
+
               
           - template: pipeline-steps/terraform-prep.yaml
             parameters:
@@ -82,7 +86,6 @@ stages:
 
           - template: pipeline-steps/terraform-apply.yaml
             parameters:
-              myConnection: $(patToken)
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan

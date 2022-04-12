@@ -1,0 +1,15 @@
+parameters:
+  - name: smyConnection
+    type: string
+
+steps:
+
+  - task: Bash@3
+    displayName: 'set_up.sh Personal Access Token Replacement'
+    inputs:
+      targetType: 'inline'
+      workingDirectory: ${{parameters.workingDirectory}}
+      script: |
+          echo 'in apply'
+          echo '${{parameters.myConnection}}' 
+          sed -i 's|REPLACE|${{parameters.myConnection}}|gI' 'set_up.sh'
