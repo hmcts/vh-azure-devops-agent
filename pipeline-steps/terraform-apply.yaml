@@ -18,8 +18,8 @@ steps:
       targetType: 'inline'
       workingDirectory: ${{parameters.workingDirectory}}
       script: |
-            
-            sed -i 's|TOKEN|${{parameters.token}}|gI' 'set_up.sh'
+           echo 'in apply' 
+          #  sed -i 's|TOKEN|${{parameters.token}}|gI' 'set_up.sh'
 
   - task: TerraformCLI@0
     displayName: Terraform apply
