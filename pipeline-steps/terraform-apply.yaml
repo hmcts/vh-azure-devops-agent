@@ -1,6 +1,6 @@
 parameters:
-  #- name: token
-  #  type: string
+  - name: myToken
+    type: string
   - name: subscription
     type: string
   - name: workingDirectory
@@ -18,13 +18,14 @@ steps:
       targetType: 'inline'
       workingDirectory: ${{parameters.workingDirectory}}
       script: |
-           echo 'in apply' 
-          #  sed -i 's|TOKEN|${{parameters.token}}|gI' 'set_up.sh'
-
-  - task: TerraformCLI@0
-    displayName: Terraform apply
-    inputs:
-      workingDirectory: ${{parameters.workingDirectory}}
-      command: apply
-      environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: -auto-approve "${{ parameters.planLocation }}"
+          echo 'in apply'
+          echo '${{parameters.myToken}}' 
+         
+  #  #  sed -i 's|TOKEN|${{parameters.myToken}}|gI' 'set_up.sh'
+  # - task: TerraformCLI@0
+  #   displayName: Terraform apply
+  #   inputs:
+  #     workingDirectory: ${{parameters.workingDirectory}}
+  #     command: apply
+  #     environmentServiceName: ${{ parameters.subscription }}
+  #     commandOptions: -auto-approve "${{ parameters.planLocation }}"
