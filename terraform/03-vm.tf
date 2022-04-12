@@ -63,7 +63,11 @@ resource "azurerm_virtual_machine_extension" "create-agent" {
 
   settings = <<SETTINGS
     {
-        "commandToExecute": "./set_up.sh"
+        protected_settings = <<PROTECTED_SETTINGS
+      {
+          "script": "${filebase64("set_up.sh")}"
+      }
+  PROTECTED_SETTINGS
     }
 SETTINGS
 }
