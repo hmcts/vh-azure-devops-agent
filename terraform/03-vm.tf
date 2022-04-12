@@ -61,15 +61,12 @@ resource "azurerm_virtual_machine_extension" "create-agent" {
   type_handler_version = "2.1"
   virtual_machine_id   = azurerm_virtual_machine.vh-devops-agent-vm.id
 
-  settings = <<SETTINGS
-    {
-        protected_settings = <<PROTECTED_SETTINGS
+  protected_settings = <<PROTECTED_SETTINGS
       {
           "script": "${filebase64("set_up.sh")}"
       }
   PROTECTED_SETTINGS
-    }
-SETTINGS
+
 }
  # "script": "${filebase64("set_up.sh")}"
  # "script": "${base64encode(templatefile("set_up.sh", { arg="test" }))}
