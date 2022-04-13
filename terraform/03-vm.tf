@@ -21,14 +21,14 @@ resource "azurerm_network_interface" "vh-devops-nic" {
   }
 }
 
-resource "azurerm_virtual_machine" "vh-devops-agent-vm" {
+resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
   name                  = var.VM_NAME # "${var.vm_name}-vm"
   location              = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name   = azurerm_resource_group.vh-devops-agent-rg.name
   network_interface_ids = [azurerm_network_interface.vh-devops-nic.id]
   vm_size               = "Standard_DS2_v2"
 
-  storage_os_disk {
+  os_disk {
     name              = var.vm_osdisk_name
     caching           = "ReadWrite"
     create_option     = "FromImage"

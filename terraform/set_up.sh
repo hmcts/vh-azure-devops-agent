@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# EXPORT the dotnet_cli_home and run as root
+export DOTNET_CLI_HOME=/temp
+export AGENT_ALLOW_RUNASROOT="1"
+
 # Create directory & download agent files
 AZP_AGENT_VERSION=2.194.0
 su - vhadoagent -c "
