@@ -33,7 +33,6 @@ resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
   os_disk {
     name              = var.vm_osdisk_name
     caching           = "ReadWrite"
-    create_option     = "FromImage"
     storage_account_type = "Standard_LRS"
   }
 
