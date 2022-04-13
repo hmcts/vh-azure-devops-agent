@@ -23,16 +23,18 @@ resource "azurerm_network_interface" "vh-devops-nic" {
 
 resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
   name                  = var.VM_NAME # "${var.vm_name}-vm"
+  admin_username        = var.vm_username
+  admin_password        = random_password.password.result
   location              = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name   = azurerm_resource_group.vh-devops-agent-rg.name
   network_interface_ids = [azurerm_network_interface.vh-devops-nic.id]
-  vm_size               = "Standard_DS2_v2"
+  size               = "Standard_DS2_v2"
 
   os_disk {
     name              = var.vm_osdisk_name
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+    storage_account_type = "Standard_LRS"
   }
 
   storage_image_reference {
@@ -42,15 +44,6 @@ resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
     version   = "latest"
   }
 
-
-  os_profile {
-    computer_name  = var.VM_NAME # "${var.vm_name}-vm"
-    admin_username = var.vm_username
-    admin_password = random_password.password.result
-  }
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
 }
 
 
