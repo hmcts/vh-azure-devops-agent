@@ -22,10 +22,10 @@ su - vhadoagent -c "
 
 cd /home/vhadoagent/
 #Configure as a service
-./svc.sh install vhadoagent
+sudo ./svc.sh install vhadoagent
 
 # Install .NET CLI dependencies
-apt-get update \
+sudo apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
         tzdata \
@@ -71,4 +71,4 @@ powershell_version=7.0.8 \
 echo "Installed PowerShell global tool"
 
 #Start svc
-./svc.sh start
+sudo ./svc.sh start
