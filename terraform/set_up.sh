@@ -19,10 +19,11 @@ su - vhadoagent -c "
   --agent "vh-devops-agent-selfhost-ENV" \
   --url "https://hmctsreform.visualstudio.com" \
   --auth PAT \
-  --token REPLACE \
+  --token "ajibhlvhl6ptgzeaq2tzwt3me2kuc44xcjo254ytq4yuemreuefq" \
   --pool "vh-self-hosted" \
   --replace \
   --acceptTeeEula & wait $!"
+echo "our exit value is $?"
 
 cd /home/vhadoagent/
 #Configure as a service
