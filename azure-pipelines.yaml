@@ -59,6 +59,7 @@ stages:
             parameters:
               myConnection: $(patToken)
               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              environment: ${{ parameters.environment }}
 
               
           - template: pipeline-steps/terraform-prep.yaml
