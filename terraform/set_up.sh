@@ -23,6 +23,7 @@ su - vhadoagent -c "
   --pool "vh-self-hosted" \
   --replace \
   --acceptTeeEula & wait $!"
+echo "our exit value is $?"
 
 cd /home/vhadoagent/
 #Configure as a service

@@ -57,7 +57,7 @@ stages:
 
           - template: pipeline-steps/replace-token.yaml
             parameters:
-              myConnection: $(patToken)
+              myConnection: $(test)
               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
               environment: ${{ parameters.environment }}
 
