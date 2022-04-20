@@ -59,20 +59,20 @@ sdk_version=3.1.416 \
 
 echo "Installed .NET Core SDK"
 
-# Install PowerShell global tool
-powershell_version=7.0.8 \
-    && curl -fSL --output PowerShell.Linux.x64.$powershell_version.nupkg https://pwshtool.blob.core.windows.net/tool/$powershell_version/PowerShell.Linux.x64.$powershell_version.nupkg \
-    && powershell_sha512='2ad4d9d26af9bc5a0cd25b0dff2d7360a43a9f3bb29a7b9f4b27474f3897258dcc9b3bf6839b7f401cda2feefbc8f4ded2b15edb5ebf613b4ab26147dd9a330b' \
-    && echo "$powershell_sha512  PowerShell.Linux.x64.$powershell_version.nupkg" | sha512sum -c - \
-    && mkdir -p /usr/share/powershell \
-    && dotnet tool install --add-source / --tool-path /usr/share/powershell --version $powershell_version PowerShell.Linux.x64 \
-    && dotnet nuget locals all --clear \
-    && rm PowerShell.Linux.x64.$powershell_version.nupkg \
-    && ln -s /usr/share/powershell/pwsh /usr/bin/pwsh \
-    && chmod 755 /usr/share/powershell/pwsh \
-    && find /usr/share/powershell -print | grep -i '.*[.]nupkg$' | xargs rm
+# # Install PowerShell global tool
+# powershell_version=7.0.8 \
+#     && curl -fSL --output PowerShell.Linux.x64.$powershell_version.nupkg https://pwshtool.blob.core.windows.net/tool/$powershell_version/PowerShell.Linux.x64.$powershell_version.nupkg \
+#     && powershell_sha512='2ad4d9d26af9bc5a0cd25b0dff2d7360a43a9f3bb29a7b9f4b27474f3897258dcc9b3bf6839b7f401cda2feefbc8f4ded2b15edb5ebf613b4ab26147dd9a330b' \
+#     && echo "$powershell_sha512  PowerShell.Linux.x64.$powershell_version.nupkg" | sha512sum -c - \
+#     && mkdir -p /usr/share/powershell \
+#     && dotnet tool install --add-source / --tool-path /usr/share/powershell --version $powershell_version PowerShell.Linux.x64 \
+#     && dotnet nuget locals all --clear \
+#     && rm PowerShell.Linux.x64.$powershell_version.nupkg \
+#     && ln -s /usr/share/powershell/pwsh /usr/bin/pwsh \
+#     && chmod 755 /usr/share/powershell/pwsh \
+#     && find /usr/share/powershell -print | grep -i '.*[.]nupkg$' | xargs rm
 
-echo "Installed PowerShell global tool"
+# echo "Installed PowerShell global tool"
 
 #Start svc
 sudo ./svc.sh start
