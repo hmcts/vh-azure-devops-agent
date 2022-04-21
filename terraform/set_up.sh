@@ -25,7 +25,7 @@ su - vhadoagent -c "
   --acceptTeeEula & wait $!"
 echo "our exit value is $?"
 
-cd /home/vhadoagent/
+cd ~/vhadoagent
 #Configure as a service
 ./svc.sh install vhadoagent
 
