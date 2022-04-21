@@ -10,7 +10,7 @@ tar zxvf vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz"
 
 #Install
 
-su - vhadoagent -c "
+sudo - vhadoagent -c "
 config.sh --unattended \
   --agent "vh-devops-agent-self-hosted" \
   --url "https://hmctsreform.visualstudio.com" \
