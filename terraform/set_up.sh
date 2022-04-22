@@ -22,18 +22,18 @@ sudo mkdir /myagent
 cd /myagent
 #mkdir myagent && cd myagent
 sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
-sudo ls -ltr
-sudo tar ./zxvf vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
+# sudo ls -ltr
+sudo tar zxvf ./vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
 sudo chmod -R 777 /myagent
 #Install
 
 runuser -l vhadoagent -c '
   /myagent/config.sh --unattended \
-  --agent "vh-devops-agent-self-hosted" \
-  --url "https://hmctsreform.visualstudio.com" \
+  --agent vh-devops-agent-self-hosted \
+  --url https://hmctsreform.visualstudio.com \
   --auth PAT \
-  --token "TOKEN" \
-  --pool "vh-self-hosted" \
+  --token TOKEN \
+  --pool vh-self-hosted \
   --replace \
   --acceptTeeEula & wait $!'
 
