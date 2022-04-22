@@ -23,7 +23,7 @@ cd /myagent
 #mkdir myagent && cd myagent
 sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
 sudo ls -ltr
-sudo ar zxvf vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
+sudo tar zxvf vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
 
 #Install
 
