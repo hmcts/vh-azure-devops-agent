@@ -88,6 +88,8 @@ stages:
               planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
 
+# If you need to destroy this infra, delete and purge the secret from the keyvault before you run the detroy stage
+# or you may find the pipeline will fail and you will have to delete the secret and run it again.
   - stage: Destroy_Agent
     displayName: Destroy_Agent
     condition: eq('${{ parameters.Run_Stage }}', 'Destroy_Agent')
