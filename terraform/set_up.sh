@@ -27,15 +27,15 @@ sudo tar zxvf ./vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
 sudo chmod -R 777 /myagent
 #Install
 
-runuser -l vhadoagent -c '
-  /myagent/config.sh --unattended \
-  --agent vh-devops-agent-self-hosted \
-  --url https://hmctsreform.visualstudio.com \
-  --auth PAT \
-  --token TOKEN \
-  --pool vh-self-hosted \
-  --replace \
-  --acceptTeeEula & wait $!'
+runuser -l vhadoagent -c '/myagent/config.sh --unattended  --url https://hmctsreform.visualstudio.com --auth pat --token TOKEN --pool vh-self-hosted'
+  # /myagent/config.sh --unattended \
+  # --agent vh-devops-agent-self-hosted \
+  # --url https://hmctsreform.visualstudio.com \
+  # --auth PAT \
+  # --token TOKEN \
+  # --pool vh-self-hosted \
+  # --replace \
+  # --acceptTeeEula & wait $!'
 
 #cd /home/vhadoagent/
 #Configure as a service
