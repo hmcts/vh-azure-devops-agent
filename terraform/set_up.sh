@@ -23,8 +23,8 @@ cd /myagent
 #mkdir myagent && cd myagent
 sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
 sudo ls -ltr
-sudo tar zxvf vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
-
+sudo tar ./zxvf vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
+sudo chmod -R 777 /myagent
 #Install
 
 runuser -l vhadoagent -c '
@@ -39,7 +39,7 @@ runuser -l vhadoagent -c '
 
 #cd /home/vhadoagent/
 #Configure as a service
-sudo /myagent/svc.sh install vhadoagent
+sudo /myagent/svc.sh install #vhadoagent
 
 # Install .NET CLI dependencies
 apt-get update \
