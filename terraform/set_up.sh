@@ -7,7 +7,7 @@ cd /myagent
 sudo wget https://vstsagentpackage.azureedge.net/agent/2.179.0/vsts-agent-linux-x64-2.179.0.tar.gz
 sudo tar zxvf ./vsts-agent-linux-x64-2.179.0.tar.gz
 sudo chmod -R 777 /myagent
-runuser -l vhadoagent -c '/myagent/config.sh --unattended  --url https://hmctsreform.visualstudio.com --auth PAT --token TOKEN --pool vh-self-hosted'
+sudo ./config.sh --unattended  --url https://hmctsreform.visualstudio.com --auth pat --token TOKEN --pool vh-self-hosted --agent vh-devops-agent-self-hosted --acceptTeeEula & wait $!
 sudo /myagent/svc.sh install
 sudo /myagent/svc.sh start
 # exit 0
@@ -27,14 +27,13 @@ sudo /myagent/svc.sh start
 #sudo chmod -R 777 /myagent
 #Install
 
-#runuser -l vhadoagent -c '/myagent/config.sh --unattended  --url https://hmctsreform.visualstudio.com --auth pat --token TOKEN --pool vh-self-hosted'
+#runuser -l vhadoagent -c '/myagent/config.sh --unattended  --url https://hmctsreform.visualstudio.com --auth pat --token TOKEN --pool vh-self-hosted --agent vh-devops-agent-self-hosted --acceptTeeEula & wait $!'
   # /myagent/config.sh --unattended \
-  # --agent vh-devops-agent-self-hosted \
   # --url https://hmctsreform.visualstudio.com \
   # --auth PAT \
   # --token TOKEN \
   # --pool vh-self-hosted \
-  # --replace \
+  # --agent vh-devops-agent-self-hosted \
   # --acceptTeeEula & wait $!'
 
 #cd /home/vhadoagent/
