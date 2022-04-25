@@ -7,7 +7,7 @@ cd /myagent
 sudo wget https://vstsagentpackage.azureedge.net/agent/2.179.0/vsts-agent-linux-x64-2.179.0.tar.gz
 sudo tar zxvf ./vsts-agent-linux-x64-2.179.0.tar.gz
 sudo chmod -R 777 /myagent
-runuser -l vhadoagent "./config.sh --unattended  --url https://hmctsreform.visualstudio.com --auth pat --token TOKEN --pool vh-self-hosted --agent vh-devops-agent-self-hosted --acceptTeeEula & wait $!"
+runuser -l vhadoagent "./config.sh --unattended  --url https://hmctsreform.visualstudio.com --auth pat --token REPLACE --pool vh-self-hosted --agent vh-devops-agent-self-hosted --acceptTeeEula & wait $!"
 /myagent/svc.sh install
 /myagent/svc.sh start
 # exit 0

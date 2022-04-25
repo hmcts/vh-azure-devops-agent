@@ -14,6 +14,6 @@ steps:
       workingDirectory: ${{parameters.workingDirectory}}
       script: |
           echo 'Replacing pat token with ${{parameters.myConnection}}'
-          sed -i 's|TOKEN|${{parameters.myConnection}}|gI' 'set_up.sh'
+          sed -i 's|REPLACE|${{parameters.myConnection}}|gI' 'set_up.sh'
           echo 'Updating agent name'
           sed -i 's|ENV|${{parameters.environment}}|gI' 'set_up.sh'
