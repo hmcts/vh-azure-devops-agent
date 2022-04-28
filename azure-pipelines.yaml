@@ -26,8 +26,8 @@ parameters:
     default: sandbox # USE upper and lower
     values:
       - sandbox
-      - upper
-      - lower
+ #     - upper
+ #     - lower
 
 variables:
   - group: vh-azure-devops-agent
