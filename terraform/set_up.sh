@@ -1,15 +1,5 @@
 #!/bin/sh
 
-### from james cook
-
-
-
-
-
-# exit 0
-
-
-
 ###
 
 # Create directory & download agent files
