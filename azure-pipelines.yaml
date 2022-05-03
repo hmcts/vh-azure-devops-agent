@@ -40,7 +40,7 @@ variables:
 
 stages:
 
-  - ${{ if or(eq('${{ parameters.Run_Stage }}', 'Validate_Terraform'), eq('${{ parameters.Run_Stage }}', 'Deploy_Azure_Agent') }}:
+  - ${{ if or(eq('${{ parameters.Run_Stage }}', 'Validate_Terraform'), eq('${{ parameters.Run_Stage }}', 'Deploy_Azure_Agent')) }}:
     - stage: Check_code
       displayName: 'Validate Infrastructure code'
       jobs:
