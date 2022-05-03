@@ -41,46 +41,85 @@ variables:
 
 stages:
 
-  ${{ if eq('${{ parameters.Run_Stage }}', 'CIBuild') }} 
-  - stage: CIBuild
-    displayName: 'Validate Infrastructure code'
-    jobs:
-      job: Validate Infrastructure code
-      displayName: Validate code used to deploy DevOps Agent to ${{ parameters.environment }}
-        pool:
-          vmImage: 'ubuntu-latest'
-        
-        steps: 
-        - template: pipeline-steps/terraform-prep.yaml
-          parameters:
-            terraformVersion: $(tfVersion)
-            subscription: $(subscription)
-            environment: ${{ parameters.environment }}
-            resourceGroup: $(resourceGroup)
-            location: $(location)
-            storageAccount: $(storageAccount)
-            containerName: $(containerName)
-            stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-            workingDirectory: $(workDir)
-    
-${{ if eq('${{ parameters.Run_Stage }}', 'Deploy_Agent') }} 
-  - stage: Deploy_Agent
-    displayName: Deploy Azure DevOps Agent in ${{ parameters.environment }}
-    jobs:
-      - job: Deploy_Terraform
-        displayName: Deploy DevOps Agent to ${{ parameters.environment }}
-        pool:
-          vmImage: 'ubuntu-latest'
-        
-        steps:
-
-          - template: pipeline-steps/replace-token.yaml
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'CIBuild') }}:
+    - stage: CIBuild
+      displayName: 'Validate Infrastructure code'
+      jobs:
+        - job: Validate_Infra
+          displayName: Validate code used to deploy DevOps Agent to ${{ parameters.environment }}
+          pool:
+            vmImage: 'ubuntu-latest'
+          
+          steps: 
+          - template: pipeline-steps/terraform-prep.yaml
             parameters:
-              myConnection: $(patToken)
-              workingDirectory: $(workDir)
+              terraformVersion: $(tfVersion)
+              subscription: $(subscription)
               environment: ${{ parameters.environment }}
+              resourceGroup: $(resourceGroup)
+              location: $(location)
+              storageAccount: $(storageAccount)
+              containerName: $(containerName)
+              stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+              workingDirectory: $(workDir)
+    
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'Deploy_Agent') }}:
+    - stage: Deploy_Agent
+      displayName: Deploy Azure DevOps Agent in ${{ parameters.environment }}
+      jobs:
+        - job: Deploy_Terraform
+          displayName: Deploy DevOps Agent to ${{ parameters.environment }}
+          pool:
+            vmImage: 'ubuntu-latest'
+          
+          steps:
 
-              
+            - template: pipeline-steps/replace-token.yaml
+              parameters:
+                myConnection: $(patToken)
+                workingDirectory: $(workDir)
+                environment: ${{ parameters.environment }}
+
+                
+            - template: pipeline-steps/terraform-prep.yaml
+              parameters:
+                terraformVersion: $(tfVersion)
+                subscription: $(subscription)
+                environment: ${{ parameters.environment }}
+                resourceGroup: $(resourceGroup)
+                location: $(location)
+                storageAccount: $(storageAccount)
+                containerName: $(containerName)
+                stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+                workingDirectory: $(workDir)
+
+            - template: pipeline-steps/terraform-plan.yaml
+              parameters:
+                subscription: $(subscription)
+                environment: ${{ parameters.environment }}
+                tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+                workingDirectory: $(workDir)
+
+            - template: pipeline-steps/terraform-apply.yaml
+              parameters:
+                subscription: $(subscription)
+                environment: ${{ parameters.environment }}
+                planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
+                workingDirectory: $(workDir)
+
+# If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'Destroy_Agent') }}:
+    - stage: Destroy_Agent
+      displayName: Destroy Azure Devops Agent for ${{ parameters.environment }}
+
+      jobs:
+      - job: Destroy_Terraform
+        displayName: Destroy Azure DevOps Agent in ${{ parameters.environment }}
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        steps:
+          
           - template: pipeline-steps/terraform-prep.yaml
             parameters:
               terraformVersion: $(tfVersion)
@@ -93,56 +132,17 @@ ${{ if eq('${{ parameters.Run_Stage }}', 'Deploy_Agent') }}
               stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
               workingDirectory: $(workDir)
 
-          - template: pipeline-steps/terraform-plan.yaml
-            parameters:
-              subscription: $(subscription)
-              environment: ${{ parameters.environment }}
-              tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-              workingDirectory: $(workDir)
+          - task: TerraformCLI@0
+            displayName: Terraform plan destroy
+            inputs:
+              command: plan
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              environmentServiceName: $(subscription)
+              commandOptions: '-destroy -var-file=$(tfVariables) -out=$(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan'
 
           - template: pipeline-steps/terraform-apply.yaml
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
-              planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
-              workingDirectory: $(workDir)
-
-# If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
-  ${{ if eq('${{ parameters.Run_Stage }}', 'Destroy_Agent') }}
-  - stage: Destroy_Agent
-    displayName: Destroy Azure Devops Agent for ${{ parameters.environment }}
-
-    jobs:
-    - job: Destroy_Terraform
-      displayName: Destroy Azure DevOps Agent in ${{ parameters.environment }}
-      pool:
-        vmImage: 'ubuntu-latest'
-
-      steps:
-        
-        - template: pipeline-steps/terraform-prep.yaml
-          parameters:
-            terraformVersion: $(tfVersion)
-            subscription: $(subscription)
-            environment: ${{ parameters.environment }}
-            resourceGroup: $(resourceGroup)
-            location: $(location)
-            storageAccount: $(storageAccount)
-            containerName: $(containerName)
-            stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-            workingDirectory: $(workDir)
-
-        - task: TerraformCLI@0
-          displayName: Terraform plan destroy
-          inputs:
-            command: plan
-            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-            environmentServiceName: $(subscription)
-            commandOptions: '-destroy -var-file=$(tfVariables) -out=$(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan'
-
-        - template: pipeline-steps/terraform-apply.yaml
-          parameters:
-            subscription: $(subscription)
-            environment: ${{ parameters.environment }}
-            planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
-            workingDirectory: $(workDir) 
+              planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
+              workingDirectory: $(workDir) 
