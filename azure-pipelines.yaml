@@ -7,16 +7,18 @@ parameters:
   - name: Run_Stage
     displayName: Stage to Run
     type: string
-    default: 'Deploy_Agent'
+    default: 'Validate_Terraform'
     values:
-    - Deploy_Agent
-    - Destroy_Agent
+    - Validate_Terraform
+    - Deploy_Azure_Agent
+    - Destroy_Azure_Agent
 
   - name: environment
     displayName: Environment (sandbox default)
     type: string
     default: sandbox # USE upper and lower
     values:
+      - CIBuild
       - sandbox
  #     - upper
  #     - lower
@@ -33,15 +35,40 @@ variables:
     value: "vh-devops-vm-nsg-${{ parameters.environment }}"
   - name: TF_VAR_VNET_NAME
     value: "vh-devops-vnet-${{ parameters.environment }}"
+  - name: workDir
+    value: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+ 
 
 stages:
-  
+
+  ${{ if eq('${{ parameters.Run_Stage }}', 'CIBuild') }} 
+  - stage: CIBuild
+    displayName: 'Validate Infrastructure code'
+    jobs:
+      job: Validate Infrastructure code
+      displayName: Validate code used to deploy DevOps Agent to ${{ parameters.environment }}
+        pool:
+          vmImage: 'ubuntu-latest'
+        
+        steps: 
+        - template: pipeline-steps/terraform-prep.yaml
+          parameters:
+            terraformVersion: $(tfVersion)
+            subscription: $(subscription)
+            environment: ${{ parameters.environment }}
+            resourceGroup: $(resourceGroup)
+            location: $(location)
+            storageAccount: $(storageAccount)
+            containerName: $(containerName)
+            stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+            workingDirectory: $(workDir)
+    
+${{ if eq('${{ parameters.Run_Stage }}', 'Deploy_Agent') }} 
   - stage: Deploy_Agent
-    condition: eq('${{ parameters.Run_Stage }}', 'Deploy_Agent')
-    displayName: Deploy_Agent
+    displayName: Deploy Azure DevOps Agent in ${{ parameters.environment }}
     jobs:
       - job: Deploy_Terraform
-        displayName: Deploy Terraform
+        displayName: Deploy DevOps Agent to ${{ parameters.environment }}
         pool:
           vmImage: 'ubuntu-latest'
         
@@ -50,7 +77,7 @@ stages:
           - template: pipeline-steps/replace-token.yaml
             parameters:
               myConnection: $(patToken)
-              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              workingDirectory: $(workDir)
               environment: ${{ parameters.environment }}
 
               
@@ -64,30 +91,30 @@ stages:
               storageAccount: $(storageAccount)
               containerName: $(containerName)
               stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              workingDirectory: $(workDir)
 
           - template: pipeline-steps/terraform-plan.yaml
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              workingDirectory: $(workDir)
 
           - template: pipeline-steps/terraform-apply.yaml
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
-              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              workingDirectory: $(workDir)
 
-# If you need to destroy this infra, delete and purge the secret from the keyvault before you run the detroy stage
-# or you may find the pipeline will fail and you will have to delete the secret and run it again.
+# If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
+  ${{ if eq('${{ parameters.Run_Stage }}', 'Destroy_Agent') }}
   - stage: Destroy_Agent
-    displayName: Destroy_Agent
-    condition: eq('${{ parameters.Run_Stage }}', 'Destroy_Agent')
+    displayName: Destroy Azure Devops Agent for ${{ parameters.environment }}
+
     jobs:
     - job: Destroy_Terraform
-      displayName: Destroy Terraform
+      displayName: Destroy Azure DevOps Agent in ${{ parameters.environment }}
       pool:
         vmImage: 'ubuntu-latest'
 
@@ -103,7 +130,7 @@ stages:
             storageAccount: $(storageAccount)
             containerName: $(containerName)
             stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+            workingDirectory: $(workDir)
 
         - task: TerraformCLI@0
           displayName: Terraform plan destroy
@@ -118,4 +145,4 @@ stages:
             subscription: $(subscription)
             environment: ${{ parameters.environment }}
             planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
-            workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory) 
+            workingDirectory: $(workDir) 

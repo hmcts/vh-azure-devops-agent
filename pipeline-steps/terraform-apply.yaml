@@ -16,4 +16,4 @@ steps:
       workingDirectory: ${{parameters.workingDirectory}}
       command: apply
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: -auto-approve "${{ parameters.planLocation }}"
+      commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"
