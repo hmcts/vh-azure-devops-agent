@@ -40,7 +40,7 @@ variables:
 
 stages:
 
-  - ${{ if or(eq('${{ parameters.Run_Stage }}', 'ValidateTerraform'), eq('${{ parameters.Run_Stage }}', 'DeployAzureAgent')) }}:
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'ValidateTerraform') }}:
     - stage: ValidateTerraform
       displayName: 'Validate Infrastructure code'
       jobs:
@@ -87,31 +87,31 @@ stages:
           
           steps:
 
-            # - template: pipeline-steps/replace-token.yaml
-            #   parameters:
-            #     myConnection: $(patToken)
-            #     workingDirectory: $(workDir)
-            #     environment: ${{ parameters.environment }}
+            - template: pipeline-steps/replace-token.yaml
+              parameters:
+                myConnection: $(patToken)
+                workingDirectory: $(workDir)
+                environment: ${{ parameters.environment }}
 
                 
-            # - template: pipeline-steps/terraform-prep.yaml
-            #   parameters:
-            #     terraformVersion: $(tfVersion)
-            #     subscription: $(subscription)
-            #     environment: ${{ parameters.environment }}
-            #     resourceGroup: $(resourceGroup)
-            #     location: $(location)
-            #     storageAccount: $(storageAccount)
-            #     containerName: $(containerName)
-            #     stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-            #     workingDirectory: $(workDir)
+            - template: pipeline-steps/terraform-prep.yaml
+              parameters:
+                terraformVersion: $(tfVersion)
+                subscription: $(subscription)
+                environment: ${{ parameters.environment }}
+                resourceGroup: $(resourceGroup)
+                location: $(location)
+                storageAccount: $(storageAccount)
+                containerName: $(containerName)
+                stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+                workingDirectory: $(workDir)
 
-            # - template: pipeline-steps/terraform-plan.yaml
-            #   parameters:
-            #     subscription: $(subscription)
-            #     environment: ${{ parameters.environment }}
-            #     tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-            #     workingDirectory: $(workDir)
+            - template: pipeline-steps/terraform-plan.yaml
+              parameters:
+                subscription: $(subscription)
+                environment: ${{ parameters.environment }}
+                tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+                workingDirectory: $(workDir)
 
             - template: pipeline-steps/terraform-apply.yaml
               parameters:
