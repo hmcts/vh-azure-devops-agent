@@ -68,8 +68,15 @@ stages:
               containerName: $(containerName)
               stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
               workingDirectory: $(workDir)
-    
-  - ${{ if eq('${{ parameters.Run_Stage }}', 'Deploy_Agent') }}:
+
+          - template: pipeline-steps/terraform-plan.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+              workingDirectory: $(workDir)
+  
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'Deploy_Azure_Agent') }}:
     - stage: Deploy_Agent
       displayName: Deploy Azure DevOps Agent in ${{ parameters.environment }}
       jobs:
@@ -80,31 +87,31 @@ stages:
           
           steps:
 
-            - template: pipeline-steps/replace-token.yaml
-              parameters:
-                myConnection: $(patToken)
-                workingDirectory: $(workDir)
-                environment: ${{ parameters.environment }}
+            # - template: pipeline-steps/replace-token.yaml
+            #   parameters:
+            #     myConnection: $(patToken)
+            #     workingDirectory: $(workDir)
+            #     environment: ${{ parameters.environment }}
 
                 
-            - template: pipeline-steps/terraform-prep.yaml
-              parameters:
-                terraformVersion: $(tfVersion)
-                subscription: $(subscription)
-                environment: ${{ parameters.environment }}
-                resourceGroup: $(resourceGroup)
-                location: $(location)
-                storageAccount: $(storageAccount)
-                containerName: $(containerName)
-                stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-                workingDirectory: $(workDir)
+            # - template: pipeline-steps/terraform-prep.yaml
+            #   parameters:
+            #     terraformVersion: $(tfVersion)
+            #     subscription: $(subscription)
+            #     environment: ${{ parameters.environment }}
+            #     resourceGroup: $(resourceGroup)
+            #     location: $(location)
+            #     storageAccount: $(storageAccount)
+            #     containerName: $(containerName)
+            #     stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+            #     workingDirectory: $(workDir)
 
-            - template: pipeline-steps/terraform-plan.yaml
-              parameters:
-                subscription: $(subscription)
-                environment: ${{ parameters.environment }}
-                tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-                workingDirectory: $(workDir)
+            # - template: pipeline-steps/terraform-plan.yaml
+            #   parameters:
+            #     subscription: $(subscription)
+            #     environment: ${{ parameters.environment }}
+            #     tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+            #     workingDirectory: $(workDir)
 
             - template: pipeline-steps/terraform-apply.yaml
               parameters:
