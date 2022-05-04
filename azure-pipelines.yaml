@@ -106,12 +106,12 @@ stages:
                 stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
                 workingDirectory: $(workDir)
 
-            # - template: pipeline-steps/terraform-plan.yaml
-            #   parameters:
-            #     subscription: $(subscription)
-            #     environment: ${{ parameters.environment }}
-            #     tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-            #     workingDirectory: $(workDir)
+            - template: pipeline-steps/terraform-plan.yaml
+              parameters:
+                subscription: $(subscription)
+                environment: ${{ parameters.environment }}
+                tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+                workingDirectory: $(workDir)
 
             - template: pipeline-steps/terraform-apply.yaml
               parameters:
