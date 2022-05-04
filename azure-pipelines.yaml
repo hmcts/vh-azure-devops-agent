@@ -7,11 +7,11 @@ parameters:
   - name: Run_Stage
     displayName: Stage to Run
     type: string
-    default: 'Validate_Terraform'
+    default: 'ValidateTerraform'
     values:
-    - Validate_Terraform
-    - Deploy_Azure_Agent
-    - Destroy_Azure_Agent
+    - ValidateTerraform
+    - DeployAzureAgent
+    - DestroyAzureAgent
 
   - name: environment
     displayName: Environment (sandbox default)
@@ -40,8 +40,8 @@ variables:
 
 stages:
 
-  - ${{ if or(eq('${{ parameters.Run_Stage }}', 'Validate_Terraform'), eq('${{ parameters.Run_Stage }}', 'Deploy_Azure_Agent')) }}:
-    - stage: Validate_Terraform
+  - ${{ if or(eq('${{ parameters.Run_Stage }}', 'ValidateTerraform'), eq('${{ parameters.Run_Stage }}', 'DeployAzureAgent')) }}:
+    - stage: ValidateTerraform
       displayName: 'Validate Infrastructure code'
       jobs:
         - job: Validate_Infra
@@ -76,8 +76,8 @@ stages:
               tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
               workingDirectory: $(workDir)
   
-  - ${{ if eq('${{ parameters.Run_Stage }}', 'Deploy_Azure_Agent') }}:
-    - stage: Deploy_Azure_Agent
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'DeployAzureAgent') }}:
+    - stage: DeployAzureAgent
       displayName: Deploy Azure DevOps Agent in ${{ parameters.environment }}
       jobs:
         - job: Deploy_Terraform
@@ -121,8 +121,8 @@ stages:
                 workingDirectory: $(workDir)
 
 # If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
-  - ${{ if eq('${{ parameters.Run_Stage }}', 'Destroy_Azure_Agent') }}:
-    - stage: Destroy_Azure_Agent
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'DestroyAzureAgent') }}:
+    - stage: DestroyAzureAgent
       displayName: Destroy Azure Devops Agent for ${{ parameters.environment }}
 
       jobs:
