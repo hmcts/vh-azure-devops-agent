@@ -87,24 +87,24 @@ stages:
           
           steps:
 
-            # - template: pipeline-steps/replace-token.yaml
-            #   parameters:
-            #     myConnection: $(patToken)
-            #     workingDirectory: $(workDir)
-            #     environment: ${{ parameters.environment }}
+            - template: pipeline-steps/replace-token.yaml
+              parameters:
+                myConnection: $(patToken)
+                workingDirectory: $(workDir)
+                environment: ${{ parameters.environment }}
 
                 
-            # - template: pipeline-steps/terraform-prep.yaml
-            #   parameters:
-            #     terraformVersion: $(tfVersion)
-            #     subscription: $(subscription)
-            #     environment: ${{ parameters.environment }}
-            #     resourceGroup: $(resourceGroup)
-            #     location: $(location)
-            #     storageAccount: $(storageAccount)
-            #     containerName: $(containerName)
-            #     stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-            #     workingDirectory: $(workDir)
+            - template: pipeline-steps/terraform-prep.yaml
+              parameters:
+                terraformVersion: $(tfVersion)
+                subscription: $(subscription)
+                environment: ${{ parameters.environment }}
+                resourceGroup: $(resourceGroup)
+                location: $(location)
+                storageAccount: $(storageAccount)
+                containerName: $(containerName)
+                stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+                workingDirectory: $(workDir)
 
             # - template: pipeline-steps/terraform-plan.yaml
             #   parameters:
