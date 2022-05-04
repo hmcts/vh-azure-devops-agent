@@ -11,7 +11,7 @@ parameters:
     values:
     - Validate_Terraform
     - Deploy_Azure_Agent
-    #- Destroy_Azure_Agent
+    - Destroy_Azure_Agent
 
   - name: environment
     displayName: Environment (sandbox default)
@@ -120,42 +120,42 @@ stages:
                 planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
                 workingDirectory: $(workDir)
 
-# # If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
-#   - ${{ if eq('${{ parameters.Run_Stage }}', 'Destroy_Agent') }}:
-#     - stage: Destroy_Agent
-#       displayName: Destroy Azure Devops Agent for ${{ parameters.environment }}
+# If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
+  - ${{ if eq('${{ parameters.Run_Stage }}', 'Destroy_Azure_Agent') }}:
+    - stage: Destroy_Agent
+      displayName: Destroy Azure Devops Agent for ${{ parameters.environment }}
 
-#       jobs:
-#       - job: Destroy_Terraform
-#         displayName: Destroy Azure DevOps Agent in ${{ parameters.environment }}
-#         pool:
-#           vmImage: 'ubuntu-latest'
+      jobs:
+      - job: Destroy_Terraform
+        displayName: Destroy Azure DevOps Agent in ${{ parameters.environment }}
+        pool:
+          vmImage: 'ubuntu-latest'
 
-#         steps:
+        steps:
           
-#           - template: pipeline-steps/terraform-prep.yaml
-#             parameters:
-#               terraformVersion: $(tfVersion)
-#               subscription: $(subscription)
-#               environment: ${{ parameters.environment }}
-#               resourceGroup: $(resourceGroup)
-#               location: $(location)
-#               storageAccount: $(storageAccount)
-#               containerName: $(containerName)
-#               stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-#               workingDirectory: $(workDir)
+          - template: pipeline-steps/terraform-prep.yaml
+            parameters:
+              terraformVersion: $(tfVersion)
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              resourceGroup: $(resourceGroup)
+              location: $(location)
+              storageAccount: $(storageAccount)
+              containerName: $(containerName)
+              stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+              workingDirectory: $(workDir)
 
-#           - task: TerraformCLI@0
-#             displayName: Terraform plan destroy
-#             inputs:
-#               command: plan
-#               workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-#               environmentServiceName: $(subscription)
-#               commandOptions: '-destroy -var-file=$(tfVariables) -out=$(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan'
+          - task: TerraformCLI@0
+            displayName: Terraform plan destroy
+            inputs:
+              command: plan
+              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+              environmentServiceName: $(subscription)
+              commandOptions: '-destroy -var-file=$(tfVariables) -out=$(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan'
 
-#           - template: pipeline-steps/terraform-apply.yaml
-#             parameters:
-#               subscription: $(subscription)
-#               environment: ${{ parameters.environment }}
-#               planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
-#               workingDirectory: $(workDir) 
+          - template: pipeline-steps/terraform-apply.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
+              workingDirectory: $(workDir) 
