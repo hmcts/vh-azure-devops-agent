@@ -40,7 +40,7 @@ variables:
 
 stages:
 
-  - ${{ if eq('${{ parameters.Run_Stage }}', 'ValidateTerraform') }}:
+  - ${{ if eq(parameters.Run_Stage, 'ValidateTerraform') }}:
     - stage: ValidateTerraform
       displayName: 'Validate Infrastructure code'
       jobs:
