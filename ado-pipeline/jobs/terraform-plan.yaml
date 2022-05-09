@@ -30,6 +30,6 @@ steps:
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Terraform Plan'
     inputs:
-      targetPath: '${{ parameters.workingDirectory }}/plans/'
+      targetPath: '${{ parameters.workingDirectory }}'
       artifact: '${{ parameters.environment }}-agent.tfplan'
       FileCopyOptions: '/xo'
