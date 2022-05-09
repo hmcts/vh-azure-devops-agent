@@ -30,9 +30,8 @@ parameters:
 
 steps:
 
-  - task: TerraformInstaller@0
-    displayName: Install Terraform ${{ parameters.terraformVersion }}
-    inputs:
+  - template: ../steps/tf-install.yaml
+    parameters:
       terraformVersion: ${{ parameters.terraformVersion }}
 
   - task: TerraformCLI@0

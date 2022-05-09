@@ -43,7 +43,25 @@ sdk_version=3.1.416 \
     && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
     && dotnet help
 
-echo "Installed .NET Core SDK"
+echo "Installed .NET Core SDK 3.1.416"
+
+# # Install .NET Core SDK
+# https://download.visualstudio.microsoft.com/download/pr/9d8c7137-2091-4fc6-a419-60ba59c8b9de/db0c5cda94f31d2260d369123de32d59/dotnet-sdk-6.0.202-linux-x64.tar.gz
+# mkdir -p $HOME/dotnet && tar zxf dotnet-sdk-6.0.202-linux-arm.tar.gz -C $HOME/dotnet
+# && dotnet_sha512='e60f14841f1d0156de163f6f1e4c6358f14bd57e81beed13d294022da8a5182e41b8333591f92c4cac8eec138b7bc85725c19ae10e4e73a139a5231bb12b557f'
+# export DOTNET_ROOT=$HOME/dotnet
+# export PATH=$PATH:$HOME/dotnet
+echo "Add the Microsoft package signing key" 
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+echo "Install dotnet version 6.0.202 using package manager"
+sudo apt-get update; \
+sudo apt-get install -y apt-transport-https && \
+sudo apt-get update && \
+sudo apt-get install -y dotnet-sdk-6.0
+echo |"Finished installing dotnet version 6"
+
 
 # # Install PowerShell global tool
 powershell_version=7.0.8 \

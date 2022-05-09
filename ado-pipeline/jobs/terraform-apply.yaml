@@ -11,6 +11,7 @@ parameters:
 steps:
 
   - task: TerraformCLI@0
+
     displayName: Terraform apply
     inputs:
       workingDirectory: ${{parameters.workingDirectory}}

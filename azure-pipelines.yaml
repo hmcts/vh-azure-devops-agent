@@ -3,6 +3,14 @@ trigger:
 pr:
   - none
 
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: hmcts/azure-devops-templates
+      ref: refs/heads/master
+      endpoint: hmcts
+
 parameters:
   - name: Run_Stage
     displayName: Stage to Run
@@ -40,24 +48,31 @@ variables:
 
 stages:
 
+  - stage: CIBuild
+    displayName: 'Validate Infra'
+    jobs: 
+      - template: ado-pipeline/jobs/terraform-validate.yaml
+        parameters:
+          terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
+
   - ${{ if or(eq(parameters.Run_Stage, 'ValidateTerraform'), eq(parameters.Run_Stage, 'DeployAzureAgent')) }}:
-    - stage: ValidateTerraform
-      displayName: 'Validate Infrastructure code'
+    - stage: Plan
+      displayName: 'Create a TF plan'
       jobs:
-        - job: Validate_Infra
-          displayName: Validate code used to deploy DevOps Agent to ${{ parameters.environment }}
+        - job: TerraformPlan
+          displayName: Create an infrastructure plan to deploy DevOps Agent to ${{ parameters.environment }}
           pool:
             vmImage: 'ubuntu-latest'
           
           steps:
 
-          - template: pipeline-steps/replace-token.yaml
+          - template: ado-pipeline/jobs/replace-token.yaml
             parameters:
               myConnection: $(patToken)
               workingDirectory: $(workDir)
               environment: ${{ parameters.environment }}
 
-          - template: pipeline-steps/terraform-prep.yaml
+          - template: ado-pipeline/jobs/terraform-prep.yaml
             parameters:
               terraformVersion: $(tfVersion)
               subscription: $(subscription)
@@ -75,10 +90,21 @@ stages:
               environment: ${{ parameters.environment }}
               tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
               workingDirectory: $(workDir)
+    
+    - stage: Wait
+      jobs:
+        - job: Wait
+          displayName: "Wait for approval"
+          pool: server
+          steps:
+            - template: ado-pipeline/steps/wait.yaml
+              parameters:
+                environment: ${{ parameters.environment }}
   
   - ${{ if eq(parameters.Run_Stage, 'DeployAzureAgent') }}:
     - stage: DeployAzureAgent
       displayName: Deploy Azure DevOps Agent in ${{ parameters.environment }}
+      dependsOn: Wait
       jobs:
         - job: Deploy_Terraform
           displayName: Deploy DevOps Agent to ${{ parameters.environment }}
@@ -87,14 +113,18 @@ stages:
           
           steps:
 
-            - template: pipeline-steps/replace-token.yaml
+            - template: ado-pipeline/jobs/replace-token.yaml
               parameters:
                 myConnection: $(patToken)
                 workingDirectory: $(workDir)
                 environment: ${{ parameters.environment }}
 
+            - download: current
+              artifact: '${{ parameters.environment }}-agent.tfplan'
+              displayName: 'Download ${{ parameters.environment }}.tfplan'
+
                 
-            - template: pipeline-steps/terraform-prep.yaml
+            - template: ado-pipeline/jobs/terraform-prep.yaml
               parameters:
                 terraformVersion: $(tfVersion)
                 subscription: $(subscription)
@@ -106,18 +136,11 @@ stages:
                 stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
                 workingDirectory: $(workDir)
 
-            - template: pipeline-steps/terraform-plan.yaml
+            - template: ado-pipeline/jobs/terraform-apply.yaml
               parameters:
                 subscription: $(subscription)
                 environment: ${{ parameters.environment }}
-                tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-                workingDirectory: $(workDir)
-
-            - template: pipeline-steps/terraform-apply.yaml
-              parameters:
-                subscription: $(subscription)
-                environment: ${{ parameters.environment }}
-                planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}.tfplan
+                planLocation: '$(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-agent.tfplan'
                 workingDirectory: $(workDir)
 
 # If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
