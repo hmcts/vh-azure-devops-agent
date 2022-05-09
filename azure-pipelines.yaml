@@ -54,6 +54,7 @@ stages:
       - template: ado-pipeline/jobs/terraform-validate.yaml
         parameters:
           terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
+          terraformVersion: $(tfVersion)
 
   - ${{ if or(eq(parameters.Run_Stage, 'ValidateTerraform'), eq(parameters.Run_Stage, 'DeployAzureAgent')) }}:
     - stage: Plan
