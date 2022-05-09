@@ -2,10 +2,10 @@
 rg_name = "vh-devops-agent-rg"
 
 # Create Virtual Network
-vnet_name                     = "vh-devops-agent-vnet"
-vnet_ip_address               = ["192.162.0.0/16"]
-subnet_name_vh_agent          = "vh-agent-subnet"
-subnet_name_vh_agent_address  = "192.162.0.0/24"
+vnet_name                    = "vh-devops-agent-vnet"
+vnet_ip_address              = ["192.162.0.0/16"]
+subnet_name_vh_agent         = "vh-agent-subnet"
+subnet_name_vh_agent_address = "192.162.0.0/24"
 
 # Key Vault
 key_vault_name = "vh-devops-agent-kv"
