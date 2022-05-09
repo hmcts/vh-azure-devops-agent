@@ -33,3 +33,4 @@ steps:
       targetPath: '${{ parameters.workingDirectory }}'
       artifact: '${{ parameters.environment }}-agent.tfplan'
       FileCopyOptions: '/xo'
+      publishPlanResults: '${{ parameters.environment }}-agent.tfplan'
