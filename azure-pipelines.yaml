@@ -85,7 +85,7 @@ stages:
               stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
               workingDirectory: $(workDir)
 
-          - template: pipeline-steps/terraform-plan.yaml
+          - template: ado-pipeline/jobs/terraform-plan.yaml
             parameters:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
