@@ -141,7 +141,7 @@ stages:
               parameters:
                 subscription: $(subscription)
                 environment: ${{ parameters.environment }}
-                planLocation: '$(Pipeline.Workspace)/${{ parameters.environment }}-agent/${{ parameters.environment }}-agent.tfplan'
+                planLocation: '$(Pipeline.Workspace)/${{ parameters.environment }}-agent.tfplan'
                 workingDirectory: $(workDir)
 
 # If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
