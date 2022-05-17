@@ -5,8 +5,6 @@ parameters:
     type: string
   - name: tfVariables
     type: string
-  - name: environment
-    type: string
 
 steps:
 
