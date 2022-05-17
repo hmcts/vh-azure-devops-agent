@@ -11,37 +11,35 @@ resources:
       ref: refs/heads/master
       endpoint: hmcts
 
-parameters:
-  - name: Run_Stage
-    displayName: Stage to Run
-    type: string
-    default: 'ValidateTerraform'
-    values:
-    - ValidateTerraform
-    - DeployAzureAgent
-    - DestroyAzureAgent
+#parameters:
+  # - name: Run_Stage
+  #   displayName: Stage to Run
+  #   type: string
+  #   default: 'CIBuild'
+  #   values:
+  #   - CIBuild
+  #   - CDBuild
+  #   - DestroyAzureAgent
 
-  - name: environment
-    displayName: Environment (sandbox default)
-    type: string
-    default: sandbox # USE upper and lower?
-    values:
-      - sandbox
- #     - upper
- #     - lower
+  # - name: environment
+  #   displayName: Environment (sandbox default)
+  #   type: string
+  #   default: sandbox # USE upper and lower?
+  #   values:
+  #     - sandbox
 
 variables:
   - group: vh-azure-devops-agent
   - name: TF_VAR_RG_NAME
-    value: "vh-devops-agent-rg-${{ parameters.environment }}"
+    value: "vh-devops-agent-rg"
   - name: TF_VAR_KV_NAME
-    value: "vhdoagentkv${{ parameters.environment }}"
+    value: "vhdoagentkv"
   - name: TF_VAR_VM_NAME
-    value: "vh-devops-agent-vm-${{ parameters.environment }}"
+    value: "vh-devops-agent-vm"
   - name: TF_VAR_NSG_NAME
-    value: "vh-devops-vm-nsg-${{ parameters.environment }}"
+    value: "vh-devops-vm-nsg"
   - name: TF_VAR_VNET_NAME
-    value: "vh-devops-vnet-${{ parameters.environment }}"
+    value: "vh-devops-vnet"
   - name: workDir
     value: $(System.DefaultWorkingDirectory)/$(tfDirectory)
  
@@ -56,42 +54,40 @@ stages:
           terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
           terraformVersion: $(tfVersion)
 
-  - ${{ if or(eq(parameters.Run_Stage, 'ValidateTerraform'), eq(parameters.Run_Stage, 'DeployAzureAgent')) }}:
-    - stage: Plan
-      displayName: 'Create a TF plan'
-      jobs:
-        - job: TerraformPlan
-          displayName: Create an infrastructure plan to deploy DevOps Agent to ${{ parameters.environment }}
-          pool:
-            vmImage: 'ubuntu-latest'
-          
-          steps:
+  - stage: Plan
+    displayName: 'Create a TF plan'
+    jobs:
+      - job: TerraformPlan
+        displayName: Create an infrastructure plan to deploy an Azure DevOps Agent
+        dependsOn: CIBuild
+        pool:
+          vmImage: 'ubuntu-latest'
+        
+        steps:
 
-          - template: ado-pipeline/jobs/replace-token.yaml
-            parameters:
-              myConnection: $(patToken)
-              workingDirectory: $(workDir)
-              environment: ${{ parameters.environment }}
+        - template: ado-pipeline/jobs/replace-token.yaml
+          parameters:
+            myConnection: $(patToken)
+            workingDirectory: $(workDir)
 
-          - template: ado-pipeline/jobs/terraform-prep.yaml
-            parameters:
-              terraformVersion: $(tfVersion)
-              subscription: $(subscription)
-              environment: ${{ parameters.environment }}
-              resourceGroup: $(resourceGroup)
-              location: $(location)
-              storageAccount: $(storageAccount)
-              containerName: $(containerName)
-              stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-              workingDirectory: $(workDir)
+        - template: ado-pipeline/jobs/terraform-prep.yaml
+          parameters:
+            terraformVersion: $(tfVersion)
+            subscription: $(subscription)
+            resourceGroup: $(resourceGroup)
+            location: $(location)
+            storageAccount: $(storageAccount)
+            containerName: $(containerName)
+            stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
+            workingDirectory: $(workDir)
 
-          - template: ado-pipeline/jobs/terraform-plan.yaml
-            parameters:
-              subscription: $(subscription)
-              environment: ${{ parameters.environment }}
-              tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-              workingDirectory: $(workDir)
-    
+        - template: ado-pipeline/jobs/terraform-plan.yaml
+          parameters:
+            subscription: $(subscription)
+            tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+            workingDirectory: $(workDir)
+
+  - ${{ if contains(variables['Build.SourceBranchName'], 'refs/heads/master') }}:
     - stage: Wait
       jobs:
         - job: Wait
@@ -99,87 +95,38 @@ stages:
           pool: server
           steps:
             - template: ado-pipeline/steps/wait.yaml
-              parameters:
-                environment: ${{ parameters.environment }}
   
-  - ${{ if eq(parameters.Run_Stage, 'DeployAzureAgent') }}:
     - stage: DeployAzureAgent
-      displayName: Deploy Azure DevOps Agent in ${{ parameters.environment }}
+      displayName: Deploy Azure DevOps Agent
       dependsOn: Wait
       jobs:
         - job: Deploy_Terraform
-          displayName: Deploy DevOps Agent to ${{ parameters.environment }}
+          displayName: Deploy DevOps Agent
           pool:
             vmImage: 'ubuntu-latest'
           
           steps:
 
-            - template: ado-pipeline/jobs/replace-token.yaml
-              parameters:
-                myConnection: $(patToken)
-                workingDirectory: $(workDir)
-                environment: ${{ parameters.environment }}
-
             - download: current
-              artifact: '${{ parameters.environment }}-agent.tfplan'
-              displayName: 'Download ${{ parameters.environment }}-agent.tfplan'
+              artifact: 'AzureDevOps-agent.tfplan'
+              displayName: 'Download AzureDevOps-agent.tfplan'
 
-                
             - template: ado-pipeline/jobs/terraform-prep.yaml
               parameters:
                 terraformVersion: $(tfVersion)
                 subscription: $(subscription)
-                environment: ${{ parameters.environment }}
                 resourceGroup: $(resourceGroup)
                 location: $(location)
                 storageAccount: $(storageAccount)
                 containerName: $(containerName)
-                stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
+                stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
                 workingDirectory: $(workDir)
 
             - template: ado-pipeline/jobs/terraform-apply.yaml
               parameters:
                 subscription: $(subscription)
                 environment: ${{ parameters.environment }}
-                planLocation: '$(Pipeline.Workspace)/${{ parameters.environment }}-agent.tfplan/${{ parameters.environment }}-agent.tfplan'
+                planLocation: '$(Pipeline.Workspace)/AzureDevOps-agent.tfplan/AzureDevOps-agent.tfplan'
                 workingDirectory: $(workDir)
-
-# If you need to destroy this infra, delete and purge the secret from the keyvault before you run the destroy stage
-  - ${{ if eq(parameters.Run_Stage, 'DestroyAzureAgent') }}:
-    - stage: DestroyAzureAgent
-      displayName: Destroy Azure Devops Agent for ${{ parameters.environment }}
-
-      jobs:
-      - job: Destroy_Terraform
-        displayName: Destroy Azure DevOps Agent in ${{ parameters.environment }}
-        pool:
-          vmImage: 'ubuntu-latest'
-
-        steps:
-          
-          - template: pipeline-steps/terraform-prep.yaml
-            parameters:
-              terraformVersion: $(tfVersion)
-              subscription: $(subscription)
-              environment: ${{ parameters.environment }}
-              resourceGroup: $(resourceGroup)
-              location: $(location)
-              storageAccount: $(storageAccount)
-              containerName: $(containerName)
-              stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
-              workingDirectory: $(workDir)
-
-          - task: TerraformCLI@0
-            displayName: Terraform plan destroy
-            inputs:
-              command: plan
-              workingDirectory: $(System.DefaultWorkingDirectory)/$(tfDirectory)
-              environmentServiceName: $(subscription)
-              commandOptions: '-destroy -var-file=$(tfVariables) -out=$(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan'
-
-          - template: pipeline-steps/terraform-apply.yaml
-            parameters:
-              subscription: $(subscription)
-              environment: ${{ parameters.environment }}
-              planLocation: $(System.DefaultWorkingDirectory)/$(tfDirectory)/${{ parameters.environment }}-destroy.tfplan
-              workingDirectory: $(workDir) 
+                
+              

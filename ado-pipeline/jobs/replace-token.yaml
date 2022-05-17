@@ -3,8 +3,7 @@ parameters:
     type: string
   - name: workingDirectory
     type: string
-  - name: environment
-    type: string
+
 steps:
 
   - task: Bash@3
@@ -15,5 +14,3 @@ steps:
       script: |
           echo 'Replacing pat token'
           sed -i 's|REPLACE|${{parameters.myConnection}}|gI' 'set_up.sh'
-          echo 'Updating agent name'
-          sed -i 's|ENV|${{parameters.environment}}|gI' 'set_up.sh'

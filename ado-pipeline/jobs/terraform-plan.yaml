@@ -24,13 +24,13 @@ steps:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=${{ parameters.workingDirectory }}/${{ parameters.environment }}-agent.tfplan'
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=${{ parameters.workingDirectory }}/AzureDevOps-agent.tfplan'
 
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Terraform Plan'
     inputs:
       targetPath: '${{ parameters.workingDirectory }}'
-      artifact: '${{ parameters.environment }}-agent.tfplan'
+      artifact: 'AzureDevOps-agent.tfplan'
       FileCopyOptions: '/xo'
-      publishPlanResults: '${{ parameters.environment }}-agent-latest'
+      publishPlanResults: 'AzureDevOps-agent-latest'
