@@ -30,7 +30,6 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
     ]
   }
 
-  #tfsec:ignore:zure-keyvault-specify-network-acl
   network_acls {
     bypass         = "AzureServices"
     default_action = "Allow"
