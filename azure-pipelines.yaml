@@ -54,6 +54,9 @@ stages:
           terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
           terraformVersion: $(tfVersion)
 
+  - stage: Plan
+    displayName: 'Create a TF plan'
+    jobs:
       - job: TerraformPlan
         displayName: Create an infrastructure plan to deploy an Azure DevOps Agent
         dependsOn: CIBuild
@@ -124,6 +127,6 @@ stages:
                 subscription: $(subscription)
                 planLocation: '$(Pipeline.Workspace)/AzureDevOps-agent.tfplan/AzureDevOps-agent.tfplan'
                 workingDirectory: $(workDir)
-
+                
 
               
