@@ -32,9 +32,9 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
 }
 
 resource "azurerm_key_vault_secret" "keyvault_vh_agent_secret" {
-  name         = "vh-devops-agent-password"
-  value        = random_password.password.result
-  content_type = "password"
-  key_vault_id = azurerm_key_vault.keyvault_ado_agent.id
+  name            = "vh-devops-agent-password"
+  value           = random_password.password.result
+  content_type    = "password"
+  key_vault_id    = azurerm_key_vault.keyvault_ado_agent.id
   expiration_date = "2023-05-31T00:00:00Z" # PASSWORD WILL EXPIRE 31st May 2023 ###
 }
