@@ -19,12 +19,12 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
   # soft_delete_retention_days  = 7
   purge_protection_enabled = false #tfsec:ignore:azure-keyvault-no-purge
 
-  sku_name = "standard"
-
   network_acls {
     bypass         = "AzureServices"
     default_action = "Allow"
   }
+
+  sku_name = "standard"
 
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
