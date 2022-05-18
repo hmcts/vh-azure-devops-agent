@@ -1,7 +1,7 @@
 trigger:
   - master
 pr:
-  - none
+  - main
 
 resources:
   repositories:
@@ -11,22 +11,6 @@ resources:
       ref: refs/heads/master
       endpoint: hmcts
 
-#parameters:
-  # - name: Run_Stage
-  #   displayName: Stage to Run
-  #   type: string
-  #   default: 'CIBuild'
-  #   values:
-  #   - CIBuild
-  #   - CDBuild
-  #   - DestroyAzureAgent
-
-  # - name: environment
-  #   displayName: Environment (sandbox default)
-  #   type: string
-  #   default: sandbox # USE upper and lower?
-  #   values:
-  #     - sandbox
 
 variables:
   - group: vh-azure-devops-agent
@@ -90,6 +74,8 @@ stages:
 
   - ${{ if contains(variables['Build.SourceBranchName'], 'refs/heads/master') }}:
     - stage: Wait
+      dependsOn:
+        - Plan
       jobs:
         - job: Wait
           displayName: "Wait for approval"
