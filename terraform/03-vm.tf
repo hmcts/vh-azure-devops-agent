@@ -23,8 +23,11 @@ resource "azurerm_network_interface" "vh-devops-nic" {
 
 resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
   disable_password_authentication = false
-  name                            = var.VM_NAME # "${var.vm_name}-vm"
+  name                            = var.VM_NAME
   admin_username                  = var.vm_username
+  #tfsec:ignore:azure-compute-disable-password-authentication
+  # ^^^ This line ignores the TFSEC password check as the password is random and only generated at runtime
+  # it is also needed by the Azure devops agent
   admin_password                  = random_password.password.result
   location                        = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name             = azurerm_resource_group.vh-devops-agent-rg.name
