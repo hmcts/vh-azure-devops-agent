@@ -8,7 +8,7 @@ resource "random_password" "password" {
   min_upper        = 1
 }
 
-#tfsec:ignore:zure-keyvault-specify-network-acl
+
 resource "azurerm_key_vault" "keyvault_ado_agent" {
   name                        = var.KV_NAME
   location                    = azurerm_resource_group.vh-devops-agent-rg.location
@@ -28,6 +28,12 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
     secret_permissions = [
       "Get", "Set", "List"
     ]
+  }
+
+#tfsec:ignore:zure-keyvault-specify-network-acl
+  network_acls {
+    bypass         = AzureServices
+    default_action = Allow
   }
 }
 
