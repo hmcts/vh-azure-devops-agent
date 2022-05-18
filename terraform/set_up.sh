@@ -32,7 +32,7 @@ apt-get update \
 
 echo "Installed .NET CLI dependencies"
 
-# # Install .NET Core SDK
+# # Install .NET 3.1 Core SDK
 sdk_version=3.1.416 \
     && curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/$sdk_version/dotnet-sdk-$sdk_version-linux-x64.tar.gz \
     && dotnet_sha512='dec1dcf326487031c45dec0849a046a0d034d6cbb43ab591da6d94c2faf72da8e31deeaf4d2165049181546d5296bb874a039ccc2f618cf95e68a26399da5e7f' \
@@ -45,12 +45,7 @@ sdk_version=3.1.416 \
 
 echo "Installed .NET Core SDK 3.1.416"
 
-# # Install .NET Core SDK
-# https://download.visualstudio.microsoft.com/download/pr/9d8c7137-2091-4fc6-a419-60ba59c8b9de/db0c5cda94f31d2260d369123de32d59/dotnet-sdk-6.0.202-linux-x64.tar.gz
-# mkdir -p $HOME/dotnet && tar zxf dotnet-sdk-6.0.202-linux-arm.tar.gz -C $HOME/dotnet
-# && dotnet_sha512='e60f14841f1d0156de163f6f1e4c6358f14bd57e81beed13d294022da8a5182e41b8333591f92c4cac8eec138b7bc85725c19ae10e4e73a139a5231bb12b557f'
-# export DOTNET_ROOT=$HOME/dotnet
-# export PATH=$PATH:$HOME/dotnet
+# # Install .NET Core 6 SDK
 echo "Add the Microsoft package signing key" 
 wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
