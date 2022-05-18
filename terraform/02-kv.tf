@@ -8,20 +8,20 @@ resource "random_password" "password" {
   min_upper        = 1
 }
 
-
 resource "azurerm_key_vault" "keyvault_ado_agent" {
   name                        = var.KV_NAME
   location                    = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name         = azurerm_resource_group.vh-devops-agent-rg.name
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
-  # TKV purge protection ignored due to the use of the KV only to store an Agent password
+  # KV purge protection ignored due to the use of the KV only to store an Agent password
   # soft_delete_retention_days  = 7
   purge_protection_enabled = false #tfsec:ignore:azure-keyvault-no-purge
 
-  network_acls {
-    bypass         = "AzureServices"
-    default_action = "Allow"
+  network_acls { #tfsec:ignore:azure-keyvault-specify-network-acl
+    bypass                      = "AzureServices"
+    default_action              = "Allow"
+    virtual_network_subnet_ids  = [azurerm_virtual_network.vh-devops-agent-vnet.id]
   }
 
   sku_name = "standard"
