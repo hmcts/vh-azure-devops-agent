@@ -56,10 +56,11 @@ stages:
 
   - stage: Plan
     displayName: 'Create a TF plan'
+    dependsOn:
+      - CIBuild
     jobs:
       - job: TerraformPlan
         displayName: Create an infrastructure plan to deploy an Azure DevOps Agent
-        dependsOn: CIBuild
         pool:
           vmImage: 'ubuntu-latest'
         
