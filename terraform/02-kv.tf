@@ -21,6 +21,11 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
 
   sku_name = "standard"
 
+  network_acls {
+    bypass         = "AzureServices"
+    default_action = "Allow"
+  }
+
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
@@ -28,11 +33,6 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
     secret_permissions = [
       "Get", "Set", "List"
     ]
-  }
-
-  network_acls {
-    bypass         = "AzureServices"
-    default_action = "Allow"
   }
 }
 
