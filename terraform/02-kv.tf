@@ -19,9 +19,9 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
   purge_protection_enabled = false #tfsec:ignore:azure-keyvault-no-purge
 
   network_acls { #tfsec:ignore:azure-keyvault-specify-network-acl
-    bypass                      = "AzureServices"
-    default_action              = "Allow"
-    virtual_network_subnet_ids  = [azurerm_virtual_network.vh-devops-agent-vnet.id]
+    bypass                     = "AzureServices"
+    default_action             = "Allow"
+    virtual_network_subnet_ids = [azurerm_virtual_network.vh-devops-agent-vnet.id]
   }
 
   sku_name = "standard"
