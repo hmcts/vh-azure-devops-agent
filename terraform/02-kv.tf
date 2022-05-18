@@ -8,6 +8,7 @@ resource "random_password" "password" {
   min_upper        = 1
 }
 
+#tfsec:ignore:azure-keyvault-specify-network-acl
 resource "azurerm_key_vault" "keyvault_ado_agent" {
   name                        = var.KV_NAME
   location                    = azurerm_resource_group.vh-devops-agent-rg.location
@@ -18,7 +19,7 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
   # soft_delete_retention_days  = 7
   purge_protection_enabled = false #tfsec:ignore:azure-keyvault-no-purge
 
-  network_acls { #tfsec:ignore:azure-keyvault-specify-network-acls
+  network_acls { 
     bypass         = "AzureServices"
     default_action = "Allow"
   }
