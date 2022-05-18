@@ -18,9 +18,9 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
   # KV purge protection ignored due to the use of the KV only to store an Agent password
   # soft_delete_retention_days  = 7
   purge_protection_enabled = false #tfsec:ignore:azure-keyvault-no-purge
-  
+
   #tfsec:ignore:azure-keyvault-specify-network-acl
-  network_acls { 
+  network_acls {
     bypass         = "AzureServices"
     default_action = "Allow"
   }
