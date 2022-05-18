@@ -1,7 +1,7 @@
 trigger:
   - master
 pr:
-  - main
+  - master
 
 resources:
   repositories:
