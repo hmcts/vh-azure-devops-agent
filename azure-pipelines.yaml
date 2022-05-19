@@ -72,7 +72,7 @@ stages:
             tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
             workingDirectory: $(workDir)
 
-  - ${{ if contains(variables['Build.SourceBranchName'], 'refs/heads/master') }}:
+  - ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
     - stage: Wait
       dependsOn:
         - Plan
