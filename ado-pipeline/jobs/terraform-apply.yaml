@@ -1,0 +1,17 @@
+parameters:
+  - name: subscription
+    type: string
+  - name: workingDirectory
+    type: string
+  - name: planLocation
+    type: string
+
+steps:
+
+  - task: TerraformCLI@0
+    displayName: Terraform apply
+    inputs:
+      workingDirectory: ${{parameters.workingDirectory}}
+      command: apply
+      environmentServiceName: ${{ parameters.subscription }}
+      commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"

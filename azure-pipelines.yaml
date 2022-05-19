@@ -1,0 +1,119 @@
+trigger:
+  - master
+pr:
+  - master
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: hmcts/azure-devops-templates
+      ref: refs/heads/master
+      endpoint: hmcts
+
+
+variables:
+  - group: vh-azure-devops-agent
+  - name: TF_VAR_RG_NAME
+    value: "vh-devops-agent-rg"
+  - name: TF_VAR_KV_NAME
+    value: "vhdoagentkv"
+  - name: TF_VAR_VM_NAME
+    value: "vh-devops-agent-vm"
+  - name: TF_VAR_NSG_NAME
+    value: "vh-devops-vm-nsg"
+  - name: TF_VAR_VNET_NAME
+    value: "vh-devops-vnet"
+  - name: workDir
+    value: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+ 
+
+stages:
+
+  - stage: CIBuild
+    displayName: 'Validate Infra'
+    jobs: 
+      - template: ado-pipeline/jobs/terraform-validate.yaml
+        parameters:
+          terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
+          terraformVersion: $(tfVersion)
+
+  - stage: Plan
+    displayName: 'Create a TF plan'
+    dependsOn:
+      - CIBuild
+    jobs:
+      - job: TerraformPlan
+        displayName: Create an infrastructure plan to deploy an Azure DevOps Agent
+        pool:
+          vmImage: 'ubuntu-latest'
+        
+        steps:
+
+        - template: ado-pipeline/jobs/replace-token.yaml
+          parameters:
+            myConnection: $(patToken)
+            workingDirectory: $(workDir)
+
+        - template: ado-pipeline/jobs/terraform-prep.yaml
+          parameters:
+            terraformVersion: $(tfVersion)
+            subscription: $(subscription)
+            resourceGroup: $(resourceGroup)
+            location: $(location)
+            storageAccount: $(storageAccount)
+            containerName: $(containerName)
+            stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
+            workingDirectory: $(workDir)
+
+        - template: ado-pipeline/jobs/terraform-plan.yaml
+          parameters:
+            subscription: $(subscription)
+            tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+            workingDirectory: $(workDir)
+
+  - ${{ if contains(variables['Build.SourceBranchName'], 'refs/heads/master') }}:
+    - stage: Wait
+      dependsOn:
+        - Plan
+      jobs:
+        - job: Wait
+          displayName: "Wait for approval"
+          pool: server
+          steps:
+            - template: ado-pipeline/steps/wait.yaml
+  
+    - stage: DeployAzureAgent
+      displayName: Deploy Azure DevOps Agent
+      dependsOn: Wait
+      jobs:
+        - job: Deploy_Terraform
+          displayName: Deploy DevOps Agent
+          pool:
+            vmImage: 'ubuntu-latest'
+          
+          steps:
+
+            - download: current
+              artifact: 'AzureDevOps-agent.tfplan'
+              displayName: 'Download AzureDevOps-agent.tfplan'
+
+            - template: ado-pipeline/jobs/terraform-prep.yaml
+              parameters:
+                terraformVersion: $(tfVersion)
+                subscription: $(subscription)
+                resourceGroup: $(resourceGroup)
+                location: $(location)
+                storageAccount: $(storageAccount)
+                containerName: $(containerName)
+                stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
+                workingDirectory: $(workDir)
+
+            - template: ado-pipeline/jobs/terraform-apply.yaml
+              parameters:
+                subscription: $(subscription)
+                planLocation: '$(Pipeline.Workspace)/AzureDevOps-agent.tfplan/AzureDevOps-agent.tfplan'
+                workingDirectory: $(workDir)
+                
+
+              
