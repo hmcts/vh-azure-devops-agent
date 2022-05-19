@@ -72,7 +72,7 @@ stages:
             tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
             workingDirectory: $(workDir)
 
-  - ${{ if contains(variables['Build.SourceBranch'], 'update_pipeline_stage_flow') }}: # change to 'refs/heads/master'
+  - ${{ if contains(variables['Build.SourceBranch'], 'master') }}:
     - stage: Wait
       dependsOn:
         - Plan
