@@ -23,7 +23,7 @@ resource "azurerm_network_interface" "vh-devops-nic" {
 
 resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
   # The tfsec:ignore comment below ignores the tfsec password check as the password is random 
-  # and only generated at runtime and it is needed by the Azure devops agent
+  # and only generated at runtime and it is needed by the Azure devops agent that is deployed
   disable_password_authentication = false #tfsec:ignore:azure-compute-disable-password-authentication
   name                            = var.VM_NAME
   admin_username                  = var.vm_username
@@ -56,7 +56,7 @@ resource "azurerm_virtual_machine_extension" "create-agent" {
   type_handler_version = "2.1"
   virtual_machine_id   = azurerm_linux_virtual_machine.vh-devops-agent-vm.id
 
-  protected_settings = <<PROTECTED_SETTINGS
+  settings = <<PROTECTED_SETTINGS
       {
           "script": "${filebase64("set_up.sh")}"
       }
