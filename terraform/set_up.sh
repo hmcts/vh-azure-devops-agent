@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ###
+
 # Create directory & download agent files
 AZP_AGENT_VERSION=2.202.1
 sudo mkdir /myagent 
@@ -12,9 +13,6 @@ sudo chmod -R 777 /myagent
 
 sudo runuser -l vhadoagent -c "cd /myagent ; ./config.sh --unattended --url https://hmctsreform.visualstudio.com --auth pat --token REPLACE --pool vh-self-hosted --agent vh-devops-agent-self-hosted-PL --acceptTeeEula & wait $!"
 sudo /myagent/svc.sh install
-
-DEBIAN_FRONTEND=noninteractive
-echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Install .NET CLI dependencies
 apt-get update \
@@ -57,7 +55,7 @@ sudo apt-get update; \
 sudo apt-get install -y apt-transport-https && \
 sudo apt-get update && \
 sudo apt-get install -y dotnet-sdk-6.0
-echo "Finished installing dotnet version 6"
+echo |"Finished installing dotnet version 6"
 
 
 # # Install PowerShell global tool
@@ -66,8 +64,8 @@ powershell_version=7.0.8 \
     && powershell_sha512='2ad4d9d26af9bc5a0cd25b0dff2d7360a43a9f3bb29a7b9f4b27474f3897258dcc9b3bf6839b7f401cda2feefbc8f4ded2b15edb5ebf613b4ab26147dd9a330b' \
     && echo "$powershell_sha512  PowerShell.Linux.x64.$powershell_version.nupkg" | sha512sum -c - \
     && mkdir -p /usr/share/powershell \
-    && sudo dotnet tool install --add-source / --tool-path /usr/share/powershell --version $powershell_version PowerShell.Linux.x64 \
-    && sudo dotnet nuget locals all --clear \
+    && dotnet tool install --add-source / --tool-path /usr/share/powershell --version $powershell_version PowerShell.Linux.x64 \
+    && dotnet nuget locals all --clear \
     && rm PowerShell.Linux.x64.$powershell_version.nupkg \
     && ln -s /usr/share/powershell/pwsh /usr/bin/pwsh \
     && chmod 755 /usr/share/powershell/pwsh \
