@@ -55,7 +55,7 @@ sudo apt-get update; \
 sudo apt-get install -y apt-transport-https && \
 sudo apt-get update && \
 sudo apt-get install -y dotnet-sdk-6.0
-echo "Finished installing dotnet version 6"
+echo |"Finished installing dotnet version 6"
 
 
 # # Install PowerShell global tool
