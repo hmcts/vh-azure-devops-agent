@@ -56,7 +56,7 @@ resource "azurerm_virtual_machine_extension" "create-agent" {
   type_handler_version = "2.1"
   virtual_machine_id   = azurerm_linux_virtual_machine.vh-devops-agent-vm.id
 
-  settings = <<PROTECTED_SETTINGS
+  protected_settings = <<PROTECTED_SETTINGS
       {
           "script": "${filebase64("set_up.sh")}"
       }

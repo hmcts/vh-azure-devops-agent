@@ -14,6 +14,6 @@ jobs:
     parameters:
       terraformVersion: ${{ parameters.terraformVersion }}
       
-  - template: templates/tests/terraform/allTests.yaml@templates
-    parameters:
-      terraformPath: ${{ parameters.terraformPath }}
+  # - template: templates/tests/terraform/allTests.yaml@templates
+  #   parameters:
+  #     terraformPath: ${{ parameters.terraformPath }}
