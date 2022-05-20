@@ -20,10 +20,10 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
   purge_protection_enabled = false #tfsec:ignore:azure-keyvault-no-purge
 
   #tfsec:ignore:azure-keyvault-specify-network-acl
-  network_acls {
-    bypass         = "AzureServices"
-    default_action = "Allow"
-  }
+  # network_acls {
+  #   bypass         = "AzureServices"
+  #   default_action = "Allow"
+  #}
 
   sku_name = "standard"
 
