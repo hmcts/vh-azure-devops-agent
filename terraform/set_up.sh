@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ###
+DEBIAN_FRONTEND=noninteractive
 
 # Create directory & download agent files
 AZP_AGENT_VERSION=2.202.1
