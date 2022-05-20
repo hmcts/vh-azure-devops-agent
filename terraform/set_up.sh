@@ -2,6 +2,7 @@
 
 ###
 DEBIAN_FRONTEND=noninteractive
+echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Create directory & download agent files
 AZP_AGENT_VERSION=2.202.1
