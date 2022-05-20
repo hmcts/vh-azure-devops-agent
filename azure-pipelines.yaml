@@ -50,10 +50,10 @@ stages:
         
         steps:
 
-        - template: ado-pipeline/jobs/replace-token.yaml
-          parameters:
-            myConnection: $(patToken)
-            workingDirectory: $(workDir)
+        # - template: ado-pipeline/jobs/replace-token.yaml
+        #   parameters:
+        #     myConnection: $(patToken)
+        #     workingDirectory: $(workDir)
 
         - template: ado-pipeline/jobs/terraform-prep.yaml
           parameters:
