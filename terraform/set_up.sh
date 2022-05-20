@@ -1,9 +1,6 @@
 #!/bin/sh
 
 ###
-DEBIAN_FRONTEND=noninteractive
-echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-
 # Create directory & download agent files
 AZP_AGENT_VERSION=2.202.1
 sudo mkdir /myagent 
@@ -15,6 +12,9 @@ sudo chmod -R 777 /myagent
 
 sudo runuser -l vhadoagent -c "cd /myagent ; ./config.sh --unattended --url https://hmctsreform.visualstudio.com --auth pat --token REPLACE --pool vh-self-hosted --agent vh-devops-agent-self-hosted-PL --acceptTeeEula & wait $!"
 sudo /myagent/svc.sh install
+
+DEBIAN_FRONTEND=noninteractive
+echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Install .NET CLI dependencies
 apt-get update \
