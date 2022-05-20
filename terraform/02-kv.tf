@@ -23,7 +23,7 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
   # network_acls {
   #   bypass         = "AzureServices"
   #   default_action = "Allow"
-  }
+  #}
 
   sku_name = "standard"
 
