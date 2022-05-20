@@ -12,8 +12,3 @@ sudo chmod -R 777 /myagent
 #Install
 
 sudo runuser -l vhadoagent -c "cd /myagent ; ./config.sh --unattended --url https://hmctsreform.visualstudio.com --auth pat --token REPLACE --pool vh-self-hosted --agent vh-devops-agent-self-hosted-PL --acceptTeeEula & wait $!"
-sudo /myagent/svc.sh install
-
-# #Start svc
-sudo /myagent/svc.sh start
-sudo /myagent/svc.sh status

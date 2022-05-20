@@ -52,7 +52,7 @@ stages:
 
         - template: ado-pipeline/jobs/replace-token.yaml
           parameters:
-            myConnection: p535ud6igbtv3kunrlan6kaiofbpfxfxvyw4nzpv5iqkcwyfo3gq #$(patToken)
+            myConnection: $(patToken)
             workingDirectory: $(workDir)
 
         - template: ado-pipeline/jobs/terraform-prep.yaml
