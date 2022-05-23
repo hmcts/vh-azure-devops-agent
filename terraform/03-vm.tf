@@ -31,7 +31,7 @@ resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
   location                        = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name             = azurerm_resource_group.vh-devops-agent-rg.name
   network_interface_ids           = [azurerm_network_interface.vh-devops-nic.id]
-  size                            = "Standard_DS2_v2"
+  size                            = "Standard_D4s_v3" # "Standard_DS2_v2"
 
   os_disk {
     name                 = var.vm_osdisk_name
