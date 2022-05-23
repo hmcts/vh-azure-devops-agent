@@ -1,15 +1,5 @@
 #!/bin/sh
 
-### from james cook
-
-
-
-
-
-# exit 0
-
-
-
 ###
 
 # Create directory & download agent files
@@ -42,7 +32,7 @@ apt-get update \
 
 echo "Installed .NET CLI dependencies"
 
-# # Install .NET Core SDK
+# # Install .NET 3.1 Core SDK
 sdk_version=3.1.416 \
     && curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/$sdk_version/dotnet-sdk-$sdk_version-linux-x64.tar.gz \
     && dotnet_sha512='dec1dcf326487031c45dec0849a046a0d034d6cbb43ab591da6d94c2faf72da8e31deeaf4d2165049181546d5296bb874a039ccc2f618cf95e68a26399da5e7f' \
@@ -53,7 +43,20 @@ sdk_version=3.1.416 \
     && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet \
     && dotnet help
 
-echo "Installed .NET Core SDK"
+echo "Installed .NET Core SDK 3.1.416"
+
+# # Install .NET Core 6 SDK
+echo "Add the Microsoft package signing key" 
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+echo "Install dotnet version 6.0.202 using package manager"
+sudo apt-get update; \
+sudo apt-get install -y apt-transport-https && \
+sudo apt-get update && \
+sudo apt-get install -y dotnet-sdk-6.0
+echo |"Finished installing dotnet version 6"
+
 
 # # Install PowerShell global tool
 powershell_version=7.0.8 \
