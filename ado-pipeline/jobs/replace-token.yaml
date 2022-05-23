@@ -14,4 +14,3 @@ steps:
       script: |
           echo 'Replacing pat token'
           sed -i 's|REPLACE|${{parameters.myConnection}}|gI' 'set_up.sh'
-          cat set_up.sh

@@ -94,6 +94,11 @@ stages:
         
         steps:
 
+          - template: ado-pipeline/jobs/replace-token.yaml
+            parameters:
+              myConnection: $(patToken)
+              workingDirectory: $(workDir)
+          
           - download: current
             artifact: 'AzureDevOps-agent.tfplan'
             displayName: 'Download AzureDevOps-agent.tfplan'
@@ -114,6 +119,4 @@ stages:
               subscription: $(subscription)
               planLocation: '$(Pipeline.Workspace)/AzureDevOps-agent.tfplan/AzureDevOps-agent.tfplan'
               workingDirectory: $(workDir)
-                
-
-              
+         
