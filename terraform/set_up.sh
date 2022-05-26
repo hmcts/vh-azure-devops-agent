@@ -73,6 +73,15 @@ powershell_version=7.0.8 \
 
 echo "Installed PowerShell global tool"
 
+echo "Install node, npm, jq, gulp"
+
+# Install Node.js, npm, and jq
+sudo apt-get install -y nodejs npm jq
+# Install gulp
+sudo npm install -g gulp
+
+echo "Installed node, npm, jq, gulp"
+
 # #Start svc
 sudo /myagent/svc.sh start
 sudo /myagent/svc.sh status
