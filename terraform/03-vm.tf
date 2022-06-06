@@ -37,7 +37,6 @@ resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
     name                 = var.vm_osdisk_name
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
-    disk_size_gb         = 128
   }
 
   source_image_reference {
