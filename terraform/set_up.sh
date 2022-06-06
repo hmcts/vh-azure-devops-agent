@@ -73,29 +73,29 @@ powershell_version=7.0.8 \
 
 echo "Installed PowerShell global tool"
 
-echo "Install node, npm, jq, gulp"
+#echo "Install node, npm, jq, gulp"
 
 # Install Node.js, npm, and jq
-sudo apt-get install -y nodejs npm jq
+#sudo apt-get install -y nodejs npm jq
 # Install gulp
-sudo npm install -g gulp
+#sudo npm install -g gulp
 
-echo "Installed node, npm, jq, gulp"
+#echo "Installed node, npm, jq, gulp"
 
 # Update the list of packages
-sudo apt-get update
+#sudo apt-get update
 # Install pre-requisite packages.
-sudo apt-get install -y wget apt-transport-https software-properties-common
+#sudo apt-get install -y wget apt-transport-https software-properties-common
 # Download the Microsoft repository GPG keys
-wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+#wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
 # Register the Microsoft repository GPG keys
-sudo dpkg -i packages-microsoft-prod.deb
+#sudo dpkg -i packages-microsoft-prod.deb
 # Update the list of packages after we added packages.microsoft.com
-sudo apt-get update
+#sudo apt-get update
 # Install PowerShell
-sudo apt-get install -y powershell
+#sudo apt-get install -y powershell
 # Start PowerShell
-pwsh
+#pwsh
 
 # #Start svc
 sudo /myagent/svc.sh start
