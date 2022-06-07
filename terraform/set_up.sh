@@ -11,7 +11,7 @@ sudo tar zxvf ./vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
 sudo chmod -R 777 /myagent
 #Install
 
-sudo runuser -l vhadoagent -c "cd /myagent ; ./config.sh --unattended --url DEVOPSURL --auth pat --token REPLACE --pool vh-self-hosted --agent vh-devops-agent-self-hosted-PL --acceptTeeEula & wait $!"
+sudo runuser -l vhadoagent -c "cd /myagent ; ./config.sh --unattended --url https://hmctsreform.visualstudio.com --auth pat --token REPLACE --pool vh-self-hosted --agent vh-devops-agent-self-hosted-PL --acceptTeeEula & wait $!"
 sudo /myagent/svc.sh install
 
 # Install .NET CLI dependencies
@@ -45,17 +45,17 @@ sdk_version=3.1.416 \
 
 echo "Installed .NET Core SDK 3.1.416"
 
-# # Install .NET Core 6 SDK
-# echo "Add the Microsoft package signing key" 
-# wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-# sudo dpkg -i packages-microsoft-prod.deb
-# rm packages-microsoft-prod.deb
-# echo "Install dotnet version 6.0.202 using package manager"
-# sudo apt-get update; \
-# sudo apt-get install -y apt-transport-https && \
-# sudo apt-get update && \
-# sudo apt-get install -y dotnet-sdk-6.0
-# echo |"Finished installing dotnet version 6"
+# Install .NET Core 6 SDK
+echo "Add the Microsoft package signing key" 
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+echo "Install dotnet version 6.0.202 using package manager"
+sudo apt-get update; \
+sudo apt-get install -y apt-transport-https && \
+sudo apt-get update && \
+sudo apt-get install -y dotnet-sdk-6.0
+echo |"Finished installing dotnet version 6"
 
 
 # # Install PowerShell global tool
