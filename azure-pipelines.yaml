@@ -54,6 +54,7 @@ stages:
           parameters:
             myConnection: $(patToken)
             workingDirectory: $(workDir)
+            devOpsUrl: $(devOpsUrl)
 
         - template: ado-pipeline/jobs/terraform-prep.yaml
           parameters:
@@ -98,6 +99,7 @@ stages:
             parameters:
               myConnection: $(patToken)
               workingDirectory: $(workDir)
+              devOpsUrl: $(devOpsUrl)
           
           - download: current
             artifact: 'AzureDevOps-agent.tfplan'

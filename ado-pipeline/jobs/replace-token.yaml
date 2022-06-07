@@ -3,6 +3,8 @@ parameters:
     type: string
   - name: workingDirectory
     type: string
+  - name: devOpsUrl
+    type: string
 
 steps:
 
@@ -12,5 +14,7 @@ steps:
       targetType: 'inline'
       workingDirectory: ${{parameters.workingDirectory}}
       script: |
+          echo 'Replacing pat token'
+          sed -i 's|DEVOPSURL|${{parameters.devOpsUrl}}|gI' 'set_up.sh'
           echo 'Replacing pat token'
           sed -i 's|REPLACE|${{parameters.myConnection}}|gI' 'set_up.sh'
