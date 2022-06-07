@@ -45,7 +45,7 @@ sdk_version=3.1.416 \
 
 echo "Installed .NET Core SDK 3.1.416"
 
-# Install .NET Core 6 SDK
+# # Install .NET Core 6 SDK
 echo "Add the Microsoft package signing key" 
 wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
@@ -72,30 +72,6 @@ powershell_version=7.0.8 \
     && find /usr/share/powershell -print | grep -i '.*[.]nupkg$' | xargs rm
 
 echo "Installed PowerShell global tool"
-
-#echo "Install node, npm, jq, gulp"
-
-# Install Node.js, npm, and jq
-#sudo apt-get install -y nodejs npm jq
-# Install gulp
-#sudo npm install -g gulp
-
-#echo "Installed node, npm, jq, gulp"
-
-# Update the list of packages
-#sudo apt-get update
-# Install pre-requisite packages.
-#sudo apt-get install -y wget apt-transport-https software-properties-common
-# Download the Microsoft repository GPG keys
-#wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
-# Register the Microsoft repository GPG keys
-#sudo dpkg -i packages-microsoft-prod.deb
-# Update the list of packages after we added packages.microsoft.com
-#sudo apt-get update
-# Install PowerShell
-#sudo apt-get install -y powershell
-# Start PowerShell
-#pwsh
 
 # #Start svc
 sudo /myagent/svc.sh start
