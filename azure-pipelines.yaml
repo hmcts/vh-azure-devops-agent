@@ -73,20 +73,20 @@ stages:
             tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
             workingDirectory: $(workDir)
 
-  # - ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
-  #   - stage: Wait
-  #     dependsOn:
-  #       - Plan
-  #     jobs:
-  #       - job: Wait
-  #         displayName: "Wait for approval"
-  #         pool: server
-  #         steps:
-  #           - template: ado-pipeline/steps/wait.yaml
+  - ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
+    - stage: Wait
+      dependsOn:
+        - Plan
+      jobs:
+        - job: Wait
+          displayName: "Wait for approval"
+          pool: server
+          steps:
+            - template: ado-pipeline/steps/wait.yaml
   
   - stage: DeployAzureAgent
     displayName: Deploy Azure DevOps Agent
-    #dependsOn: Wait
+    dependsOn: Wait
     jobs:
       - job: Deploy_Terraform
         displayName: Deploy DevOps Agent
