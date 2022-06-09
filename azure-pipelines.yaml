@@ -78,7 +78,7 @@ stages:
       dependsOn:
         - Plan
       jobs:
-        - job: Wait
+        - job: WaitForApproval
           displayName: "Wait for approval"
           pool: server
           steps:
