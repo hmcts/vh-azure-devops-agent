@@ -86,8 +86,7 @@ stages:
   
   - stage: DeployAzureAgent
     displayName: Deploy Azure DevOps Agent
-    dependsOn: 
-        - Wait
+    dependsOn: Wait
     jobs:
       - job: Deploy_Terraform
         displayName: Deploy DevOps Agent
