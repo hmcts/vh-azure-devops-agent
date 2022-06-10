@@ -29,72 +29,70 @@ variables:
  
 
 stages:
+- stage: CIBuild
+  displayName: 'Validate Infra'
+  jobs: 
+    - template: ado-pipeline/jobs/terraform-validate.yaml
+      parameters:
+        terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
+        terraformVersion: $(tfVersion)
 
-  - stage: CIBuild
-    displayName: 'Validate Infra'
-    jobs: 
-      - template: ado-pipeline/jobs/terraform-validate.yaml
+- stage: Plan
+  displayName: 'Create a TF plan'
+  dependsOn:
+    - CIBuild
+  jobs:
+    - job: TerraformPlan
+      displayName: Create an infrastructure plan to deploy an Azure DevOps Agent
+      pool:
+        vmImage: 'ubuntu-latest'
+      
+      steps:
+
+      - template: ado-pipeline/jobs/replace-token.yaml
         parameters:
-          terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
+          myConnection: $(patToken)
+          workingDirectory: $(workDir)
+          devOpsUrl: $(devOpsUrl)
+
+      - template: ado-pipeline/jobs/terraform-prep.yaml
+        parameters:
           terraformVersion: $(tfVersion)
+          subscription: $(subscription)
+          resourceGroup: $(resourceGroup)
+          location: $(location)
+          storageAccount: $(storageAccount)
+          containerName: $(containerName)
+          stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
+          workingDirectory: $(workDir)
 
-  - stage: Plan
-    displayName: 'Create a TF plan'
+      - template: ado-pipeline/jobs/terraform-plan.yaml
+        parameters:
+          subscription: $(subscription)
+          tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
+          workingDirectory: $(workDir)
+
+- ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
+  - stage: Wait
     dependsOn:
-      - CIBuild
+      - Plan
     jobs:
-      - job: TerraformPlan
-        displayName: Create an infrastructure plan to deploy an Azure DevOps Agent
-        pool:
-          vmImage: 'ubuntu-latest'
-        
+      - job: WaitForApproval
+        displayName: "Wait for approval"
+        pool: server
         steps:
+          - template: ado-pipeline/steps/wait.yaml
 
-        - template: ado-pipeline/jobs/replace-token.yaml
-          parameters:
-            myConnection: $(patToken)
-            workingDirectory: $(workDir)
-            devOpsUrl: $(devOpsUrl)
-
-        - template: ado-pipeline/jobs/terraform-prep.yaml
-          parameters:
-            terraformVersion: $(tfVersion)
-            subscription: $(subscription)
-            resourceGroup: $(resourceGroup)
-            location: $(location)
-            storageAccount: $(storageAccount)
-            containerName: $(containerName)
-            stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
-            workingDirectory: $(workDir)
-
-        - template: ado-pipeline/jobs/terraform-plan.yaml
-          parameters:
-            subscription: $(subscription)
-            tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-            workingDirectory: $(workDir)
-
-  - ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
-    - stage: Wait
-      dependsOn:
-        - Plan
-      jobs:
-        - job: WaitForApproval
-          displayName: "Wait for approval"
-          pool: server
-          steps:
-            - template: ado-pipeline/steps/wait.yaml
-  
-  - stage: DeployAzureAgent
-    displayName: Deploy Azure DevOps Agent
+- stage: DeployAzureAgent
+  displayName: Deploy Azure DevOps Agent
+  ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
     dependsOn: Wait
-    jobs:
-      - job: Deploy_Terraform
-        displayName: Deploy DevOps Agent
-        pool:
-          vmImage: 'ubuntu-latest'
-        
+  jobs:
+    - job: Deploy_Terraform
+      displayName: Deploy DevOps Agent
+      pool:
+        vmImage: 'ubuntu-latest'
         steps:
-
           - template: ado-pipeline/jobs/replace-token.yaml
             parameters:
               myConnection: $(patToken)
@@ -121,4 +119,3 @@ stages:
               subscription: $(subscription)
               planLocation: '$(Pipeline.Workspace)/AzureDevOps-agent.tfplan/AzureDevOps-agent.tfplan'
               workingDirectory: $(workDir)
-         
