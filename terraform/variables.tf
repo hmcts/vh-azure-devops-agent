@@ -3,11 +3,6 @@ variable "rg_name" {
   type        = string
 }
 
-variable "RG_NAME" {
-  description = "The Azure Resource Group as an Environment variable"
-  type        = string
-}
-
 variable "location" {
   description = "The Azure location the resources are located in"
   type        = string
@@ -16,11 +11,6 @@ variable "location" {
 
 variable "vnet_name" {
   description = "The name of the vnet we will create"
-  type        = string
-}
-
-variable "VNET_NAME" {
-  description = "The name of the vnet we will create as an Environment variable"
   type        = string
 }
 
@@ -45,20 +35,12 @@ variable "key_vault_name" {
   type        = string
 }
 
-variable "KV_NAME" {
-  description = "The name of the keyvault we will create as an Environment Variable"
-  type        = string
-}
 
 variable "vm_name" {
   description = "The name of the VM we create for the agent"
   type        = string
 }
 
-variable "VM_NAME" {
-  description = "The name of the VM we create for the agent as an Environment Variable"
-  type        = string
-}
 
 variable "vm_private_ip_address" {
   description = "The private ip address of the vm"
@@ -85,7 +67,3 @@ variable "nsg_name" {
   type        = string
 }
 
-variable "NSG_NAME" {
-  description = "Name for the network security group as an Environment Variable"
-  type        = string
-}

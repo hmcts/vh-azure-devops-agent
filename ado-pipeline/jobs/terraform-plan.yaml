@@ -7,28 +7,17 @@ parameters:
     type: string
 
 steps:
-
-  - bash: |
-      mkdir '$(System.DefaultWorkingDirectory)/plans'
-      dir_conts=$(ls -ltr $(System.DefaultWorkingDirectory)/plans)
-      echo $dir_conts
-      targetPath=$(pwd '$(System.DefaultWorkingDirectory)/plans')
-      echo $targetPath
-    displayName: Create plan directory
-
   - task: TerraformCLI@0
     displayName: Terraform plan
     inputs:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=${{ parameters.workingDirectory }}/AzureDevOps-agent.tfplan'
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=${{ parameters.workingDirectory }}/$(Build.BuildId)-AzureDevOps-agent.tfplan'
 
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Terraform Plan'
     inputs:
       targetPath: '${{ parameters.workingDirectory }}'
-      artifact: 'AzureDevOps-agent.tfplan'
-      FileCopyOptions: '/xo'
-      publishPlanResults: 'AzureDevOps-agent-latest'
+      artifact: '$(Build.BuildId)-AzureDevOpsAgent'

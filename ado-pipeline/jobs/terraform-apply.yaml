@@ -7,11 +7,15 @@ parameters:
     type: string
 
 steps:
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: '$(Build.BuildId)-AzureDevOpsAgent'
+    path: $(Pipeline.Workspace)
 
-  - task: TerraformCLI@0
-    displayName: Terraform apply
-    inputs:
-      workingDirectory: ${{parameters.workingDirectory}}
-      command: apply
-      environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"
+- task: TerraformCLI@0
+  displayName: Terraform apply
+  inputs:
+    workingDirectory: ${{ parameters.workingDirectory }}
+    command: apply
+    environmentServiceName: ${{ parameters.subscription }}
+    commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"

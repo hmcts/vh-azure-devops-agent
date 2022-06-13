@@ -17,5 +17,5 @@ steps:
     targetType: 'inline'
     workingDirectory: ${{ parameters.workingDirectory }}
     script: |
-        echo 'Setting Number of Agents'
+        echo 'Setting Agents to ${{ parameters.numberOfAgents }}'
         sed -i 's|REPLACE_AGENTS|${{ parameters.numberOfAgents }}|gI' 'set_up.sh'
