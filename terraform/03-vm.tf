@@ -45,7 +45,7 @@ resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
 
 
 resource "azurerm_virtual_machine_extension" "create-agent" {
-  name                 = "create-agent"
+  name                 = "AzureDevOps-Agent"
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.1"
@@ -56,4 +56,6 @@ resource "azurerm_virtual_machine_extension" "create-agent" {
           "script": "${filebase64("set_up.sh")}"
       }
   PROTECTED_SETTINGS
+  
+  tags = local.common_tags
 }
