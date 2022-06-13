@@ -136,4 +136,4 @@ stages:
         parameters:
           subscription: $(serviceConnection)
           planLocation: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/terraform/$(Build.BuildId)-AzureDevOps-Agent.tfplan
-          workingDirectory: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent'
+          workingDirectory: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/terraform'
