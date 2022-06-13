@@ -13,11 +13,13 @@ sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-a
  for agent in $(seq 1 $NO_OF_AGENTS); do 
     sudo mkdir /agents/vh-self-hosted-agent-0$agent ;
     sudo tar zxvf /agents/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz -C /agents/vh-self-hosted-agent-0$agent ;
+    sudo chmod -R 777 /agents
     sudo runuser -l vhadoagent -c "cd /agents/vh-self-hosted-agent-0$agent ; 
     ./config.sh --unattended --url https://dev.azure.com/hmcts --auth pat --token REPLACE --pool VH-Self-Hosted --agent vh-devops-agent-0$agent --acceptTeeEula & wait $! ;"
-    sudo /agents/vh-self-hosted-agent-0$agent/svc.sh install ;
-    sudo /agents/vh-self-hosted-agent-0$agent/svc.sh start ;
-    sudo /agents/svc.sh status
+    cd /agents/vh-self-hosted-agent-0$agent 
+    sudo ./svc.sh install
+    sudo ./svc.sh start
+    sudo ./svc.sh status
 done
 
 # Install .NET CLI dependencies
