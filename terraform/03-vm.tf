@@ -5,6 +5,7 @@ resource "azurerm_public_ip" "vh-agent-pip" {
   location            = var.location
   resource_group_name = azurerm_resource_group.vh-devops-agent-rg.name
   allocation_method   = "Static"
+  tags                = local.common_tags
 }
 
 resource "azurerm_network_interface" "vh-devops-nic" {

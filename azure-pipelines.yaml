@@ -33,7 +33,7 @@ variables:
     value: 1.1.9
 
   - name: serviceConnection
-    value: DTS-SHAREDSERVICES-STG-Video Hearings
+    value: DTS-SHAREDSERVICES-Dev-Video Hearings
 
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
