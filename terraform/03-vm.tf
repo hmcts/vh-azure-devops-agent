@@ -1,12 +1,4 @@
 # Create Virtual Machine
-
-resource "azurerm_public_ip" "vh-agent-pip" {
-  name                = var.vm_pip_name
-  location            = var.location
-  resource_group_name = azurerm_resource_group.vh-devops-agent-rg.name
-  allocation_method   = "Static"
-}
-
 resource "azurerm_network_interface" "vh-devops-nic" {
   name                = "${var.vm_name}-nic"
   location            = azurerm_resource_group.vh-devops-agent-rg.location
@@ -17,7 +9,6 @@ resource "azurerm_network_interface" "vh-devops-nic" {
     subnet_id                     = azurerm_subnet.vh-devops-agent-subnet.id
     private_ip_address_allocation = "Static"
     private_ip_address            = var.vm_private_ip_address
-    public_ip_address_id          = azurerm_public_ip.vh-agent-pip.id
   }
 }
 
