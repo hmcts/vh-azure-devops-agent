@@ -5,19 +5,19 @@ NO_OF_AGENTS=REPLACE_AGENTS
 AZP_AGENT_VERSION=2.202.1
 
 # Create Directory.
-sudo runuser -l vhadoagent -c "sudo mkdir /agents ;
-cd /agents ;
-sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz"
+sudo mkdir /agents
+cd /agents
+sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
 
 
  for agent in $(seq 1 $NO_OF_AGENTS); do 
-    sudo runuser -l vhadoagent -c "sudo mkdir /agents/vh-self-hosted-agent-0$agent ;
+    sudo mkdir /agents/vh-self-hosted-agent-0$agent ;
     sudo tar zxvf /agents/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz -C /agents/vh-self-hosted-agent-0$agent ;
-    cd /agents/vh-self-hosted-agent-0$agent ; 
-    ./config.sh --unattended --url https://dev.azure.com/hmcts --auth pat --token REPLACE --pool VH-Self-Hosted --agent vh-devops-agent-0$agent --acceptTeeEula & wait $! ;
+    sudo runuser -l vhadoagent -c "cd /agents/vh-self-hosted-agent-0$agent ; 
+    ./config.sh --unattended --url https://dev.azure.com/hmcts --auth pat --token REPLACE --pool VH-Self-Hosted --agent vh-devops-agent-0$agent --acceptTeeEula & wait $! ;"
     sudo /agents/vh-self-hosted-agent-0$agent/svc.sh install ;
     sudo /agents/vh-self-hosted-agent-0$agent/svc.sh start ;
-    sudo /myagent/svc.sh status"
+    sudo /agents/svc.sh status
 done
 
 # Install .NET CLI dependencies
