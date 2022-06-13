@@ -48,6 +48,10 @@ stages:
         vmImage: 'ubuntu-latest'
       
       steps:
+      - template: ado-pipeline/jobs/set-number-agents.yaml
+        parameters:
+          numberOfAgents: 2
+          workingDirectory: $(workDir)
 
       - template: ado-pipeline/jobs/replace-token.yaml
         parameters:
