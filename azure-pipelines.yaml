@@ -27,7 +27,7 @@ variables:
     value: $(Build.SourcesDirectory)/terraform
 
   - name: tfVersion
-    value: 1.2.2
+    value: 1.1.9
 
   - name: serviceConnection
     value: DTS-SHAREDSERVICES-STG-Video Hearings
@@ -35,7 +35,7 @@ variables:
 
 stages:
 - stage: CIBuild
-  displayName: 'Validate Infra'
+  displayName: 'Terraform CI'
   jobs: 
     - template: ado-pipeline/jobs/terraform-validate.yaml
       parameters:

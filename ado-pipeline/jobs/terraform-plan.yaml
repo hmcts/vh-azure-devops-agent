@@ -8,12 +8,12 @@ parameters:
 
 steps:
   - task: TerraformCLI@0
-    displayName: Terraform plan
+    displayName: Terraform Plan
     inputs:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=${{ parameters.workingDirectory }}/$(Build.BuildId)-AzureDevOps-agent.tfplan'
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-agent.tfplan'
 
 
   - task: PublishPipelineArtifact@1
