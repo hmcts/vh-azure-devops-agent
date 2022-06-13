@@ -10,7 +10,7 @@ resource "azurerm_network_interface" "vh-devops-nic" {
     private_ip_address_allocation = "Static"
     private_ip_address            = var.vm_private_ip_address
   }
-  
+
   tags = local.common_tags
 }
 
@@ -56,6 +56,6 @@ resource "azurerm_virtual_machine_extension" "create-agent" {
           "script": "${filebase64("set_up.sh")}"
       }
   PROTECTED_SETTINGS
-  
+
   tags = local.common_tags
 }
