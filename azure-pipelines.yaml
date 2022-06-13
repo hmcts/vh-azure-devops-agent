@@ -20,6 +20,9 @@ variables:
   - name: devOpsURL
     value: 'https://dev.azure.com/hmcts'
 
+  - name: azureLocation
+    value: 'uk south'
+
   - name: tfVersion
     value: latest
 
@@ -31,7 +34,9 @@ variables:
 
   - name: serviceConnection
     value: DTS-SHAREDSERVICES-STG-Video Hearings
- 
+
+  - name: stateKey
+    value: DevOpsAgent/AzureDevOpsAgent.tfstate
 
 stages:
 - stage: CIBuild
@@ -66,10 +71,10 @@ stages:
         terraformVersion: $(tfVersion)
         serviceConnection: $(serviceConnection)
         resourceGroup: $(stateResourceGroup)
-        location: 'uk south'
+        location: $(azureLocation)
         storageAccount: $(stateStorageAccount)
         containerName: tfstate
-        stateKey: DevOpsAgent/AzureDevOpsAgent.tfstate
+        stateKey: $(stateKey)
         workingDirectory: $(workDir)
 
     - template: ado-pipeline/jobs/terraform-plan.yaml
@@ -103,19 +108,19 @@ stages:
       #     workingDirectory: $(workDir)
       #     devOpsUrl: $(devOpsUrl)
       - task: DownloadPipelineArtifact@2
+        displayName: Download Terraform Artifacts
         inputs:
           artifact: '$(Build.BuildId)-AzureDevOpsAgent'
-          path: $(Pipeline.Workspace)
-      
+     
       - template: ado-pipeline/jobs/terraform-prep.yaml
         parameters:
           terraformVersion: $(tfVersion)
           serviceConnection: $(serviceConnection)
           resourceGroup: $(stateResourceGroup)
-          location: 'uk south'
+          location: $(azureLocation)
           storageAccount: $(stateStorageAccount)
           containerName: tfstate
-          stateKey: DevOpsAgent/AzureDevOpsAgent.tfstate
+          stateKey: $(stateKey)
           workingDirectory: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent
 
       - template: ado-pipeline/jobs/terraform-apply.yaml
