@@ -102,6 +102,10 @@ stages:
       #     myConnection: $(patToken)
       #     workingDirectory: $(workDir)
       #     devOpsUrl: $(devOpsUrl)
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: '$(Build.BuildId)-AzureDevOpsAgent'
+          path: $(Pipeline.Workspace)
       
       - template: ado-pipeline/jobs/terraform-prep.yaml
         parameters:

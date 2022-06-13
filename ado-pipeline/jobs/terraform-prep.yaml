@@ -40,7 +40,6 @@ steps:
     displayName: Terraform Init
     inputs:
       command: init
-      commandOptions: -reconfigure
       workingDirectory: ${{ parameters.workingDirectory }}
       backendType: azurerm
       backendServiceArm: ${{ parameters.serviceConnection }}
