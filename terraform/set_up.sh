@@ -17,9 +17,9 @@ sudo chmod -R 777 /agents
     sudo tar zxvf /agents/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz -C /agents/vh-self-hosted-agent-0$agent;
     sudo runuser -l vhadoagent -c "cd /agents/vh-self-hosted-agent-0$agent ; 
     ./config.sh --unattended --url https://dev.azure.com/hmcts --auth pat --token REPLACE --pool VH-Self-Hosted --agent vh-devops-agent-0$agent --acceptTeeEula & wait $! ;
-    sudo /myagent/svc.sh install
-    sudo /myagent/svc.sh start
-    sudo /myagent/svc.sh status"
+    sudo /agents/vh-self-hosted-agent-0$agent/svc.sh install
+    sudo /agents/vh-self-hosted-agent-0$agent/svc.sh start
+    sudo /agents/vh-self-hosted-agent-0$agent/svc.sh status"
 done
 
 # Install .NET CLI dependencies
