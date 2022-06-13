@@ -11,21 +11,26 @@ resources:
       ref: refs/heads/master
       endpoint: hmcts
 
+pool:
+  vmImage: 'ubuntu-latest'
 
 variables:
-  - group: vh-azure-devops-agent
-  - name: TF_VAR_RG_NAME
-    value: "vh-devops-agent-rg"
-  - name: TF_VAR_KV_NAME
-    value: "vhdoagentkv"
-  - name: TF_VAR_VM_NAME
-    value: "vh-devops-agent-vm"
-  - name: TF_VAR_NSG_NAME
-    value: "vh-devops-vm-nsg"
-  - name: TF_VAR_VNET_NAME
-    value: "vh-devops-vnet"
+  - group: vh-azure-devops-agent-new
+
+  - name: devOpsURL
+    value: 'https://dev.azure.com/hmcts'
+
+  - name: tfVersion
+    value: latest
+
   - name: workDir
-    value: $(System.DefaultWorkingDirectory)/$(tfDirectory)
+    value: $(Build.SourcesDirectory)/terraform
+
+  - name: tfVersion
+    value: 1.2.2
+
+  - name: serviceConnection
+    value: DTS-SHAREDSERVICES-STG-Video Hearings
  
 
 stages:
@@ -34,92 +39,87 @@ stages:
   jobs: 
     - template: ado-pipeline/jobs/terraform-validate.yaml
       parameters:
-        terraformPath: $(Build.SourcesDirectory)/$(tfDirectory)
+        terraformPath: $(workDir)
         terraformVersion: $(tfVersion)
 
 - stage: Plan
-  displayName: 'Create a TF plan'
+  displayName: 'Terraform Plan'
   dependsOn:
     - CIBuild
   jobs:
-    - job: TerraformPlan
-      displayName: Create an infrastructure plan to deploy an Azure DevOps Agent
-      pool:
-        vmImage: 'ubuntu-latest'
-      
-      steps:
-      - template: ado-pipeline/jobs/set-number-agents.yaml
-        parameters:
-          numberOfAgents: 2
-          workingDirectory: $(workDir)
-
-      - template: ado-pipeline/jobs/replace-token.yaml
-        parameters:
-          myConnection: $(patToken)
-          workingDirectory: $(workDir)
-          devOpsUrl: $(devOpsUrl)
-
-      - template: ado-pipeline/jobs/terraform-prep.yaml
-        parameters:
-          terraformVersion: $(tfVersion)
-          subscription: $(subscription)
-          resourceGroup: $(resourceGroup)
-          location: $(location)
-          storageAccount: $(storageAccount)
-          containerName: $(containerName)
-          stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
-          workingDirectory: $(workDir)
-
-      - template: ado-pipeline/jobs/terraform-plan.yaml
-        parameters:
-          subscription: $(subscription)
-          tfVariables: $(System.DefaultWorkingDirectory)/$(tfDirectory)/$(tfVariables)
-          workingDirectory: $(workDir)
-
-- ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
-  - stage: Wait
-    dependsOn:
-      - Plan
-    jobs:
-      - job: WaitForApproval
-        displayName: "Wait for approval"
-        pool: server
-        steps:
-          - template: ado-pipeline/steps/wait.yaml
-
-- stage: DeployAzureAgent
-  displayName: Deploy Azure DevOps Agent
-  ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
-    dependsOn: Wait
-  jobs:
-  - job: Deploy_Terraform
-    displayName: Deploy DevOps Agent
-    pool:
-      vmImage: 'ubuntu-latest'
+  - job: Terraform_Plan
+    displayName: 'Terraform Plan'
     steps:
-      - template: ado-pipeline/jobs/replace-token.yaml
-        parameters:
-          myConnection: $(patToken)
-          workingDirectory: $(workDir)
-          devOpsUrl: $(devOpsUrl)
+    - template: ado-pipeline/jobs/set-number-agents.yaml
+      parameters:
+        numberOfAgents: 2
+        workingDirectory: $(workDir)
+
+    - template: ado-pipeline/jobs/replace-token.yaml
+      parameters:
+        myConnection: $(patToken)
+        workingDirectory: $(workDir)
+        devOpsUrl: $(devOpsURL)
+
+    - template: ado-pipeline/jobs/terraform-prep.yaml
+      parameters:
+        terraformVersion: $(tfVersion)
+        serviceConnection: $(serviceConnection)
+        resourceGroup: $(stateResourceGroup)
+        location: 'uk south'
+        storageAccount: $(stateStorageAccount)
+        containerName: tfstate
+        stateKey: DevOpsAgent/AzureDevOpsAgent.tfstate
+        workingDirectory: $(workDir)
+
+    - template: ado-pipeline/jobs/terraform-plan.yaml
+      parameters:
+        subscription: $(serviceConnection)
+        tfVariables: $(workDir)/adoagent.tfvars
+        workingDirectory: $(workDir)
+
+# - ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
+#   - stage: Wait
+#     dependsOn:
+#       - Plan
+#     jobs:
+#       - job: WaitForApproval
+#         displayName: "Wait for approval"
+#         pool: server
+#         steps:
+#           - template: ado-pipeline/steps/wait.yaml
+
+# - stage: DeployAzureAgent
+#   displayName: Deploy Azure DevOps Agent
+#   # ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
+#   #   dependsOn: Wait
+#   jobs:
+#   - job: Deploy_Terraform
+#     displayName: Deploy DevOps Agent
+#     steps:
+#       - template: ado-pipeline/jobs/replace-token.yaml
+#         parameters:
+#           myConnection: $(patToken)
+#           workingDirectory: $(workDir)
+#           devOpsUrl: $(devOpsUrl)
       
-      - download: current
-        artifact: 'AzureDevOps-agent.tfplan'
-        displayName: 'Download AzureDevOps-agent.tfplan'
+#       - download: current
+#         artifact: 'AzureDevOps-agent.tfplan'
+#         displayName: 'Download AzureDevOps-agent.tfplan'
 
-      - template: ado-pipeline/jobs/terraform-prep.yaml
-        parameters:
-          terraformVersion: $(tfVersion)
-          subscription: $(subscription)
-          resourceGroup: $(resourceGroup)
-          location: $(location)
-          storageAccount: $(storageAccount)
-          containerName: $(containerName)
-          stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
-          workingDirectory: $(workDir)
+#       - template: ado-pipeline/jobs/terraform-prep.yaml
+#         parameters:
+#           terraformVersion: $(tfVersion)
+#           subscription: $(subscription)
+#           resourceGroup: $(resourceGroup)
+#           location: $(location)
+#           storageAccount: $(storageAccount)
+#           containerName: $(containerName)
+#           stateKey: $(stateKey)-AzureDevOpsAgent.tfstate
+#           workingDirectory: $(workDir)
 
-      - template: ado-pipeline/jobs/terraform-apply.yaml
-        parameters:
-          subscription: $(subscription)
-          planLocation: '$(Pipeline.Workspace)/AzureDevOps-agent.tfplan/AzureDevOps-agent.tfplan'
-          workingDirectory: $(workDir)
+#       - template: ado-pipeline/jobs/terraform-apply.yaml
+#         parameters:
+#           subscription: $(subscription)
+#           planLocation: '$(Pipeline.Workspace)/AzureDevOps-agent.tfplan/AzureDevOps-agent.tfplan'
+#           workingDirectory: $(workDir)
