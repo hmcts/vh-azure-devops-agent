@@ -1,5 +1,5 @@
 trigger:
-  - none
+  - master
 
 pr: none
 
@@ -15,7 +15,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: vh-azure-devops-agent-new
+  - group: vh-azure-devops-agent
 
   - name: devOpsURL
     value: 'https://dev.azure.com/hmcts'
@@ -38,6 +38,8 @@ variables:
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
 
+############################################
+# Terraform CI. ############################
 stages:
 - stage: CIBuild
   displayName: 'Terraform CI'
@@ -46,7 +48,8 @@ stages:
       parameters:
         terraformPath: $(workDir)
         terraformVersion: $(tfVersion)
-
+############################################
+# Terraform Plan. ##########################
 - stage: Plan
   displayName: 'Terraform Plan'
   dependsOn:
@@ -83,30 +86,27 @@ stages:
         tfVariables: $(workDir)/adoagent.tfvars
         workingDirectory: $(workDir)
 
-# - ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
-#   - stage: Wait
-#     dependsOn:
-#       - Plan
-#     jobs:
-#       - job: WaitForApproval
-#         displayName: "Wait for approval"
-#         pool: server
-#         steps:
-#           - template: ado-pipeline/steps/wait.yaml
+############################################
+# Manual Validation. #######################
+- stage: Wait
+  dependsOn:
+    - Plan
+  jobs:
+    - job: WaitForApproval
+      displayName: "Wait for approval"
+      pool: server
+      steps:
+        - template: ado-pipeline/steps/wait.yaml
 
+############################################
+# Terraform Apply. #########################
 - stage: DeployAzureAgent
   displayName: Terraform Apply
-  # ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
-  #   dependsOn: Wait
+  dependsOn: Wait
   jobs:
   - job: Deploy_Terraform
     displayName: Deploy DevOps Agent
     steps:
-      # - template: ado-pipeline/jobs/replace-token.yaml
-      #   parameters:
-      #     myConnection: $(patToken)
-      #     workingDirectory: $(workDir)
-      #     devOpsUrl: $(devOpsUrl)
       - task: DownloadPipelineArtifact@2
         displayName: Download Terraform Artifacts
         inputs:
