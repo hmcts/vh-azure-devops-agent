@@ -1,7 +1,7 @@
 trigger:
-  - master
-pr:
-  - master
+  - none
+
+pr: none
 
 resources:
   repositories:
