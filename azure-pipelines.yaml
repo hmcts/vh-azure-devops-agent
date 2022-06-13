@@ -111,6 +111,11 @@ stages:
         displayName: Download Terraform Artifacts
         inputs:
           artifact: '$(Build.BuildId)-AzureDevOpsAgent'
+          targetPath: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent'
+
+      - bash: |
+          ls -lt "$(Pipeline.Workspace)"
+          ls -lt "$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent"
      
       - template: ado-pipeline/jobs/terraform-prep.yaml
         parameters:
@@ -126,5 +131,5 @@ stages:
       - template: ado-pipeline/jobs/terraform-apply.yaml
         parameters:
           subscription: $(serviceConnection)
-          planLocation: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent/adoagent.tfvars
+          planLocation: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent/$(Build.BuildId)-AzureDevOps-agent.tfplan
           workingDirectory: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent
