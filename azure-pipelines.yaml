@@ -110,12 +110,16 @@ stages:
       - task: DownloadPipelineArtifact@2
         displayName: Download Terraform Artifacts
         inputs:
-          artifact: '$(Build.BuildId)-AzureDevOpsAgent'
-          targetPath: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent'
+          artifact: '$(Build.BuildId)-AzureDevOps-Agent'
+          targetPath: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent'
 
-      - bash: |
-          ls -lt "$(Pipeline.Workspace)"
-          ls -lt "$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent"
+      - task: ExtractFiles@1
+        displayName: 'Extract Terraform Artifacts'
+        inputs:
+          archiveFilePatterns: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/$(Build.BuildId)-AzureDevOps-Agent.zip'
+          destinationFolder: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent'
+          cleanDestinationFolder: false
+          overwriteExistingFiles: true
      
       - template: ado-pipeline/jobs/terraform-prep.yaml
         parameters:
@@ -126,10 +130,10 @@ stages:
           storageAccount: $(stateStorageAccount)
           containerName: tfstate
           stateKey: $(stateKey)
-          workingDirectory: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent
+          workingDirectory: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/terraform'
 
       - template: ado-pipeline/jobs/terraform-apply.yaml
         parameters:
           subscription: $(serviceConnection)
-          planLocation: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent/$(Build.BuildId)-AzureDevOps-agent.tfplan
-          workingDirectory: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOpsAgent
+          planLocation: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/terraform/$(Build.BuildId)-AzureDevOps-Agent.tfplan
+          workingDirectory: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent'

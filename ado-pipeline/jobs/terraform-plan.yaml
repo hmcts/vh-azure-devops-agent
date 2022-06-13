@@ -13,11 +13,18 @@ steps:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-agent.tfplan'
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan'
 
+  - task: ArchiveFiles@2
+    displayName: 'Zip Terraform Files'
+    inputs:
+      rootFolderOrFile: '${{ parameters.workingDirectory }}'
+      archiveType: zip
+      archiveFile: '$(Build.BuildId)-AzureDevOps-Agent.zip'
 
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish Terraform Plan'
+    displayName: 'Publish Terraform Artifacts'
     inputs:
-      targetPath: '${{ parameters.workingDirectory }}'
-      artifact: '$(Build.BuildId)-AzureDevOpsAgent'
+      targetPath: '${{ parameters.workingDirectory }}/$(Build.BuildId)-AzureDevOps-Agent.zip'
+      publishLocation: pipeline
+      artifact: '$(Build.BuildId)-AzureDevOps-Agent'
