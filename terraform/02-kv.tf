@@ -10,7 +10,7 @@ resource "random_password" "password" {
 
 #tfsec:ignore:azure-keyvault-specify-network-acl
 resource "azurerm_key_vault" "keyvault_ado_agent" {
-  name                        = var.KV_NAME
+  name                        = var.key_vault_name
   location                    = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name         = azurerm_resource_group.vh-devops-agent-rg.name
   enabled_for_disk_encryption = true

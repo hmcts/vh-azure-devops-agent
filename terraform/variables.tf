@@ -14,7 +14,6 @@ variable "vnet_name" {
   type        = string
 }
 
-
 variable "vnet_ip_address" {
   description = "The ip address for the vnet we create"
   type        = list(string)
@@ -40,7 +39,6 @@ variable "vm_name" {
   description = "The name of the VM we create for the agent"
   type        = string
 }
-
 
 variable "vm_private_ip_address" {
   description = "The private ip address of the vm"

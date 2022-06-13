@@ -16,7 +16,7 @@ resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
   # The tfsec:ignore comment below ignores the tfsec password check as the password is random 
   # and only generated at runtime and it is needed by the Azure devops agent that is deployed
   disable_password_authentication = false #tfsec:ignore:azure-compute-disable-password-authentication
-  name                            = var.VM_NAME
+  name                            = var.vm_name
   admin_username                  = var.vm_username
   admin_password                  = random_password.password.result
   location                        = azurerm_resource_group.vh-devops-agent-rg.location

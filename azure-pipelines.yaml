@@ -90,7 +90,7 @@ stages:
 #           - template: ado-pipeline/steps/wait.yaml
 
 - stage: DeployAzureAgent
-  displayName: Deploy Azure DevOps Agent
+  displayName: Terraform Apply
   # ${{ if contains(variables['Build.SourceBranchName'], 'master') }}:
   #   dependsOn: Wait
   jobs:
