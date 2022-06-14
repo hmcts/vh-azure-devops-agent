@@ -64,3 +64,21 @@ variable "env" {
   description = "name of environment for tagging"
   type        = string
 }
+
+variable "peer_client_id" {
+  description = "client id of peering spn"
+  type        = string
+  sensitive   = true
+}
+
+variable "peer_client_secret" {
+  description = "client secret of peering spn"
+  type        = string
+  sensitive   = true
+}
+
+variable "peer_tenant_id" {
+  description = "tenant id of peering spn"
+  type        = string
+  sensitive   = true
+}

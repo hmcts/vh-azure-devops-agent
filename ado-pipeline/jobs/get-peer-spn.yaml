@@ -1,0 +1,17 @@
+parameters: 
+- name: peerServiceConnection
+  type: string
+
+steps:
+  - task: AzureCLI@2
+    displayName: 'Get Virtual Network Peering SPN'
+    name: Peering
+    inputs:
+      azureSubscription: ${{ parameters.peerServiceConnection }}'
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      addSpnToEnvironment: true
+      inlineScript: |
+        Write-Host "##vso[task.setvariable variable=PEER_CLIENT_ID;isOutput=true]$($env:servicePrincipalId)"
+        Write-Host "##vso[task.setvariable variable=PEER_CLIENT_SECRET;isOutput=true]$($env:servicePrincipalKey)"
+        Write-Host "##vso[task.setvariable variable=PEER_TENANT_ID;isOutput=true]$($env:tenantId)"
