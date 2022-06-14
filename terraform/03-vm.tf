@@ -1,45 +1,37 @@
 
 # Create Virtual Machine
-resource "azurerm_public_ip" "vh-agent-pip" {
-  name                = "devops-pip"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.vh-devops-agent-rg.name
-  allocation_method   = "Static"
-  tags                = local.common_tags
-}
-
-resource "azurerm_network_interface" "vh-devops-nic" {
+resource "azurerm_network_interface" "vh_ado_agent_01_nic" {
   name                = "${var.vm_name}-nic"
-  location            = azurerm_resource_group.vh-devops-agent-rg.location
-  resource_group_name = azurerm_resource_group.vh-devops-agent-rg.name
+  location            = azurerm_resource_group.vh_infra_core_ado.location
+  resource_group_name = azurerm_resource_group.vh_infra_core_ado.name
 
   ip_configuration {
-    name                          = "ip"
-    subnet_id                     = azurerm_subnet.vh-devops-agent-subnet.id
+    name                          = "IpConfig"
+    subnet_id                     = azurerm_subnet.vh_infra_core_ado_snet.id
     private_ip_address_allocation = "Static"
     private_ip_address            = var.vm_private_ip_address
-    public_ip_address_id          = azurerm_public_ip.vh-agent-pip.id
   }
 
   tags = local.common_tags
 }
 
-resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
+resource "azurerm_linux_virtual_machine" "vh_ado_agent_01" {
   # The tfsec:ignore comment below ignores the tfsec password check as the password is random 
   # and only generated at runtime and it is needed by the Azure devops agent that is deployed
+  name                  = var.vm_name
+  location              = azurerm_resource_group.vh_infra_core_ado.location
+  resource_group_name   = azurerm_resource_group.vh_infra_core_ado.name
+  network_interface_ids = [azurerm_network_interface.vh_ado_agent_01_nic.id]
+  size                  = "Standard_D4s_v3"
+
   disable_password_authentication = false #tfsec:ignore:azure-compute-disable-password-authentication
-  name                            = var.vm_name
   admin_username                  = var.vm_username
   admin_password                  = random_password.password.result
-  location                        = azurerm_resource_group.vh-devops-agent-rg.location
-  resource_group_name             = azurerm_resource_group.vh-devops-agent-rg.name
-  network_interface_ids           = [azurerm_network_interface.vh-devops-nic.id]
-  size                            = "Standard_D4s_v3" # "Standard_DS2_v2"
 
   os_disk {
     name                 = var.vm_osdisk_name
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "Premium_LRS"
     disk_size_gb         = 128
   }
 
@@ -54,12 +46,12 @@ resource "azurerm_linux_virtual_machine" "vh-devops-agent-vm" {
 }
 
 
-resource "azurerm_virtual_machine_extension" "create-agent" {
-  name                 = "AzureDevOps-Agent"
+resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
+  name                 = "AzureDevOpsAgent"
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.1"
-  virtual_machine_id   = azurerm_linux_virtual_machine.vh-devops-agent-vm.id
+  virtual_machine_id   = azurerm_linux_virtual_machine.vh_ado_agent_01.id
 
   protected_settings = <<PROTECTED_SETTINGS
       {

@@ -1,28 +1,26 @@
-resource "azurerm_network_security_group" "vh-devops-agent-nsg" {
+resource "azurerm_network_security_group" "vh_infra_core_ado_nsg" {
   name                = var.nsg_name
-  location            = azurerm_resource_group.vh-devops-agent-rg.location
-  resource_group_name = azurerm_resource_group.vh-devops-agent-rg.name
+  location            = azurerm_resource_group.vh_infra_core_ado.location
+  resource_group_name = azurerm_resource_group.vh_infra_core_ado.name
   tags                = local.common_tags
 }
 
-# #The tfsec:ignore below allows access from the agent back to the pipelines
-# #tfsec:ignore:azure-network-no-public-egress
-# resource "azurerm_network_security_rule" "ssh-allow" {
-#   name                   = "ssh-allow"
-#   priority               = 100
-#   direction              = "Outbound"
-#   access                 = "Allow"
-#   protocol               = "Tcp"
-#   source_port_range      = "*"
-#   destination_port_range = "22"
-#   source_address_prefix  = "1.2.3.4"
+resource "azurerm_network_security_rule" "DenyVnetInbound" {
+  name                        = "DenyVnetInbound"
+  priority                    = 4096
+  direction                   = "Inbound"
+  access                      = "Deny"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.vh_infra_core_ado.name
+  network_security_group_name = azurerm_network_security_group.vh_infra_core_ado_nsg.name
+}
 
-#   destination_address_prefix  = "*"
-#   resource_group_name         = azurerm_resource_group.vh-devops-agent-rg.name
-#   network_security_group_name = azurerm_network_security_group.vh-devops-agent-nsg.name
-# }
 
-resource "azurerm_network_interface_security_group_association" "vh-devops-agent-nic-nsg" {
-  network_interface_id      = azurerm_network_interface.vh-devops-nic.id
-  network_security_group_id = azurerm_network_security_group.vh-devops-agent-nsg.id
+resource "azurerm_subnet_network_security_group_association" "vh_infra_core_ado_nsg" {
+  network_security_group_id = azurerm_network_security_group.vh_infra_core_ado_nsg.id
+  subnet_id                 = azurerm_subnet.vh_infra_core_ado_snet.id
 }
