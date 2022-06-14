@@ -24,7 +24,7 @@ steps:
       workingDirectory: ${{parameters.workingDirectory}}
       script: |
           echo 'Replacing PAT Token'
-          sed -i 's|REPLACE|${{parameters.patToken}}|gI' 'set_up.sh'
+          sed -i 's|REPLACE_PAT|${{parameters.patToken}}|gI' 'set_up.sh'
 
   - task: Bash@3
     displayName: Set Number of Agents To Install
