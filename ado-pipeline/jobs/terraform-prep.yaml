@@ -3,7 +3,7 @@ parameters:
     type: string
     default: 1.1.7
 
-  - name: subscription
+  - name: serviceConnection
     type: string
 
   - name: resourceGroup
@@ -32,18 +32,17 @@ steps:
       terraformVersion: ${{ parameters.terraformVersion }}
 
   - task: TerraformCLI@0
-    displayName: 'check terraform version'
+    displayName: 'Check Terraform Version'
     inputs:
       command: version
 
   - task: TerraformCLI@0
-    displayName: Terraform init
+    displayName: Terraform Init
     inputs:
       command: init
-      commandOptions: -reconfigure
       workingDirectory: ${{ parameters.workingDirectory }}
       backendType: azurerm
-      backendServiceArm: ${{ parameters.subscription }}
+      backendServiceArm: ${{ parameters.serviceConnection }}
       backendAzureRmResourceGroupName: ${{ parameters.resourceGroup }}
       backendAzureRmResourceGroupLocation: ${{ parameters.location }}
       backendAzureRmStorageAccountName: ${{ parameters.storageAccount }}

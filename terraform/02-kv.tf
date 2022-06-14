@@ -10,7 +10,7 @@ resource "random_password" "password" {
 
 #tfsec:ignore:azure-keyvault-specify-network-acl
 resource "azurerm_key_vault" "keyvault_ado_agent" {
-  name                        = var.KV_NAME
+  name                        = var.key_vault_name
   location                    = azurerm_resource_group.vh-devops-agent-rg.location
   resource_group_name         = azurerm_resource_group.vh-devops-agent-rg.name
   enabled_for_disk_encryption = true
@@ -32,9 +32,10 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
     object_id = data.azurerm_client_config.current.object_id
 
     secret_permissions = [
-      "Get", "Set", "List"
+      "Get", "Set", "List", "Delete", "Purge"
     ]
   }
+  tags = local.common_tags
 }
 
 resource "azurerm_key_vault_secret" "keyvault_vh_agent_secret" {
@@ -42,5 +43,6 @@ resource "azurerm_key_vault_secret" "keyvault_vh_agent_secret" {
   value           = random_password.password.result
   content_type    = "password"
   key_vault_id    = azurerm_key_vault.keyvault_ado_agent.id
-  expiration_date = "2023-05-31T00:00:00Z" # PASSWORD WILL EXPIRE 31st May 2023 ###
+  expiration_date = "2023-05-31T00:00:00Z" # PASSWORD WILL EXPIRE 31st May 2023 ##
+  tags            = local.common_tags
 }

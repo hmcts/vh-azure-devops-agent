@@ -1,8 +1,9 @@
 resource "azurerm_virtual_network" "vh-devops-agent-vnet" {
-  name                = var.VNET_NAME
+  name                = var.vnet_name
   address_space       = var.vnet_ip_address
   location            = var.location
   resource_group_name = azurerm_resource_group.vh-devops-agent-rg.name
+  tags                = local.common_tags
 }
 
 resource "azurerm_subnet" "vh-devops-agent-subnet" {

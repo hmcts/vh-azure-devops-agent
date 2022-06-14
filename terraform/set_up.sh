@@ -1,18 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 
-###
-
-# Create directory & download agent files
+# Create Variables.
+NO_OF_AGENTS=REPLACE_AGENTS
 AZP_AGENT_VERSION=2.202.1
-sudo mkdir /myagent 
-cd /myagent
-sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
-sudo tar zxvf ./vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
-sudo chmod -R 777 /myagent
-#Install
 
-sudo runuser -l vhadoagent -c "cd /myagent ; ./config.sh --unattended --url https://hmctsreform.visualstudio.com --auth pat --token REPLACE --pool vh-self-hosted --agent vh-devops-agent-self-hosted-PL --acceptTeeEula & wait $!"
-sudo /myagent/svc.sh install
+# Create Directory.
+sudo mkdir /agents
+cd /agents
+sudo wget https://vstsagentpackage.azureedge.net/agent/$AZP_AGENT_VERSION/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz
+
+
+ for agent in $(seq 1 $NO_OF_AGENTS); do 
+    sudo mkdir /agents/vh-self-hosted-agent-0$agent ;
+    sudo tar zxvf /agents/vsts-agent-linux-x64-$AZP_AGENT_VERSION.tar.gz -C /agents/vh-self-hosted-agent-0$agent ;
+    sudo chmod -R 777 /agents
+    sudo runuser -l vhadoagent -c "cd /agents/vh-self-hosted-agent-0$agent ; 
+    ./config.sh --unattended --url REPLACE_DEVOPSURL --auth pat --token REPLACE_PAT --pool VH-Self-Hosted --agent vh-devops-agent-0$agent --acceptTeeEula & wait $! ;"
+    cd /agents/vh-self-hosted-agent-0$agent 
+    sudo ./svc.sh install
+    sudo ./svc.sh start
+    sudo ./svc.sh status
+done
 
 # Install .NET CLI dependencies
 apt-get update \
@@ -73,6 +81,3 @@ powershell_version=7.0.8 \
 
 echo "Installed PowerShell global tool"
 
-# #Start svc
-sudo /myagent/svc.sh start
-sudo /myagent/svc.sh status

@@ -7,28 +7,24 @@ parameters:
     type: string
 
 steps:
-
-  - bash: |
-      mkdir '$(System.DefaultWorkingDirectory)/plans'
-      dir_conts=$(ls -ltr $(System.DefaultWorkingDirectory)/plans)
-      echo $dir_conts
-      targetPath=$(pwd '$(System.DefaultWorkingDirectory)/plans')
-      echo $targetPath
-    displayName: Create plan directory
-
   - task: TerraformCLI@0
-    displayName: Terraform plan
+    displayName: Terraform Plan
     inputs:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=${{ parameters.workingDirectory }}/AzureDevOps-agent.tfplan'
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan'
 
+  - task: ArchiveFiles@2
+    displayName: 'Zip Terraform Files'
+    inputs:
+      rootFolderOrFile: '${{ parameters.workingDirectory }}'
+      archiveType: zip
+      archiveFile: '${{ parameters.workingDirectory }}/$(Build.BuildId)-AzureDevOps-Agent.zip'
 
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish Terraform Plan'
+    displayName: 'Publish Terraform Artifacts'
     inputs:
-      targetPath: '${{ parameters.workingDirectory }}'
-      artifact: 'AzureDevOps-agent.tfplan'
-      FileCopyOptions: '/xo'
-      publishPlanResults: 'AzureDevOps-agent-latest'
+      targetPath: '${{ parameters.workingDirectory }}/$(Build.BuildId)-AzureDevOps-Agent.zip'
+      publishLocation: pipeline
+      artifact: '$(Build.BuildId)-AzureDevOps-Agent'
