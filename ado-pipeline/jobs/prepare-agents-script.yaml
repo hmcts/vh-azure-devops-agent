@@ -1,0 +1,45 @@
+parameters:
+  - name: patToken
+    type: string
+
+  - name: workingDirectory
+    type: string
+
+  - name: numberOfAgents
+    type: string
+    values:
+    - 1
+    - 2
+    - 3
+    - 4
+  
+  - name: devOpsURL
+    type: string
+
+steps:
+  - task: Bash@3
+    displayName: Set PAT Token
+    inputs:
+      targetType: 'inline'
+      workingDirectory: ${{parameters.workingDirectory}}
+      script: |
+          echo 'Replacing PAT Token'
+          sed -i 's|REPLACE|${{parameters.patToken}}|gI' 'set_up.sh'
+
+  - task: Bash@3
+    displayName: Set Number of Agents To Install
+    inputs:
+      targetType: 'inline'
+      workingDirectory: ${{ parameters.workingDirectory }}
+      script: |
+          echo 'Setting Agents to ${{ parameters.numberOfAgents }}'
+          sed -i 's|REPLACE_AGENTS|${{ parameters.numberOfAgents }}|gI' 'set_up.sh'
+
+  - task: Bash@3
+    displayName: Set DevOps URL
+    inputs:
+      targetType: 'inline'
+      workingDirectory: ${{ parameters.workingDirectory }}
+      script: |
+          echo 'Setting DevOps URL'
+          sed -i 's|REPLACE_DEVOPSURL|${{ parameters.devOpsURL }}|gI' 'set_up.sh'

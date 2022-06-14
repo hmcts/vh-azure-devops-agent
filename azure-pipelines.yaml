@@ -17,14 +17,8 @@ pool:
 variables:
   - group: vh-azure-devops-agent
 
-  - name: devOpsURL
-    value: 'https://dev.azure.com/hmcts'
-
   - name: azureLocation
     value: 'uk south'
-
-  - name: tfVersion
-    value: latest
 
   - name: workDir
     value: $(Build.SourcesDirectory)/terraform
@@ -37,6 +31,12 @@ variables:
 
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
+  
+  - name: devOpsURL
+    value: 'https://dev.azure.com/hmcts'
+ 
+  - name: artifactName
+    value: $(Build.BuildId)-AzureDevOps-Agent
 
 ############################################
 # Terraform CI. ############################
@@ -48,6 +48,7 @@ stages:
       parameters:
         terraformPath: $(workDir)
         terraformVersion: $(tfVersion)
+
 ############################################
 # Terraform Plan. ##########################
 - stage: Plan
@@ -58,16 +59,12 @@ stages:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
     steps:
-    - template: ado-pipeline/jobs/set-number-agents.yaml
+    - template: ado-pipeline/jobs/prepare-agents-script.yaml
       parameters:
+        workingDirectory: $(workDir)
+        patToken: $(patToken)
         numberOfAgents: 2
-        workingDirectory: $(workDir)
-
-    - template: ado-pipeline/jobs/replace-token.yaml
-      parameters:
-        myConnection: $(patToken)
-        workingDirectory: $(workDir)
-        devOpsUrl: $(devOpsURL)
+        devOpsURL: $(devOpsURL)
 
     - template: ado-pipeline/jobs/terraform-prep.yaml
       parameters:
@@ -76,7 +73,7 @@ stages:
         resourceGroup: $(stateResourceGroup)
         location: $(azureLocation)
         storageAccount: $(stateStorageAccount)
-        containerName: tfstate
+        containerName: $(stateContainerName)
         stateKey: $(stateKey)
         workingDirectory: $(workDir)
 
@@ -110,14 +107,14 @@ stages:
       - task: DownloadPipelineArtifact@2
         displayName: Download Terraform Artifacts
         inputs:
-          artifact: '$(Build.BuildId)-AzureDevOps-Agent'
-          targetPath: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent'
+          artifact: '$(artifactName)'
+          targetPath: '$(Pipeline.Workspace)/$(artifactName)'
 
       - task: ExtractFiles@1
         displayName: 'Extract Terraform Artifacts'
         inputs:
-          archiveFilePatterns: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/$(Build.BuildId)-AzureDevOps-Agent.zip'
-          destinationFolder: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent'
+          archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
+          destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
           cleanDestinationFolder: false
           overwriteExistingFiles: true
      
@@ -128,12 +125,12 @@ stages:
           resourceGroup: $(stateResourceGroup)
           location: $(azureLocation)
           storageAccount: $(stateStorageAccount)
-          containerName: tfstate
+          containerName: $(stateContainerName)
           stateKey: $(stateKey)
-          workingDirectory: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/terraform'
+          workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
       - template: ado-pipeline/jobs/terraform-apply.yaml
         parameters:
           subscription: $(serviceConnection)
-          planLocation: $(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/terraform/$(Build.BuildId)-AzureDevOps-Agent.tfplan
-          workingDirectory: '$(Pipeline.Workspace)/$(Build.BuildId)-AzureDevOps-Agent/terraform'
+          planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
+          workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
