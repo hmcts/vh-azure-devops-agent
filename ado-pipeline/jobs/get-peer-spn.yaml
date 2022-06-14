@@ -7,7 +7,7 @@ steps:
     displayName: 'Get Virtual Network Peering SPN'
     name: Peering
     inputs:
-      azureSubscription: ${{ parameters.peerServiceConnection }}'
+      azureSubscription: ${{ parameters.peerServiceConnection }}
       scriptType: 'pscore'
       scriptLocation: 'inlineScript'
       addSpnToEnvironment: true
