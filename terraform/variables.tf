@@ -65,3 +65,7 @@ variable "nsg_name" {
   type        = string
 }
 
+variable "env" {
+  description = "name of environment for tagging"
+  type        = string
+}
