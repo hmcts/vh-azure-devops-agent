@@ -84,9 +84,8 @@ stages:
     - template: ado-pipeline/jobs/terraform-plan.yaml
       parameters:
         subscription: $(serviceConnection)
-        tfVariables: $(workDir)/adoagent.tfvars
         workingDirectory: $(workDir)
-        customCommandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        customCommandOptions: '-var-file=$(workDir)/adoagent.tfvars -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
 
 ############################################
 # Manual Validation. #######################

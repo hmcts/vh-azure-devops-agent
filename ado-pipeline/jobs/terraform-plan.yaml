@@ -5,6 +5,7 @@ parameters:
     type: string
   - name: tfVariables
     type: string
+    default: ''
   - name: customCommandOptions
     type: string
     default: ''
