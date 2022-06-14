@@ -50,7 +50,7 @@ resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
 
   name                      = "vh-infra-core-ado-TO-${each.key}"
   resource_group_name       = azurerm_resource_group.vh_infra_core_ado.name
-  virtual_network_name      = azurerm_virtal_network.vh_infra_core_ado.name
+  virtual_network_name      = azurerm_virtual_network.vh_infra_core_ado.name
   remote_virtual_network_id = each.value
   provider                  = azurerm.stg_peer
 }
