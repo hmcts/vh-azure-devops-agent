@@ -65,3 +65,17 @@ variable "nsg_name" {
   type        = string
 }
 
+variable "peer_client_id" {
+  description = "client id of peering spn"
+  type        = string
+}
+
+variable "peer_client_secret" {
+  description = "client secret of peering spn"
+  type        = string
+}
+
+variable "peer_tenant_id" {
+  description = "tenant id of peering spn"
+  type        = string
+}
