@@ -19,3 +19,6 @@ vm_osdisk_name        = "vh-devops-vm-osdisk"
 
 # Network Security Group
 nsg_name = "vh-devops-vm-nsg"
+
+# environment
+env = "stg"

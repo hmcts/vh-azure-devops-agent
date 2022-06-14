@@ -104,6 +104,8 @@ stages:
   - job: Deploy_Terraform
     displayName: Deploy DevOps Agent
     steps:
+      - checkout: none
+      
       - task: DownloadPipelineArtifact@2
         displayName: Download Terraform Artifacts
         inputs:
