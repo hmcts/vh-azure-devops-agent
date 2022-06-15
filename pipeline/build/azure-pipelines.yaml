@@ -44,10 +44,10 @@ stages:
 - stage: CIBuild
   displayName: 'Terraform CI'
   jobs: 
-    - template: pipeline/templates/terraform-validate.yaml
-      parameters:
-        terraformPath: $(workDir)
-        terraformVersion: $(tfVersion)
+  - template: /pipeline/templates/terraform-validate.yaml
+    parameters:
+      terraformPath: $(workDir)
+      terraformVersion: $(tfVersion)
 
 ############################################
 # Terraform Plan. ##########################
@@ -59,18 +59,18 @@ stages:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
     steps:
-    - template: pipeline/templates/get-peer-spn.yaml
+    - template: /pipeline/templates/get-peer-spn.yaml
       parameters:
         peerServiceConnection: 'GlobalNetworkPeering'
         
-    - template: pipeline/templates/prepare-agents-script.yaml
+    - template: /pipeline/templates/prepare-agents-script.yaml
       parameters:
         workingDirectory: $(workDir)
         patToken: $(patToken)
         numberOfAgents: 2
         devOpsURL: $(devOpsURL)
 
-    - template: pipeline/templates/terraform-prep.yaml
+    - template: /pipeline/templates/terraform-prep.yaml
       parameters:
         terraformVersion: $(tfVersion)
         serviceConnection: $(serviceConnection)
@@ -81,7 +81,7 @@ stages:
         stateKey: $(stateKey)
         workingDirectory: $(workDir)
 
-    - template: pipeline/templates/terraform-plan.yaml
+    - template: /pipeline/templates/terraform-plan.yaml
       parameters:
         subscription: $(serviceConnection)
         workingDirectory: $(workDir)
@@ -97,7 +97,7 @@ stages:
       displayName: "Wait for approval"
       pool: server
       steps:
-        - template: ado-pipeline/steps/wait.yaml
+        - template: /pipeline/templates/wait.yaml
 
 ############################################
 # Terraform Apply. #########################
@@ -124,7 +124,7 @@ stages:
           cleanDestinationFolder: false
           overwriteExistingFiles: true
      
-      - template: pipeline/templates/terraform-prep.yaml
+      - template: /pipeline/templates/terraform-prep.yaml
         parameters:
           terraformVersion: $(tfVersion)
           serviceConnection: $(serviceConnection)
@@ -135,7 +135,7 @@ stages:
           stateKey: $(stateKey)
           workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
-      - template: pipeline/templates/terraform-apply.yaml
+      - template: /pipeline/templates/terraform-apply.yaml
         parameters:
           subscription: $(serviceConnection)
           planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
