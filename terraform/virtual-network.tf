@@ -55,9 +55,38 @@ resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
   provider                  = azurerm.stg_peer
 }
 
-# resource "azurerm_virtual_network_peering" "hubnonprod-to-agent" {
-#   name                      = "hubnonprodtoagent"
-#   resource_group_name       = "hmcts-hub-nonprodi"
-#   virtual_network_name      = "hmcts-hub-nonprodi"
-#   remote_virtual_network_id = azurerm_virtual_network.vh-devops-agent-vnet.id
-# }
+resource "azurerm_virtual_network_peering" "hmcts_hub_nonprodi_TO_vh_infra_core_ado" {
+  name                      = "hmcts-hub-nonprodi-TO-vh-infra-core-ado"
+  resource_group_name       = data.azurerm_virtual_network.hmcts-hub-nonprodi.resource_group_name
+  virtual_network_name      = data.azurerm_virtual_network.hmcts-hub-nonprodi.name
+  remote_virtual_network_id = azurerm_virtual_network.vh_infra_core_ado.id
+  provider                  = azurerm.nonprod_peer
+  allow_forwarded_traffic   = true
+}
+
+resource "azurerm_virtual_network_peering" "ukw_hub_nonprodi_TO_vh_infra_core_ado" {
+  name                      = "ukw-hub-nonprodi-TO-vh-infra-core-ado"
+  resource_group_name       = data.azurerm_virtual_network.ukw-hub-nonprodi.resource_group_name
+  virtual_network_name      = data.azurerm_virtual_network.ukw-hub-nonprodi.name
+  remote_virtual_network_id = azurerm_virtual_network.vh_infra_core_ado.id
+  provider                  = azurerm.nonprod_peer
+  allow_forwarded_traffic   = true
+}
+
+resource "azurerm_virtual_network_peering" "hmcts-hub-prod-int_TO_vh_infra_core_ado" {
+  name                      = "hmcts-hub-prod-int-TO-vh-infra-core-ado"
+  resource_group_name       = data.azurerm_virtual_network.hmcts-hub-prod-int.resource_group_name
+  virtual_network_name      = data.azurerm_virtual_network.hmcts-hub-prod-int.name
+  remote_virtual_network_id = azurerm_virtual_network.vh_infra_core_ado.id
+  provider                  = azurerm.prod_peer
+  allow_forwarded_traffic   = true
+}
+
+resource "azurerm_virtual_network_peering" "hmcts-hub-sbox-int_TO_vh_infra_core_ado" {
+  name                      = "hmcts-hub-sbox-int-TO-vh-infra-core-ado"
+  resource_group_name       = data.azurerm_virtual_network.hmcts-hub-sbox-int.resource_group_name
+  virtual_network_name      = data.azurerm_virtual_network.hmcts-hub-sbox-int.name
+  remote_virtual_network_id = azurerm_virtual_network.vh_infra_core_ado.id
+  provider                  = azurerm.sbox_peer
+  allow_forwarded_traffic   = true
+}

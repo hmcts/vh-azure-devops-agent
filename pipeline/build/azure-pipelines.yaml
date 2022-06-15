@@ -44,7 +44,7 @@ stages:
 - stage: CIBuild
   displayName: 'Terraform CI'
   jobs: 
-    - template: ado-pipeline/jobs/terraform-validate.yaml
+    - template: pipeline/templates/terraform-validate.yaml
       parameters:
         terraformPath: $(workDir)
         terraformVersion: $(tfVersion)
@@ -59,18 +59,18 @@ stages:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
     steps:
-    - template: ado-pipeline/jobs/get-peer-spn.yaml
+    - template: pipeline/templates/get-peer-spn.yaml
       parameters:
         peerServiceConnection: 'GlobalNetworkPeering'
         
-    - template: ado-pipeline/jobs/prepare-agents-script.yaml
+    - template: pipeline/templates/prepare-agents-script.yaml
       parameters:
         workingDirectory: $(workDir)
         patToken: $(patToken)
         numberOfAgents: 2
         devOpsURL: $(devOpsURL)
 
-    - template: ado-pipeline/jobs/terraform-prep.yaml
+    - template: pipeline/templates/terraform-prep.yaml
       parameters:
         terraformVersion: $(tfVersion)
         serviceConnection: $(serviceConnection)
@@ -81,11 +81,11 @@ stages:
         stateKey: $(stateKey)
         workingDirectory: $(workDir)
 
-    - template: ado-pipeline/jobs/terraform-plan.yaml
+    - template: pipeline/templates/terraform-plan.yaml
       parameters:
         subscription: $(serviceConnection)
         workingDirectory: $(workDir)
-        customCommandOptions: '-var-file=$(workDir)/adoagent.tfvars -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        customCommandOptions: '-var-file=$(workDir)/vars/adoagent.tfvars -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
 
 ############################################
 # Manual Validation. #######################
@@ -124,7 +124,7 @@ stages:
           cleanDestinationFolder: false
           overwriteExistingFiles: true
      
-      - template: ado-pipeline/jobs/terraform-prep.yaml
+      - template: pipeline/templates/terraform-prep.yaml
         parameters:
           terraformVersion: $(tfVersion)
           serviceConnection: $(serviceConnection)
@@ -135,7 +135,7 @@ stages:
           stateKey: $(stateKey)
           workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
-      - template: ado-pipeline/jobs/terraform-apply.yaml
+      - template: pipeline/templates/terraform-apply.yaml
         parameters:
           subscription: $(serviceConnection)
           planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
