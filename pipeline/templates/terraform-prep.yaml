@@ -27,7 +27,7 @@ parameters:
 
 steps:
 
-  - template: ../steps/tf-install.yaml
+  - template: ./tf-install.yaml
     parameters:
       terraformVersion: ${{ parameters.terraformVersion }}
 
