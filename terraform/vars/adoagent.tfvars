@@ -12,7 +12,7 @@ key_vault_name = "vh-infra-core-ado"
 
 # Create Virtual Machine
 vm_name               = "vh-ado-agent-01"
-vm_private_ip_address = "192.162.0.4"
+vm_private_ip_address = "10.10.52.0.6"
 vm_username           = "vhadoagent"
 vm_osdisk_name        = "vh-ado-agent-01_OsDisk"
 
