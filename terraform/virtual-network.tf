@@ -103,4 +103,5 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns" {
   resource_group_name   = data.azurerm_resource_group.dns.name
   private_dns_zone_name = each.value
   virtual_network_id    = azurerm_virtual_network.vh_infra_core_ado.id
+  tags                  = local.common_tags
 }
