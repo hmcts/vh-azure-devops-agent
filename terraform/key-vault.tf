@@ -9,10 +9,10 @@ resource "random_password" "password" {
 }
 
 #tfsec:ignore:azure-keyvault-specify-network-acl
-resource "azurerm_key_vault" "keyvault_ado_agent" {
+resource "azurerm_key_vault" "vh_infra_core_ado" {
   name                        = var.key_vault_name
-  location                    = azurerm_resource_group.vh-devops-agent-rg.location
-  resource_group_name         = azurerm_resource_group.vh-devops-agent-rg.name
+  location                    = azurerm_resource_group.vh_infra_core_ado.location
+  resource_group_name         = azurerm_resource_group.vh_infra_core_ado.name
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   # KV purge protection ignored due to the use of the KV only to store an Agent password
@@ -36,13 +36,4 @@ resource "azurerm_key_vault" "keyvault_ado_agent" {
     ]
   }
   tags = local.common_tags
-}
-
-resource "azurerm_key_vault_secret" "keyvault_vh_agent_secret" {
-  name            = "vh-devops-agent-password"
-  value           = random_password.password.result
-  content_type    = "password"
-  key_vault_id    = azurerm_key_vault.keyvault_ado_agent.id
-  expiration_date = "2023-05-31T00:00:00Z" # PASSWORD WILL EXPIRE 31st May 2023 ##
-  tags            = local.common_tags
 }
