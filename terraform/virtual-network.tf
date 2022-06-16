@@ -98,7 +98,7 @@ resource "azurerm_virtual_network_peering" "hmcts-hub-sbox-int_TO_vh_infra_core_
 # DNS to VNET Link. ##########################################
 resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns" {
   for_each              = var.dns_zone
-  provider              = azurerm.current_sub_peer
+  provider              = azurerm.core_infra_dns
   name                  = azurerm_virtual_network.vh_infra_core_ado.name
   resource_group_name   = data.azurerm_resource_group.dns.name
   private_dns_zone_name = each.value
