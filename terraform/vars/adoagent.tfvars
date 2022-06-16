@@ -21,3 +21,11 @@ nsg_name = "vh-infra-core-ado-nsg"
 
 # environment
 env = "stg"
+
+dns_zone = {
+  vnet_to_dns = [
+    {
+      name = "dev.platform.hmcts.net"
+    }
+  ]
+}

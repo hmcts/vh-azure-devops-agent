@@ -61,3 +61,14 @@ resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
 #   virtual_network_name      = "hmcts-hub-nonprodi"
 #   remote_virtual_network_id = azurerm_virtual_network.vh-devops-agent-vnet.id
 # }
+
+######################################################
+# DNS to VNET Link. ##########################################
+resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns" {
+  for_each              = var.dns_zone.vnet_to_dns
+  provider              = azurerm.core_infra_dns
+  name                  = dns_zone.vnet_to_dns.value.name
+  resource_group_name   = data.azurerm_resource_group.dns.name
+  private_dns_zone_name = local.dns_zone_name
+  virtual_network_id    = azurerm_virtual_network.vh-devops-agent-vnet.id
+}
