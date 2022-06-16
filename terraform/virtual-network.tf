@@ -55,7 +55,7 @@ resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
   resource_group_name       = azurerm_resource_group.vh_infra_core_ado.name
   virtual_network_name      = azurerm_virtual_network.vh_infra_core_ado.name
   remote_virtual_network_id = each.value
-  provider                  = azurerm.stg_peer
+  provider                  = azurerm.current_sub_peer
 }
 
 resource "azurerm_virtual_network_peering" "hmcts_hub_nonprodi_TO_vh_infra_core_ado" {
