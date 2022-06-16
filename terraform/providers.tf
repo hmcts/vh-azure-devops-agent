@@ -16,8 +16,8 @@ provider "azurerm" {
 
 provider "azurerm" {
   features {}
-  alias           = "stg_peer"
-  subscription_id = "74dacd4f-a248-45bb-a2f0-af700dc4cf68"
+  alias           = "current_sub_peer"
+  subscription_id = data.azurerm_client_config.current.subscription_id
   client_id       = var.peer_client_id
   client_secret   = var.peer_client_secret
   tenant_id       = var.peer_tenant_id
