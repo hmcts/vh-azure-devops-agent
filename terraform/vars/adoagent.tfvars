@@ -3,9 +3,9 @@ rg_name = "vh-infra-core-ado"
 
 # Create Virtual Network
 vnet_name                    = "vh-infra-core-ado"
-vnet_ip_address              = ["192.162.0.0/16"]
+vnet_ip_address              = ["10.10.52.0/24"]
 subnet_name_vh_agent         = "vh-infra-core-ado-snet"
-subnet_name_vh_agent_address = "192.162.0.0/24"
+subnet_name_vh_agent_address = "10.10.52.0/27"
 
 # Key Vault
 key_vault_name = "vh-infra-core-ado"
