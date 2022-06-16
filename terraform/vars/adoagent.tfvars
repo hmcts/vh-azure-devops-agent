@@ -22,4 +22,4 @@ nsg_name = "vh-infra-core-ado-nsg"
 # environment
 env = "stg"
 
-dns_zone = ["dev.platform.hmcts.net", "dev.platform.hmcts.net"]
+dns_zone = ["dev.platform.hmcts.net", "test.platform.hmcts.net"]
