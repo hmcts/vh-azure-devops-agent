@@ -5,6 +5,10 @@ parameters:
     type: string
   - name: tfVariables
     type: string
+    default: ''
+  - name: customCommandOptions
+    type: string
+    default: ''
 
 steps:
   - task: TerraformCLI@0
@@ -13,7 +17,10 @@ steps:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan'
+      ${{ if eq(parameters.customCommandOptions, '') }}:
+        commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan'
+      ${{ else }}:
+        commandOptions: ${{ parameters.customCommandOptions }}
 
   - task: ArchiveFiles@2
     displayName: 'Zip Terraform Files'

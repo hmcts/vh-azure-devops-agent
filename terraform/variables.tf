@@ -45,11 +45,6 @@ variable "vm_private_ip_address" {
   type        = string
 }
 
-variable "vm_pip_name" {
-  description = "The public ip address of the VM"
-  type        = string
-}
-
 variable "vm_username" {
   description = "The username to login to the vm"
   type        = string
@@ -65,17 +60,25 @@ variable "nsg_name" {
   type        = string
 }
 
+variable "env" {
+  description = "name of environment for tagging"
+  type        = string
+}
+
 variable "peer_client_id" {
   description = "client id of peering spn"
   type        = string
+  sensitive   = true
 }
 
 variable "peer_client_secret" {
   description = "client secret of peering spn"
   type        = string
+  sensitive   = true
 }
 
 variable "peer_tenant_id" {
   description = "tenant id of peering spn"
   type        = string
+  sensitive   = true
 }
