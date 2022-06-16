@@ -93,3 +93,15 @@ resource "azurerm_virtual_network_peering" "hmcts-hub-sbox-int_TO_vh_infra_core_
   provider                  = azurerm.sbox_peer
   allow_forwarded_traffic   = true
 }
+
+######################################################
+# DNS to VNET Link. ##########################################
+resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns" {
+  for_each              = toset(var.dns_zone)
+  provider              = azurerm.core_infra_dns
+  name                  = azurerm_virtual_network.vh_infra_core_ado.name
+  resource_group_name   = data.azurerm_resource_group.dns.name
+  private_dns_zone_name = each.value
+  virtual_network_id    = azurerm_virtual_network.vh_infra_core_ado.id
+  tags                  = local.common_tags
+}

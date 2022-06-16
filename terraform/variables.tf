@@ -82,3 +82,7 @@ variable "peer_tenant_id" {
   type        = string
   sensitive   = true
 }
+variable "dns_zone" {
+  description = "private dns zone name"
+  default     = {}
+}

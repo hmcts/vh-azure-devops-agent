@@ -49,3 +49,8 @@ provider "azurerm" {
   client_secret   = var.peer_client_secret
   tenant_id       = var.peer_tenant_id
 }
+provider "azurerm" {
+  features {}
+  alias           = "core_infra_dns"
+  subscription_id = "1baf5470-1c3e-40d3-a6f7-74bfbce4b348"
+}
