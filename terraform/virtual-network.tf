@@ -128,5 +128,5 @@ resource "azurerm_route_table" "agent-rt" {
 }
 resource "azurerm_subnet_route_table_association" "sub_rt" {
   subnet_id      = azurerm_subnet.vh_infra_core_ado_snet.id
-  route_table_id = azurerm_route_table.agent_rt.id
+  route_table_id = azurerm_route_table.agent-rt.id
 }
