@@ -86,3 +86,7 @@ variable "dns_zone" {
   description = "private dns zone name"
   default     = {}
 }
+variable "rt_name" {
+  description = "The name of the RT we create for the agent"
+  type        = string
+}
