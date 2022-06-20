@@ -117,7 +117,7 @@ resource "azurerm_route_table" "agent-rt" {
   tags                          = local.common_tags
 
   dynamic "route" {
-    for_each = var.route_table
+    for_each = var.route_table.route
     content {
       name                   = route.value.name
       address_prefix         = route.value.address_prefix
