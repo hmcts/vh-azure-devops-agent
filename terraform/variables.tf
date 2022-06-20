@@ -92,5 +92,5 @@ variable "rt_name" {
 }
 variable "route_table" {
   description = "The RT we create for the agent"
-  type        = string
+  default     = {}
 }
