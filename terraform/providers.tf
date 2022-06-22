@@ -31,6 +31,14 @@ provider "azurerm" {
   client_secret   = var.peer_client_secret
   tenant_id       = var.peer_tenant_id
 }
+provider "azurerm" {
+  features {}
+  alias           = "mgmt_peer"
+  subscription_id = "ed302caf-ec27-4c64-a05e-85731c3ce90e"
+  client_id       = var.peer_client_id
+  client_secret   = var.peer_client_secret
+  tenant_id       = var.peer_tenant_id
+}
 
 provider "azurerm" {
   features {}

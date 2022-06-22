@@ -43,12 +43,19 @@ data "azurerm_virtual_network" "hmcts-hub-sbox-int" {
   provider            = azurerm.sbox_peer
 }
 
+data "azurerm_virtual_network" "core-infra-vnet-mgmt" {
+  name                = "core-infra-vnet-mgmt"
+  resource_group_name = "rg-mgmt"
+  provider            = azurerm.mgmt_peer
+}
+
 resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
   for_each = {
-    "hmcts-hub-nonprodi" = data.azurerm_virtual_network.hmcts-hub-nonprodi.id
-    "ukw-hub-nonprodi"   = data.azurerm_virtual_network.ukw-hub-nonprodi.id
-    "hmcts-hub-prod-int" = data.azurerm_virtual_network.hmcts-hub-prod-int.id
-    "hmcts-hub-sbox-int" = data.azurerm_virtual_network.hmcts-hub-sbox-int.id
+    "hmcts-hub-nonprodi"   = data.azurerm_virtual_network.hmcts-hub-nonprodi.id
+    "ukw-hub-nonprodi"     = data.azurerm_virtual_network.ukw-hub-nonprodi.id
+    "hmcts-hub-prod-int"   = data.azurerm_virtual_network.hmcts-hub-prod-int.id
+    "hmcts-hub-sbox-int"   = data.azurerm_virtual_network.hmcts-hub-sbox-int.id
+    "core-infra-vnet-mgmt" = data.azurerm_virtual_network.core-infra-vnet-mgmt.id
   }
 
   name                      = "vh-infra-core-ado-TO-${each.key}"
@@ -58,6 +65,14 @@ resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
   provider                  = azurerm.current_sub_peer
 }
 
+resource "azurerm_virtual_network_peering" "core-infra-vnet-mgmt_TO_vh_infra_core_ado" {
+  name                      = "core-infra-vnet-mgmt-TO-vh-infra-core-ado"
+  resource_group_name       = data.azurerm_virtual_network.core-infra-vnet-mgmt.resource_group_name
+  virtual_network_name      = data.azurerm_virtual_network.core-infra-vnet-mgmt.name
+  remote_virtual_network_id = azurerm_virtual_network.vh_infra_core_ado.id
+  provider                  = azurerm.mgmt_peer
+  allow_forwarded_traffic   = true
+}
 resource "azurerm_virtual_network_peering" "hmcts_hub_nonprodi_TO_vh_infra_core_ado" {
   name                      = "hmcts-hub-nonprodi-TO-vh-infra-core-ado"
   resource_group_name       = data.azurerm_virtual_network.hmcts-hub-nonprodi.resource_group_name
