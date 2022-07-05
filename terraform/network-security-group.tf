@@ -26,7 +26,7 @@ resource "azurerm_network_security_rule" "AllowBastion" {
   protocol                    = "*"
   source_port_range           = "22"
   destination_port_range      = "22"
-  source_address_prefix       = "10.11.8.36/32, 10.11.8.0/23, 10.96.64.0/18"
+  source_address_prefixes     = ["10.11.8.36/32", "10.11.8.0/23", "10.96.64.0/18"]
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.vh_infra_core_ado.name
   network_security_group_name = azurerm_network_security_group.vh_infra_core_ado_nsg.name
