@@ -24,7 +24,7 @@ resource "azurerm_network_security_rule" "AllowBastion" {
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "*"
-  source_port_range           = "22"
+  source_port_range           = "*"
   destination_port_range      = "22"
   source_address_prefixes     = ["10.11.8.0/23", "10.96.64.0/18"]
   destination_address_prefix  = "*"
