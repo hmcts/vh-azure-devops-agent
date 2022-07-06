@@ -26,6 +26,8 @@ dns_zone = ["dev.platform.hmcts.net", "test.platform.hmcts.net", "ithc.platform.
 
 dns_zone_sandbox = ["sandbox.platform.hmcts.net"]
 
+dns_zone_reform = ["vh-wowza-test.hearings.reform.hmcts.net"]
+
 # route table
 rt_name = "vh-ado-agent-rt-01"
 

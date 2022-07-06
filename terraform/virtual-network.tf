@@ -131,7 +131,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns_sandbox" {
   tags                  = local.common_tags
 }
 resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns_reform" {
-  for_each              = toset(var.dns_zone_sandbox)
+  for_each              = toset(var.dns_zone_reform)
   provider              = azurerm.reform_dns
   name                  = azurerm_virtual_network.vh_infra_core_ado.name
   resource_group_name   = data.azurerm_resource_group.dns_reform.name
