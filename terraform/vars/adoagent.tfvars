@@ -22,7 +22,7 @@ nsg_name = "vh-infra-core-ado-nsg"
 # environment
 env = "stg"
 
-dns_zone = ["dev.platform.hmcts.net", "test.platform.hmcts.net", "ithc.platform.hmcts.net", "staging.platform.hmcts.net", "platform.hmcts.net", "demo.platform.hmcts.net", "sandbox.platform.hmcts.net", "hearings.reform.hmcts.net"]
+dns_zone = ["dev.platform.hmcts.net", "test.platform.hmcts.net", "ithc.platform.hmcts.net", "staging.platform.hmcts.net", "platform.hmcts.net", "demo.platform.hmcts.net"]
 
 # route table
 rt_name = "vh-ado-agent-rt-01"
