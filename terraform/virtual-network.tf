@@ -123,7 +123,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns" {
 
 resource "azurerm_private_dns_zone_virtual_network_link" "vnet_to_dns_sandbox" {
   for_each              = toset(var.dns_zone_sandbox)
-  provider              = azurerm.mgmt_peer
+  provider              = azurerm.sandbox_dns
   name                  = azurerm_virtual_network.vh_infra_core_ado.name
   resource_group_name   = data.azurerm_resource_group.dns_sandbox.name
   private_dns_zone_name = each.value

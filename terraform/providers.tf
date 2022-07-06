@@ -62,3 +62,11 @@ provider "azurerm" {
   alias           = "core_infra_dns"
   subscription_id = "1baf5470-1c3e-40d3-a6f7-74bfbce4b348"
 }
+provider "azurerm" {
+  features {}
+  alias           = "sandbox_dns"
+  subscription_id = "1497c3d7-ab6d-4bb7-8a10-b51d03189ee3"
+  client_id       = var.peer_client_id
+  client_secret   = var.peer_client_secret
+  tenant_id       = var.peer_tenant_id
+}

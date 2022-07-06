@@ -4,6 +4,6 @@ data "azurerm_resource_group" "dns" {
 }
 
 data "azurerm_resource_group" "dns_sandbox" {
-  name     = "reformmgmtrg"
-  provider = azurerm.mgmt_peer
+  name     = "core-infra-intsvc-rg"
+  provider = azurerm.sandbox_dns
 }
