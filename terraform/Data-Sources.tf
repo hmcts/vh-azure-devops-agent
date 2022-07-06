@@ -8,7 +8,3 @@ data "azurerm_resource_group" "dns_sandbox" {
   provider = azurerm.sandbox_dns
 }
 
-data "azurerm_resource_group" "dns_reform" {
-  name     = "vh-core-infra-test1"
-  provider = azurerm.reform_dns
-}

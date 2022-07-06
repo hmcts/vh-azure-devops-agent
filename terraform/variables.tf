@@ -90,10 +90,7 @@ variable "dns_zone_sandbox" {
   description = "private dns zone name"
   default     = {}
 }
-variable "dns_zone_reform" {
-  description = "private dns zone name"
-  default     = {}
-}
+
 variable "rt_name" {
   description = "The name of the RT we create for the agent"
   type        = string
