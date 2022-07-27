@@ -78,6 +78,22 @@ powershell_version=7.0.8 \
     && ln -s /usr/share/powershell/pwsh /usr/bin/pwsh \
     && chmod 755 /usr/share/powershell/pwsh \
     && find /usr/share/powershell -print | grep -i '.*[.]nupkg$' | xargs rm
-
+    
 echo "Installed PowerShell global tool"
+    
+# Install PowerShell Core.
+sudo apt-get update
+sudo apt-get install -y wget apt-transport-https software-properties-common
+wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install -y powershell
+
+if [ -f /opt/microsoft/powershell/7/pwsh ] ; then
+ echo "PowerShell Core Installed Successfully!"
+else 
+ echo "PowerShell Failed To Install."
+ exit 1
+fi
+
 
