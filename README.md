@@ -8,4 +8,4 @@ As the agents are generically used across all environments they are deployed and
 You can amend how many agents will be deployed on each VM by editing the variable `agentCount` in the file `pipeline\variables\common.yaml`
 
 ## Virtual Machine Count
-You can amend how many Virtual Machines will be deployed by editing the variable `agentCount` in the file `pipeline\variables\common.yaml`
+You can amend how many Virtual Machines will be deployed by editing the variable `vmCount` in the file `pipeline\variables\common.yaml`

@@ -35,6 +35,8 @@ stages:
   displayName: 'Terraform Plan'
   dependsOn:
     - CIBuild
+  variables:
+    numberOfAgents: ${{ variables.agentCount }}
   jobs:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
@@ -47,7 +49,7 @@ stages:
       parameters:
         workingDirectory: $(workDir)
         patToken: $(patToken)
-        numberOfAgents: $(agentCount)
+        numberOfAgents: ${{ variables.numberOfAgents }}
         devOpsURL: $(devOpsURL)
 
     - template: /pipeline/templates/terraform-prep.yaml
