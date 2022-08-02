@@ -2,8 +2,7 @@ locals {
   vms = {
     for item in range(3) :
     "vh-ado-agent-0${item}" => {
-      name  = "vh-ado-agent-0${item}"
-      index = item
+      name = "vh-ado-agent-0${item}"
     }
   }
 }
@@ -26,17 +25,13 @@ resource "azurerm_network_interface" "vh_ado_agent_nic" {
   tags = local.common_tags
 }
 
-output "nic" {
-  value = azurerm_network_interface.vh_ado_agent_nic
-}
-
-/* resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
+resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   for_each = local.vms
 
   name                  = each.value.name
   location              = azurerm_resource_group.vh_infra_core_ado.location
   resource_group_name   = azurerm_resource_group.vh_infra_core_ado.name
-  network_interface_ids = [azurerm_network_interface.vh_ado_agent_nic[each.value.index].id]
+  network_interface_ids = [azurerm_network_interface.vh_ado_agent_nic[each.value.name].id]
   size                  = "Standard_D4s_v3"
 
   disable_password_authentication = false #tfsec:ignore:azure-compute-disable-password-authentication
@@ -72,7 +67,7 @@ resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.1"
-  virtual_machine_id   = lookup(azurerm_linux_virtual_machine.vh_ado_agent, each.value.name).id
+  virtual_machine_id   = azurerm_linux_virtual_machine.vh_ado_agent[each.value.name].id
 
   protected_settings = <<PROTECTED_SETTINGS
       {
@@ -85,4 +80,3 @@ resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
     azurerm_linux_virtual_machine.vh_ado_agent
   ]
 }
- */
