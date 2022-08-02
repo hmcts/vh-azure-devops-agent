@@ -11,10 +11,7 @@ subnet_name_vh_agent_address = "10.10.52.0/27"
 key_vault_name = "vh-infra-core-ado"
 
 # Create Virtual Machine
-vm_name               = "vh-ado-agent-01"
-vm_private_ip_address = "10.10.52.6"
-vm_username           = "vhadoagent"
-vm_osdisk_name        = "vh-ado-agent-01_OsDisk"
+vm_username = "vhadoagent"
 
 # Network Security Group
 nsg_name = "vh-infra-core-ado-nsg"

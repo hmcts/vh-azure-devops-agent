@@ -34,25 +34,15 @@ variable "key_vault_name" {
   type        = string
 }
 
-
-variable "vm_name" {
-  description = "The name of the VM we create for the agent"
-  type        = string
-}
-
-variable "vm_private_ip_address" {
-  description = "The private ip address of the vm"
-  type        = string
-}
-
 variable "vm_username" {
   description = "The username to login to the vm"
   type        = string
 }
 
-variable "vm_osdisk_name" {
-  description = "The name of the vm os disk"
-  type        = string
+variable "vm_count" {
+  description = "Count of how many VMs to create"
+  type        = number
+  default     = 1
 }
 
 variable "nsg_name" {

@@ -17,10 +17,7 @@ steps:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      ${{ if eq(parameters.customCommandOptions, '') }}:
-        commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan'
-      ${{ else }}:
-        commandOptions: ${{ parameters.customCommandOptions }}
+      commandOptions: ${{ parameters.customCommandOptions }}
 
   - task: ArchiveFiles@2
     displayName: 'Zip Terraform Files'
