@@ -16,7 +16,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: ../variables/common.yaml
+    - group: ..\variables\common.yaml
 
 ############################################
 # Terraform CI. ############################
@@ -35,8 +35,6 @@ stages:
   displayName: 'Terraform Plan'
   dependsOn:
     - CIBuild
-  variables:
-    - group: ../variables/common.yaml
   jobs:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
