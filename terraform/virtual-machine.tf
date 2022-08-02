@@ -24,6 +24,9 @@ resource "azurerm_network_interface" "vh_ado_agent_nic" {
 
   tags = local.common_tags
 }
+output "nics" {
+  value = azurerm_network_interface.vh_ado_agent_nic
+}
 
 resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   for_each = local.vms
@@ -31,7 +34,7 @@ resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   name                  = each.value.name
   location              = azurerm_resource_group.vh_infra_core_ado.location
   resource_group_name   = azurerm_resource_group.vh_infra_core_ado.name
-  network_interface_ids = [azurerm_network_interface.vh_ado_agent_nic["${each.value.name}-nic"].id]
+  #network_interface_ids = [lookup(azurerm_network_interface.vh_ado_agent_nic, "${each.value.name}-nic").id]
   size                  = "Standard_D4s_v3"
 
   disable_password_authentication = false #tfsec:ignore:azure-compute-disable-password-authentication
