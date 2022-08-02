@@ -1,6 +1,6 @@
 locals {
   vms = {
-    for item in range(3) :
+    for item in range(var.vm_count) :
     "vh-ado-agent-0${item}" => {
       name = "vh-ado-agent-0${item}"
     }
