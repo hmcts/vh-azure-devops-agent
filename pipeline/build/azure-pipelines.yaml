@@ -15,28 +15,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: vh-azure-devops-agent
-
-  - name: azureLocation
-    value: 'uk south'
-
-  - name: workDir
-    value: $(Build.SourcesDirectory)/terraform
-
-  - name: tfVersion
-    value: 1.1.9
-
-  - name: serviceConnection
-    value: DTS-SHAREDSERVICES-STG-Video Hearings
-
-  - name: stateKey
-    value: DevOpsAgent/AzureDevOpsAgent.tfstate
-  
-  - name: devOpsURL
-    value: 'https://dev.azure.com/hmcts'
- 
-  - name: artifactName
-    value: $(Build.BuildId)-AzureDevOps-Agent
+  - group: ../variables/common.yaml
 
 ############################################
 # Terraform CI. ############################
@@ -67,7 +46,7 @@ stages:
       parameters:
         workingDirectory: $(workDir)
         patToken: $(patToken)
-        numberOfAgents: 2
+        numberOfAgents: ${{ variables.agentCount }}
         devOpsURL: $(devOpsURL)
 
     - template: /pipeline/templates/terraform-prep.yaml
