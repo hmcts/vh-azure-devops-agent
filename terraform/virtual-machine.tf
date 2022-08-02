@@ -26,7 +26,11 @@ resource "azurerm_network_interface" "vh_ado_agent_nic" {
   tags = local.common_tags
 }
 
-resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
+output "nic" {
+  value = azurerm_network_interface.vh_ado_agent_nic
+}
+
+/* resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   for_each = local.vms
 
   name                  = each.value.name
@@ -81,3 +85,4 @@ resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
     azurerm_linux_virtual_machine.vh_ado_agent
   ]
 }
+ */
