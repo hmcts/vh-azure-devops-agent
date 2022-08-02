@@ -53,6 +53,10 @@ resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   }
 
   tags = local.common_tags
+
+  depends_on = [
+    azurerm_network_interface.vh_ado_agent_nic
+  ]
 }
 
 
@@ -72,4 +76,7 @@ resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
   PROTECTED_SETTINGS
 
   tags = local.common_tags
+  depends_on = [
+    azurerm_linux_virtual_machine.vh_ado_agent
+  ]
 }
