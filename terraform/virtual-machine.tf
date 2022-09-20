@@ -1,8 +1,8 @@
 locals {
   vms = {
-    for item in range(var.vm_count) :
+    for item in range(var.vm_count +1) :
     "vh-ado-agent-0${item}" => {
-      name = "vh-ado-agent-0${item}"
+      name = "vh-ado-vm-0${item}"
     }
   }
 }
@@ -39,7 +39,7 @@ resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   admin_password                  = random_password.password.result
 
   os_disk {
-    name                 = "${each.value.name}-os-disk"
+    name                 = "${each.value.name}-OsDisk"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
     disk_size_gb         = 128
