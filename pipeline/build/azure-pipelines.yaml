@@ -70,12 +70,12 @@ stages:
       parameters:
         peerServiceConnection: 'GlobalNetworkPeering'
         
-    - template: /pipeline/templates/prepare-agents-script.yaml
-      parameters:
-        workingDirectory: $(workDir)
-        patToken: $(patToken)
-        numberOfAgents: ${{ variables.agentCount }}
-        devOpsURL: $(devOpsURL)
+    # - template: /pipeline/templates/prepare-agents-script.yaml
+    #   parameters:
+    #     workingDirectory: $(workDir)
+    #     patToken: $(patToken)
+    #     numberOfAgents: ${{ variables.agentCount }}
+    #     devOpsURL: $(devOpsURL)
 
     - template: /pipeline/templates/terraform-prep.yaml
       parameters:
