@@ -38,8 +38,8 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
   network_interface_ids = [azurerm_network_interface.vh_ado_agent_nic[each.value.name].id]
   size                  = "Standard_D4s_v3"
 
-  admin_username                  = var.vm_username
-  admin_password                  = random_password.password.result
+  admin_username = var.vm_username
+  admin_password = random_password.password.result
 
   os_disk {
     name                 = "${each.value.name}-os-disk"
