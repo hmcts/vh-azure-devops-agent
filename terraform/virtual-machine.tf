@@ -5,10 +5,10 @@ locals {
       name = "vh-ado-agent-0${item + 1}"
     }
   }
-  publisher = "microsoftwindowsdesktop"
-  offer     = "windows-11"
-  sku       = "win11-21h2-pro"
-  version   = "latest"
+  publisher             = "microsoftwindowsdesktop"
+  offer                 = "windows-11"
+  sku                   = "win11-21h2-pro"
+  version               = "latest"
   dsc_ConfigurationMode = "ApplyAndAutoCorrect"
 }
 
@@ -68,7 +68,7 @@ resource "azurerm_virtual_machine_extension" "dsc" {
   for_each = local.vms
 
   name                 = "DevOpsDSC"
-  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[item + 1].id
+  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value].id
   publisher            = "Microsoft.Powershell"
   type                 = "DSC"
   type_handler_version = "2.83"
