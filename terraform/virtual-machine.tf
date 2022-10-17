@@ -25,7 +25,7 @@ resource "azurerm_network_interface" "vh_ado_agent_nic" {
   tags = local.common_tags
 }
 
-resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
+resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
   for_each = local.vms
 
   name                  = each.value.name
@@ -34,7 +34,6 @@ resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   network_interface_ids = [azurerm_network_interface.vh_ado_agent_nic[each.value.name].id]
   size                  = "Standard_D4s_v3"
 
-  disable_password_authentication = false #tfsec:ignore:azure-compute-disable-password-authentication
   admin_username                  = var.vm_username
   admin_password                  = random_password.password.result
 
@@ -46,10 +45,10 @@ resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
   }
 
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+    publisher = local.publisher
+    offer     = local.offer
+    sku       = local.sku
+    version   = local.version
   }
 
   tags = local.common_tags
