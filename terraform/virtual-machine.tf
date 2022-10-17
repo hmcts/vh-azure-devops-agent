@@ -1,8 +1,8 @@
 locals {
   vms = {
     for item in range(var.vm_count) :
-    "vh-ado-agent-0${item}" => {
-      name = "vh-ado-agent-0${item}"
+    "vh-ado-agent-0${item + 1}" => {
+      name = "vh-ado-agent-0${item + 1}"
     }
   }
 }
@@ -60,23 +60,23 @@ resource "azurerm_linux_virtual_machine" "vh_ado_agent" {
 }
 
 
-resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
-  for_each = local.vms
+# resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
+#   for_each = local.vms
 
-  name                 = "AzureDevOpsAgent"
-  publisher            = "Microsoft.Azure.Extensions"
-  type                 = "CustomScript"
-  type_handler_version = "2.1"
-  virtual_machine_id   = azurerm_linux_virtual_machine.vh_ado_agent[each.value.name].id
+#   name                 = "AzureDevOpsAgent"
+#   publisher            = "Microsoft.Azure.Extensions"
+#   type                 = "CustomScript"
+#   type_handler_version = "2.1"
+#   virtual_machine_id   = azurerm_linux_virtual_machine.vh_ado_agent[each.value.name].id
 
-  protected_settings = <<PROTECTED_SETTINGS
-      {
-          "script": "${filebase64("set_up.sh")}"
-      }
-  PROTECTED_SETTINGS
+#   protected_settings = <<PROTECTED_SETTINGS
+#       {
+#           "script": "${filebase64("set_up.sh")}"
+#       }
+#   PROTECTED_SETTINGS
 
-  tags = local.common_tags
-  depends_on = [
-    azurerm_linux_virtual_machine.vh_ado_agent
-  ]
-}
+#   tags = local.common_tags
+#   depends_on = [
+#     azurerm_linux_virtual_machine.vh_ado_agent
+#   ]
+# }
