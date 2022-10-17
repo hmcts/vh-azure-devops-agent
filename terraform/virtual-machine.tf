@@ -68,11 +68,11 @@ resource "azurerm_virtual_machine_extension" "dsc" {
   for_each = local.vms
 
   name                 = "DevOpsDSC"
-  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value].id
+  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
   publisher            = "Microsoft.Powershell"
   type                 = "DSC"
   type_handler_version = "2.83"
-
+s
   settings = <<SETTINGS_JSON
         {
           "configurationArguments": {
