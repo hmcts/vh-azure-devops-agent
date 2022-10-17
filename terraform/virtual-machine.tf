@@ -5,6 +5,10 @@ locals {
       name = "vh-ado-agent-0${item + 1}"
     }
   }
+  publisher = "microsoftwindowsdesktop"
+  offer     = "windows-11"
+  sku       = "win11-21h2-pro"
+  version   = "latest"
 }
 
 
