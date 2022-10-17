@@ -9,6 +9,7 @@ locals {
   offer     = "windows-11"
   sku       = "win11-21h2-pro"
   version   = "latest"
+  dsc_ConfigurationMode = "ApplyAndAutoCorrect"
 }
 
 
@@ -63,23 +64,38 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
 }
 
 
-# resource "azurerm_virtual_machine_extension" "AzureDevOpsAgent" {
-#   for_each = local.vms
+resource "azurerm_virtual_machine_extension" "dsc" {
+  for_each = local.vms
 
-#   name                 = "AzureDevOpsAgent"
-#   publisher            = "Microsoft.Azure.Extensions"
-#   type                 = "CustomScript"
-#   type_handler_version = "2.1"
-#   virtual_machine_id   = azurerm_linux_virtual_machine.vh_ado_agent[each.value.name].id
+  name                 = "DevOpsDSC"
+  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[item + 1].id
+  publisher            = "Microsoft.Powershell"
+  type                 = "DSC"
+  type_handler_version = "2.83"
 
-#   protected_settings = <<PROTECTED_SETTINGS
-#       {
-#           "script": "${filebase64("set_up.sh")}"
-#       }
-#   PROTECTED_SETTINGS
+  settings = <<SETTINGS_JSON
+        {
+          "configurationArguments": {
+              "RegistrationUrl": "${azurerm_automation_account.vh_infra_core_ado.dsc_server_endpoint}",
+              "NodeConfigurationName": "localhost",
+              "ConfigurationMode": "${local.dsc_ConfigurationMode}",
+              "ConfigurationModeFrequencyMins": 15,
+              "RefreshFrequencyMins": 30,
+              "RebootNodeIfNeeded": false,
+              "ActionAfterReboot": "continueConfiguration",
+              "AllowModuleOverwrite": true
+          }
+        }
+    SETTINGS_JSON
 
-#   tags = local.common_tags
-#   depends_on = [
-#     azurerm_linux_virtual_machine.vh_ado_agent
-#   ]
-# }
+  protected_settings = <<PROTECTED_SETTINGS_JSON
+    {
+      "configurationArguments": {
+         "RegistrationKey": {
+                  "UserName": "PLACEHOLDER_DONOTUSE",
+                  "Password": "${azurerm_automation_account.vh_infra_core_ado.dsc_primary_access_key}"
+                }
+      }
+    }
+PROTECTED_SETTINGS_JSON
+}
