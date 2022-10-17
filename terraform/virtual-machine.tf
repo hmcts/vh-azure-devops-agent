@@ -72,7 +72,7 @@ resource "azurerm_virtual_machine_extension" "dsc" {
   publisher            = "Microsoft.Powershell"
   type                 = "DSC"
   type_handler_version = "2.83"
-s
+
   settings = <<SETTINGS_JSON
         {
           "configurationArguments": {
