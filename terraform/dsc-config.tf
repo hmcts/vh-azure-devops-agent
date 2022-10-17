@@ -5,6 +5,8 @@ resource "azurerm_automation_dsc_configuration" "vh_infra_core_ado" {
   automation_account_name = azurerm_automation_account.vh_infra_core_ado.name
   location                = azurerm_resource_group.vh_infra_core_ado.location
   content_embedded        = "configuration adoagent {}"
+
+  tags = local.common_tags
 }
 
 # resource "azurerm_automation_dsc_nodeconfiguration" "timezone" {
