@@ -39,8 +39,8 @@ $tfPath = "$PSScriptRoot\terraform"
 $dscPath = "$PSScriptRoot\dsc"
 
 #Delete Pre-existing MOFS in our DSC base folder
-Get-ChildItem dscPath -Recurse -Include '*.mof' | Remove-Item -Force
-Get-ChildItem dscPath -Recurse -Include '*.mof.error' | Remove-Item -Force
+Get-ChildItem $dscPath -Recurse -Include '*.mof' | Remove-Item -Force
+Get-ChildItem $dscPath -Recurse -Include '*.mof.error' | Remove-Item -Force
 
 #Loop over each config
 foreach($obj in $configs.Configs.PSObject.Properties) {
