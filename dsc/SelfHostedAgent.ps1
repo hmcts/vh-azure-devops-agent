@@ -16,7 +16,7 @@ Configuration SelfHostedAgent
     )
 
     Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
-    # Import-DscResource -ModuleName 'cChoco'
+    Import-DscResource -ModuleName 'cChoco'
 
     ######################################################
     # Mount Data Disk.
@@ -134,45 +134,45 @@ Configuration SelfHostedAgent
             }
         }
     }
-    # ######################################################
-    # # Choco Installers.
-    # ######################################################
-    # cChocoInstaller installChoco
-    # {
-    #     InstallDir = 'C:\choco'
-    # }
+    ######################################################
+    # Choco Installers.
+    ######################################################
+    cChocoInstaller installChoco
+    {
+        InstallDir = 'C:\choco'
+    }
 
-    # cChocoPackageInstaller AzureCLI
-    # {
-    #     Name       = "azure-cli"
-    #     Version    = "2.40.0"
-    #     DependsOn  ='[cChocoInstaller]installChoco'
-    # }
+    cChocoPackageInstaller AzureCLI
+    {
+        Name       = "azure-cli"
+        Version    = "2.40.0"
+        DependsOn  ='[cChocoInstaller]installChoco'
+    }
 
-    # cChocoPackageInstaller dotnet6
-    # {
-    #     Name      = "dotnet"
-    #     Version   = "6.0.10"
-    #     DependsON ='[cChocoInstaller]installChoco'
-    # }
+    cChocoPackageInstaller dotnet6
+    {
+        Name      = "dotnet"
+        Version   = "6.0.10"
+        DependsON ='[cChocoInstaller]installChoco'
+    }
 
-    # cChocoPackageInstaller dotnet3
-    # {
-    #     Name      = "dotnet3.5"
-    #     Version   = "3.5.20160716"
-    #     DependsON ='[cChocoInstaller]installChoco'
-    # }
+    cChocoPackageInstaller dotnet3
+    {
+        Name      = "dotnet3.5"
+        Version   = "3.5.20160716"
+        DependsON ='[cChocoInstaller]installChoco'
+    }
 
-    # cChocoPackageInstaller PowerShellCore
-    # {
-    #     Name      = "powershell-core"
-    #     Version   = "7.2.6"
-    #     DependsON ='[cChocoInstaller]installChoco'
-    # }
+    cChocoPackageInstaller PowerShellCore
+    {
+        Name      = "powershell-core"
+        Version   = "7.2.6"
+        DependsON ='[cChocoInstaller]installChoco'
+    }
     
-    # cChocoPackageInstaller Chrome
-    # {
-    #     Name     = "googlechrome"
-    #     Version  = "106.0.5249.119"
-    # }
+    cChocoPackageInstaller Chrome
+    {
+        Name     = "googlechrome"
+        Version  = "106.0.5249.119"
+    }
 }
