@@ -11,13 +11,16 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
-  - script: |
-      cd ../dsc
-      Install-Module cChoco
-      . ./SelfHostedAgent.ps1
-      SelfHostedAgent -OutputDir ..\dsc -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
-      Get-Content ../dsc/SelfHostedAgent.mof | Set-Content -Encoding utf8 "../terraform/SelfHostedAgent.mof"
-    displayName: 'Create MOF'
+  - task: PowerShell@2
+    displayName: 'Compile MOFS'
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd ../dsc
+        Install-Module cChoco
+        . ./SelfHostedAgent.ps1
+        SelfHostedAgent -OutputDir ..\dsc -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
+        Get-Content ../dsc/SelfHostedAgent.mof | Set-Content -Encoding utf8 "../terraform/SelfHostedAgent.mof"
       
   - template: ./tf-install.yaml
     parameters:
