@@ -6,7 +6,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        cd ../dsc
+        cd ./dsc
         Install-Module cChoco -Force
         . ./SelfHostedAgent.ps1
         SelfHostedAgent --OutputPath ./ -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
