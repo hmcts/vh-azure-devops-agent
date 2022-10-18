@@ -15,11 +15,11 @@ foreach ($eachConfiguration in $DSCFiles) {
 }
       
 $MOFb16 = Get-ChildItem "$PSScriptRoot\dsc" -Recurse -Include '*.mof'
-mkdir "$PSScriptRoot\dsc\mof\" -Force
+mkdir "$PSScriptRoot\terraform\mof\" -Force
 
 foreach ($MOF in $MOFb16) {
     Write-Output "Converting MOFS: $MOF"
-    Get-Content $MOF | Set-Content -Encoding utf8 "$PSScriptRoot\dsc\mof\$($MOF.Name)"
+    Get-Content $MOF | Set-Content -Encoding utf8 "$PSScriptRoot\terraform\mof\$($MOF.Name)"
 }
 
-Get-ChildItem "$PSScriptRoot\dsc\mof\"
+Get-ChildItem "$PSScriptRoot\terraform\mof\"
