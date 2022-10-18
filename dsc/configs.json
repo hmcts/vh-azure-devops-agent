@@ -1,0 +1,15 @@
+{
+    "configs": {
+      "SelfHostedAgent": {
+        "file": "SelfHostedAgent.ps1",
+        "modules": [
+          "cChoco"
+        ],
+        "params": {
+          "azureDevOpsPAT": "REPLACE_WITH_PAT",
+          "numberOfAgents": 2,
+          "azureDevOpsURL": "https://dev.azure.com/hmcts"
+        }
+      }
+    }
+  }
