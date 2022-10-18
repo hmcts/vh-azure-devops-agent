@@ -17,7 +17,7 @@ jobs:
       targetType: 'inline'
       script: |
         cd ./dsc
-        Install-Module cChoco
+        Install-Module cChoco -Force
         . ./SelfHostedAgent.ps1
         SelfHostedAgent -OutputDir ..\dsc -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
         Get-Content ../dsc/SelfHostedAgent.mof | Set-Content -Encoding utf8 "../terraform/SelfHostedAgent.mof"
