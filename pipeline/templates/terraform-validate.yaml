@@ -12,7 +12,6 @@ jobs:
   steps:
 
   - template: ./mof.yaml
-    displayName: Create MOF
       
   - template: ./tf-install.yaml
     parameters:

@@ -13,7 +13,6 @@ parameters:
 steps:
 
   - template: ./mof.yaml
-    displayName: Create MOF
   
   - task: TerraformCLI@0
     displayName: Terraform Plan
