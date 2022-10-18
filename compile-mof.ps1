@@ -19,11 +19,12 @@ function ConvertTo-MOF {
     )
     Write-Output "Building MOFS: $file"
     if ($params) {
-        Write-Output "With params"
+        Write-Output "With params..."
         $list = ""
         foreach ($param in $params.PSObject.Properties) {
             $list = "$list -$($param.Name) $($param.Value)"
         }
+        Write-Output "$file $list"
         .$file $list
     } else {
         Write-Output "Without params"
