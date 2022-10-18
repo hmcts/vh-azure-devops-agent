@@ -17,6 +17,8 @@ foreach ($eachConfiguration in $DSCFiles) {
 $MOFb16 = Get-ChildItem "$PSScriptRoot\dsc" -Recurse -Include '*.mof'
 mkdir "$PSScriptRoot\terraform\mof\" -Force
 
+Install-Module -Name 'cChoco'
+
 foreach ($MOF in $MOFb16) {
     Write-Output "Converting MOFS: $MOF"
     Get-Content $MOF | Set-Content -Encoding utf8 "$PSScriptRoot\terraform\mof\$($MOF.Name)"
