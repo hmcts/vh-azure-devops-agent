@@ -21,19 +21,18 @@ function ConvertTo-MOF {
     )
     Write-Output "Building MOFS: $file"
     Set-Location $path
-    . ./$file 
-
+    .$file
     if ($params) {
         Write-Output "With params..."
-        $list = ""
+        $p = ""
         foreach ($param in $params.PSObject.Properties) {
-            $list = "$list -$($param.Name) ""$($param.Value)"" "
+            $p = "$p -$($param.Name) ""$($param.Value)"" "
         }
-        Write-Output "$list"
-        .$name -OutputPath "./dsc/" $list
+        Write-Output "$name -OutputPath $outputDir $p"
+        .$name -OutputPath $outputDir $p
     } else {
         Write-Output "Without params"
-        .$name -OutputPath "./dsc/"
+        .$name -OutputPath $outputDir
     }
     Write-Output "Converting MOFS: $file"
     Get-Content $file | Set-Content -Encoding utf8 "$outputDir\$($file.Name)"
@@ -57,6 +56,6 @@ foreach($obj in $configs.Configs.PSObject.Properties) {
         
         Write-Output "Processing $name"
         Install-LocalModules -modules $modules
-        ConvertTo-MOF -path $dscPath -file $file -params $params -outputDir $tfPath -name $name
+        ConvertTo-MOF -file "$dscPath\$file" -params $params -outputDir $tfPath -name $name
 
 }
