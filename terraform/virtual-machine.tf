@@ -10,6 +10,7 @@ locals {
   sku                   = "win11-21h2-pro"
   version               = "latest"
   dsc_ConfigurationMode = "ApplyAndAutoCorrect"
+  winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; Enable-PsRemoting -Force"
 }
 
 
@@ -98,4 +99,26 @@ resource "azurerm_virtual_machine_extension" "dsc" {
       }
     }
 PROTECTED_SETTINGS_JSON
+
+  tags = local.common_tags
+
+}
+
+resource "azurerm_virtual_machine_extension" "perf_test" {
+  for_each = local.vms
+
+  name                 = "chocoInstall-${each.value.name}"
+  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.9"
+
+  protected_settings = <<PSETTINGS
+    {
+       "commandToExecute": "${local.winscript}"
+    }
+PSETTINGS
+
+  tags = local.common_tags
+  
 }
