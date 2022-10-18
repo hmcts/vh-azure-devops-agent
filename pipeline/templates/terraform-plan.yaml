@@ -12,6 +12,12 @@ parameters:
 
 steps:
 
+  - task: PowerShell@2
+    displayName: 'Compile MOFS'
+    inputs:
+      targetType: filePath
+      filePath: ./compile-mof.ps1
+  
   - task: TerraformCLI@0
     displayName: Terraform Plan
     inputs:
