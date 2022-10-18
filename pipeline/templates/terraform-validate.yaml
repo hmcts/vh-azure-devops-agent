@@ -16,7 +16,7 @@ jobs:
     inputs:
       targetType: 'inline'
       script: |
-        cd ../dsc
+        cd ./dsc
         Install-Module cChoco
         . ./SelfHostedAgent.ps1
         SelfHostedAgent -OutputDir ..\dsc -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
