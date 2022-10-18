@@ -176,3 +176,5 @@ Configuration SelfHostedAgent
         Version  = "106.0.5249.119"
     }
 }
+
+SelfHostedAgent -OutputPath ./dsc/
