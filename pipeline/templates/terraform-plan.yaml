@@ -12,11 +12,12 @@ parameters:
 
 steps:
 
-  - task: PowerShell@2
-    displayName: 'Compile MOFS'
-    inputs:
-      targetType: filePath
-      filePath: ./compile-mof.ps1
+  - script: |
+      cd ../dsc
+      Install-Module cChoco
+      ../SelfHostedAgent.ps1
+      SelfHostedAgent -OutputDir ../terraform -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
+    displayName: 'Create MOF'
   
   - task: TerraformCLI@0
     displayName: Terraform Plan
