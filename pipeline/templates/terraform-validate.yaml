@@ -10,6 +10,13 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
+
+  - task: PowerShell@2
+    displayName: 'Compile MOFS'
+    inputs:
+      targetType: filePath
+      filePath: ./compile-mof.ps1
+      
   - template: ./tf-install.yaml
     parameters:
       terraformVersion: ${{ parameters.terraformVersion }}
