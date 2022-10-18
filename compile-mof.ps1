@@ -7,7 +7,7 @@ function Install-LocalModules {
         )
         foreach ($module in $modules) {
             Write-Output "Installing module: $module"
-            Install-Module -Name $module
+            Install-Module -Name $module -Force
         }
     }
 
