@@ -22,7 +22,7 @@ function ConvertTo-MOF {
         Write-Output "With params..."
         $list = ""
         foreach ($param in $params.PSObject.Properties) {
-            $list = "$list -$($param.Name) $($param.Value)"
+            $list = "$list -$($param.Name) ""$($param.Value)"" "
         }
         Write-Output "$file $list"
         .$file $list
