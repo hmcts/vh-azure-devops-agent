@@ -9,10 +9,19 @@ parameters:
   - name: customCommandOptions
     type: string
     default: ''
+  - name: azureDevOpsURL
+    type: string
+  - name: numberOfAgents
+  - name: azureDevOpsPAT
+    type: string
 
 steps:
 
   - template: ./mof.yaml
+    parameters:
+      azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
+      numberOfAgents: ${{ parameters.numberOfAgents }}
+      azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
   
   - task: TerraformCLI@0
     displayName: Terraform Plan

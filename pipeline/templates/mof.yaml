@@ -1,3 +1,7 @@
+parameters:
+  - name: azureDevOpsPAT
+  - name: numberOfAgents
+  - name: azureDevOpsURL
 
 steps:
 
@@ -9,5 +13,5 @@ steps:
         cd ./dsc
         Install-Module cChoco -Force
         . ./SelfHostedAgent.ps1
-        SelfHostedAgent -OutputPath ./ -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
+        SelfHostedAgent -OutputPath ./ -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} 
         Get-Content ./localhost.mof | Set-Content -Encoding utf8 "../terraform/localhost.mof"

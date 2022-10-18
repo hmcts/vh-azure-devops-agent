@@ -3,6 +3,11 @@ parameters:
     type: string
   - name: terraformVersion
     type: string
+  - name: azureDevOpsURL
+    type: string
+  - name: numberOfAgents
+  - name: azureDevOpsPAT
+    type: string
 
 jobs:
 - job: TerraformValidate
@@ -12,6 +17,10 @@ jobs:
   steps:
 
   - template: ./mof.yaml
+    parameters:
+      azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
+      numberOfAgents: ${{ parameters.numberOfAgents }}
+      azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
       
   - template: ./tf-install.yaml
     parameters:

@@ -55,6 +55,9 @@ stages:
     parameters:
       terraformPath: $(workDir)
       terraformVersion: $(tfVersion)
+      azureDevOpsURL: $(devOpsURL)
+      numberOfAgents: ${{ variables.agentCount }}
+      azureDevOpsPAT: $(patToken)
 
 ############################################
 # Terraform Plan. ##########################
@@ -69,13 +72,6 @@ stages:
     - template: /pipeline/templates/get-peer-spn.yaml
       parameters:
         peerServiceConnection: 'GlobalNetworkPeering'
-        
-    # - template: /pipeline/templates/prepare-agents-script.yaml
-    #   parameters:
-    #     workingDirectory: $(workDir)
-    #     patToken: $(patToken)
-    #     numberOfAgents: ${{ variables.agentCount }}
-    #     devOpsURL: $(devOpsURL)
 
     - template: /pipeline/templates/terraform-prep.yaml
       parameters:
@@ -93,6 +89,9 @@ stages:
         subscription: $(serviceConnection)
         workingDirectory: $(workDir)
         customCommandOptions: '-var-file=$(workDir)/vars/adoagent.tfvars  -var vm_count=${{ variables.vmCount }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        azureDevOpsURL: $(devOpsURL)
+        numberOfAgents: ${{ variables.agentCount }}
+        azureDevOpsPAT: $(patToken)
 
 ############################################
 # Manual Validation. #######################
