@@ -13,12 +13,16 @@ function Install-LocalModules {
 
 function ConvertTo-MOF {
     param (
+        $path,
         $file,
         $outputDir,
         $params,
         $name
     )
     Write-Output "Building MOFS: $file"
+    Set-Location $path
+    . ./$file 
+
     if ($params) {
         Write-Output "With params..."
         $list = ""
@@ -26,11 +30,9 @@ function ConvertTo-MOF {
             $list = "$list -$($param.Name) ""$($param.Value)"" "
         }
         Write-Output "$list"
-        ../$file 
         .$name -OutputPath "./dsc/" $list
     } else {
         Write-Output "Without params"
-        ../$file
         .$name -OutputPath "./dsc/"
     }
     Write-Output "Converting MOFS: $file"
@@ -55,6 +57,6 @@ foreach($obj in $configs.Configs.PSObject.Properties) {
         
         Write-Output "Processing $name"
         Install-LocalModules -modules $modules
-        ConvertTo-MOF -file "$dscPath\$file" -params $params -outputDir $tfPath -name $name
+        ConvertTo-MOF -path $dscPath -file $file -params $params -outputDir $tfPath -name $name
 
 }
