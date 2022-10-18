@@ -14,8 +14,9 @@ jobs:
   - script: |
       cd ../dsc
       Install-Module cChoco
-      ../SelfHostedAgent.ps1
-      SelfHostedAgent -OutputDir ../terraform -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
+      . ./SelfHostedAgent.ps1
+      SelfHostedAgent -OutputDir ..\dsc -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
+      Get-Content ../dsc/SelfHostedAgent.mof | Set-Content -Encoding utf8 "../terraform/SelfHostedAgent.mof"
     displayName: 'Create MOF'
       
   - template: ./tf-install.yaml
