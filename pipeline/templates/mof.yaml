@@ -9,5 +9,5 @@ steps:
         cd ./dsc
         Install-Module cChoco -Force
         . ./SelfHostedAgent.ps1
-        SelfHostedAgent --OutputPath ./ -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
-        Get-Content ../dsc/SelfHostedAgent.mof | Set-Content -Encoding utf8 "../terraform/SelfHostedAgent.mof"s
+        SelfHostedAgent -OutputPath ./ -azureDevOpsPAT "fsdfdfdfb" -numberOfAgents 2 -azureDevOpsURL "https://dev.azure.com/hmcts"
+        Get-Content ./localhost.mof | Set-Content -Encoding utf8 "../terraform/localhost.mof"
