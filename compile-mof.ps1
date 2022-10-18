@@ -56,6 +56,6 @@ foreach($obj in $configs.Configs.PSObject.Properties) {
         
         Write-Output "Processing $name"
         Install-LocalModules -modules $modules
-        ConvertTo-MOF -file "$dscPath\$file" -params $params -outputDir $tfPath -name $name
+        ConvertTo-MOF -file "$dscPath\$file" -params $params -outputDir $tfPath -name $name -path $dscPath
 
 }
