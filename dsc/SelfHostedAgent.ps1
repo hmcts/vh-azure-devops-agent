@@ -6,7 +6,7 @@ Configuration SelfHostedAgent
     param
     (
         [parameter(mandatory=$true)]
-        [string[]]$azureDevOpsPAT,
+        [string]$azureDevOpsPAT,
 
         [parameter(mandatory=$true)]
         [int32]$numberOfAgents,
