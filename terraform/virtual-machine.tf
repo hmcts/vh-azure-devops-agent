@@ -4,7 +4,7 @@ locals {
     "vh-ado-agent-0${item + 1}" => {
       name      = "vh-ado-agent-0${item + 1}"
       os_disk   = "vh-ado-agent-0${item + 1}-OsDisk"
-      disk_data = "vh-ado-agent-0${item + 1}-DataDisk"
+      data_disk = "vh-ado-agent-0${item + 1}-DataDisk"
     }
   }
   publisher             = "microsoftwindowsdesktop"
@@ -45,7 +45,7 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
   admin_password = random_password.password.result
 
   os_disk {
-    name                 = each.value.name.os_disk
+    name                 = each.value.os_disk
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
     disk_size_gb         = 128
