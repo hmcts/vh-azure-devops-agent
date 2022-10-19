@@ -15,14 +15,23 @@ resources:
 pool:
   vmImage: 'windows-latest'
 
+parameters:
+  - name: env
+    displayName: 'Environment to deploy to'
+    type: string
+    default: dev
+    values:
+      - dev
+      - stg
+
 variables:
+  - group: vh-azure-devops-agent
+
   - name: agentCount
     value: 2
     
   - name: vmCount
     value: 1
-  
-  - group: vh-azure-devops-agent
 
   - name: azureLocation
     value: 'uk south'
@@ -34,11 +43,11 @@ variables:
     value: 1.1.9
 
   - name: serviceConnection
-    value: DTS-SHAREDSERVICES-STG-Video Hearings
+    value: DTS-SHAREDSERVICES-${{ upper(parameters.env) }}-Video Hearings
 
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
-  
+
   - name: devOpsURL
     value: 'https://dev.azure.com/hmcts'
  
@@ -69,9 +78,10 @@ stages:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
     steps:
-    - template: /pipeline/templates/get-peer-spn.yaml
-      parameters:
-        peerServiceConnection: 'GlobalNetworkPeering'
+    - ${{ if eq( parameters.env, 'stg') }}: #Only get GNP if deploying to staging
+      - template: /pipeline/templates/get-peer-spn.yaml
+        parameters:
+          peerServiceConnection: 'GlobalNetworkPeering'
 
     - template: /pipeline/templates/terraform-prep.yaml
       parameters:
@@ -88,7 +98,10 @@ stages:
       parameters:
         subscription: $(serviceConnection)
         workingDirectory: $(workDir)
-        customCommandOptions: '-var-file=$(workDir)/vars/adoagent.tfvars  -var vm_count=${{ variables.vmCount }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        ${{ if eq( parameters.env, 'stg') }}:
+          customCommandOptions: '-var-file=$(workDir)/vars/adoagent.tfvars  -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        ${{ else }}:  
+          customCommandOptions: '-var-file=$(workDir)/vars/adoagent.tfvars  -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan '
         azureDevOpsURL: $(devOpsURL)
         numberOfAgents: ${{ variables.agentCount }}
         azureDevOpsPAT: $(patToken)

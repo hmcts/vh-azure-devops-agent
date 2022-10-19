@@ -16,9 +16,6 @@ vm_username = "vhadoagent"
 # Network Security Group
 nsg_name = "vh-infra-core-ado-nsg"
 
-# environment
-env = "stg"
-
 dns_zone = ["dev.platform.hmcts.net", "test.platform.hmcts.net", "ithc.platform.hmcts.net", "staging.platform.hmcts.net", "platform.hmcts.net", "demo.platform.hmcts.net"]
 
 dns_zone_sandbox = ["sandbox.platform.hmcts.net"]
