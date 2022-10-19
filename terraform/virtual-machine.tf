@@ -43,7 +43,7 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
   admin_password = random_password.password.result
 
   os_disk {
-    name                 = "${each.value.name}-os-disk"
+    name                 = "${each.value.name}-OsDisk"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
     disk_size_gb         = 128
