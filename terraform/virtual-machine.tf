@@ -27,6 +27,9 @@ resource "azurerm_network_interface" "vh_ado_agent_nic" {
     name                          = "IpConfig"
     subnet_id                     = azurerm_subnet.vh_infra_core_ado_snet.id
     private_ip_address_allocation = "Dynamic"
+
+    public_ip_address_id = var.env == "dev" ? azurerm_public_ip.dev_pip[each.value.name].id : null
+
   }
 
   tags = local.common_tags
