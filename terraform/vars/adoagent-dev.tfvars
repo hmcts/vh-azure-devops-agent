@@ -8,7 +8,7 @@ subnet_name_vh_agent         = "vh-infra-core-ado-snet"
 subnet_name_vh_agent_address = "10.10.52.0/27"
 
 # Key Vault
-key_vault_name = "vh-infra-core-ado"
+key_vault_name = "vh-infra-dev-ado"
 
 # Create Virtual Machine
 vm_username = "vhadoagent"
