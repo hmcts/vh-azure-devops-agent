@@ -59,18 +59,21 @@ variable "peer_client_id" {
   description = "client id of peering spn"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "peer_client_secret" {
   description = "client secret of peering spn"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "peer_tenant_id" {
   description = "tenant id of peering spn"
   type        = string
   sensitive   = true
+  default     = ""
 }
 variable "dns_zone" {
   description = "private dns zone name"
