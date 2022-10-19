@@ -1,6 +1,6 @@
 
 locals {
-  pips = var.env == "dev" ? local.vms : []
+  pips = var.env == "dev" ? local.vms : {}
 }
 
 resource "azurerm_public_ip" "dev_pip" {
