@@ -108,7 +108,7 @@ stages:
 
 ############################################
 # Manual Validation. #######################
-- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+- ${{ if or( eq( variables['Build.SourceBranchName'], 'master' ), eq( parameters.env, 'dev' ) ) }}:
   - stage: Wait
     dependsOn:
       - Plan
