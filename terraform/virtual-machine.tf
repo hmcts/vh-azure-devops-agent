@@ -13,7 +13,6 @@ locals {
   winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; Enable-PsRemoting -Force"
 }
 
-
 # Create Virtual Machine
 resource "azurerm_network_interface" "vh_ado_agent_nic" {
   for_each = local.vms
@@ -60,10 +59,34 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
   tags = local.common_tags
 
   depends_on = [
-    azurerm_network_interface.vh_ado_agent_nic
+    azurerm_network_interface.vh_ado_agent_nic,
+    azurerm_automation_account.vh_infra_core_ado
   ]
+
 }
 
+resource "azurerm_virtual_machine_extension" "ps_remoting" {
+  for_each = local.vms
+
+  name                 = "psRemoting-${each.value.name}"
+  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.9"
+
+  protected_settings = <<PSETTINGS
+    {
+       "commandToExecute": "${local.winscript}"
+    }
+PSETTINGS
+
+  tags = local.common_tags
+
+  depends_on = [
+    azurerm_windows_virtual_machine.vh_ado_agent
+  ]
+
+}
 
 resource "azurerm_virtual_machine_extension" "dsc" {
   for_each = local.vms
@@ -102,23 +125,9 @@ PROTECTED_SETTINGS_JSON
 
   tags = local.common_tags
 
-}
-
-resource "azurerm_virtual_machine_extension" "perf_test" {
-  for_each = local.vms
-
-  name                 = "chocoInstall-${each.value.name}"
-  virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
-  publisher            = "Microsoft.Compute"
-  type                 = "CustomScriptExtension"
-  type_handler_version = "1.9"
-
-  protected_settings = <<PSETTINGS
-    {
-       "commandToExecute": "${local.winscript}"
-    }
-PSETTINGS
-
-  tags = local.common_tags
+  depends_on = [
+    azurerm_windows_virtual_machine.vh_ado_agent,
+    azurerm_virtual_machine_extension.ps_remoting
+  ]
 
 }
