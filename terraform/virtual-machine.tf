@@ -84,7 +84,7 @@ resource "azurerm_managed_disk" "vh_ado_agent" {
 resource "azurerm_virtual_machine_data_disk_attachment" "example" {
   for_each = local.vms
 
-  managed_disk_id    = azurerm_managed_disk.vh_ado_agent[each.value.data_disk].id
+  managed_disk_id    = azurerm_managed_disk.vh_ado_agent[each.value.name].id
   virtual_machine_id = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
   lun                = "10"
   caching            = "ReadWrite"
