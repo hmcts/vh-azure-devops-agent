@@ -6,7 +6,7 @@ parameters:
 steps:
 
   - task: PowerShell@2
-    displayName: 'Compile MOFS'
+    displayName: 'Compile DSC'
     inputs:
       targetType: 'inline'
       script: |

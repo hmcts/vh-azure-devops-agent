@@ -16,7 +16,7 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
-  - template: ./mof.yaml
+  - template: ./compile-dsc.yaml
     parameters:
       azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
       numberOfAgents: ${{ parameters.numberOfAgents }}
