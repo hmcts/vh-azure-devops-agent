@@ -2,7 +2,9 @@ locals {
   vms = {
     for item in range(var.vm_count) :
     "vh-ado-agent-0${item + 1}" => {
-      name = "vh-ado-agent-0${item + 1}"
+      name      = "vh-ado-agent-0${item + 1}"
+      os_disk   = "vh-ado-agent-0${item + 1}-OsDisk"
+      disk_data = "vh-ado-agent-0${item + 1}-DataDisk"
     }
   }
   publisher             = "microsoftwindowsdesktop"
@@ -43,7 +45,7 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
   admin_password = random_password.password.result
 
   os_disk {
-    name                 = "${each.value.name}-OsDisk"
+    name                 = each.value.name.os_disk
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
     disk_size_gb         = 128
@@ -63,6 +65,29 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
     azurerm_automation_account.vh_infra_core_ado
   ]
 
+}
+
+resource "azurerm_managed_disk" "vh_ado_agent" {
+  for_each = local.vms
+
+  name                 = each.value.data_disk
+  location             = azurerm_resource_group.vh_infra_core_ado.location
+  resource_group_name  = azurerm_resource_group.vh_infra_core_ado.name
+  storage_account_type = "Premium_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = "64"
+
+  tags = local.common_tags
+
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "example" {
+  for_each = local.vms
+
+  managed_disk_id    = azurerm_managed_disk.vh_ado_agent[each.value.data_disk].id
+  virtual_machine_id = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
+  lun                = "10"
+  caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_extension" "ps_remoting" {
