@@ -26,6 +26,9 @@ parameters:
 
 variables:
   - group: vh-azure-devops-agent
+  
+  - ${{ if eq( parameters.env, 'dev') }}:
+    - group: vh-azure-devops-agent-dev
 
   - name: agentCount
     value: 2
