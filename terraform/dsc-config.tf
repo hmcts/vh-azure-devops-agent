@@ -15,9 +15,9 @@ resource "azurerm_automation_dsc_nodeconfiguration" "adoagent" {
   automation_account_name = azurerm_automation_account.vh_infra_core_ado.name
   content_embedded        = file("./localhost.mof")
 
-  depends_on              = [
+  depends_on = [
     azurerm_automation_dsc_configuration.vh_infra_core_ado
   ]
-  
+
 }
 
