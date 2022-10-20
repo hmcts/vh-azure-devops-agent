@@ -12,7 +12,7 @@ locals {
   sku                   = "win11-21h2-pro"
   version               = "latest"
   dsc_ConfigurationMode = "ApplyAndAutoCorrect"
-  winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; Enable-PsRemoting -Force"
+  winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; powershell Enable-PsRemoting -Force; powershell exit 0"
 }
 
 # Create Virtual Machine
@@ -152,6 +152,23 @@ resource "azurerm_virtual_machine_extension" "dsc" {
 PROTECTED_SETTINGS_JSON
 
   tags = local.common_tags
+
+  depends_on = [
+    azurerm_windows_virtual_machine.vh_ado_agent,
+    azurerm_virtual_machine_extension.ps_remoting
+  ]
+
+}
+
+resource "azurerm_virtual_machine_extension" "AADLoginForWindows" {
+  for_each = local.vms
+
+  name                       = "AADLoginForWindows"
+  virtual_machine_id         = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
+  publisher                  = "Microsoft.Azure.ActiveDirectory"
+  type                       = "AADLoginForWindows"
+  type_handler_version       = "1.0.0.1"
+  auto_upgrade_minor_version = true
 
   depends_on = [
     azurerm_windows_virtual_machine.vh_ado_agent,
