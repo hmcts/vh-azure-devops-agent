@@ -32,11 +32,6 @@ steps:
       terraformVersion: ${{ parameters.terraformVersion }}
 
   - task: TerraformCLI@0
-    displayName: 'Check Terraform Version'
-    inputs:
-      command: version
-
-  - task: TerraformCLI@0
     displayName: Terraform Init
     inputs:
       command: init
