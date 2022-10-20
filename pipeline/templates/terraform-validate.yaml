@@ -18,12 +18,12 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
-  - template: ./compile-dsc.yaml
-    parameters:
-      azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
-      numberOfAgents: ${{ parameters.numberOfAgents }}
-      azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
-      vmName: ${{ parameters.vmName }}
+  # - template: ./compile-dsc.yaml
+  #   parameters:
+  #     azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
+  #     numberOfAgents: ${{ parameters.numberOfAgents }}
+  #     azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
+  #     vmName: ${{ parameters.vmName }}
       
   - template: ./tf-install.yaml
     parameters:

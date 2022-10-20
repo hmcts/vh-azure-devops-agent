@@ -19,12 +19,12 @@ parameters:
 
 steps:
 
-  - template: ./compile-dsc.yaml
-    parameters:
-      azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
-      numberOfAgents: ${{ parameters.numberOfAgents }}
-      azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
-      vmName: ${{ parameters.vmName }}
+  # - template: ./compile-dsc.yaml
+  #   parameters:
+  #     azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
+  #     numberOfAgents: ${{ parameters.numberOfAgents }}
+  #     azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
+  #     vmName: ${{ parameters.vmName }}
   
   - task: TerraformCLI@0
     displayName: Terraform Plan
