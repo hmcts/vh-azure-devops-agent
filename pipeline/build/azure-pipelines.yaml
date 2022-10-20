@@ -177,7 +177,7 @@ stages:
       # Apply DSC Configuration. #################
     - job: Apply_DSC
       displayName: Apply DSC
-      dependsOn: Deploy_Terraform
+      #dependsOn: Deploy_Terraform
       pool:
         vmImage: windows-latest
       variables:
