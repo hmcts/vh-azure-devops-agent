@@ -50,7 +50,7 @@ data "azurerm_virtual_network" "core-infra-vnet-mgmt" {
 }
 
 locals {
-  ado_TO_hubs = vars.env != "stg" ? {} : {
+  ado_TO_hubs = var.env != "stg" ? {} : {
     "hmcts-hub-nonprodi"   = data.azurerm_virtual_network.hmcts-hub-nonprodi.id
     "ukw-hub-nonprodi"     = data.azurerm_virtual_network.ukw-hub-nonprodi.id
     "hmcts-hub-prod-int"   = data.azurerm_virtual_network.hmcts-hub-prod-int.id
