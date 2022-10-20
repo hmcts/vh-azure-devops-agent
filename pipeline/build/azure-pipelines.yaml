@@ -30,7 +30,7 @@ parameters:
     displayName: 'Agent Machine Names'
     type: object
     default:
-      - vh-infra-core-ado
+      - vh-ado-agent-01
 
 ##############################
 # Variables. #################
