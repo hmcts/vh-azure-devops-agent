@@ -7,9 +7,9 @@ locals {
       data_disk = "vh-ado-agent-0${item + 1}-DataDisk"
     }
   }
-  publisher             = "microsoftwindowsdesktop"
-  offer                 = "windows-11"
-  sku                   = "win11-21h2-pro"
+  publisher             = "MicrosoftWindowsDesktop"
+  offer                 = "windows-10"
+  sku                   = "win10-21h2-pro-g2"
   version               = "latest"
   dsc_ConfigurationMode = "ApplyAndAutoCorrect"
   winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; powershell Enable-PsRemoting -SkipNetworkProfileCheck -Force; powershell exit 0"
