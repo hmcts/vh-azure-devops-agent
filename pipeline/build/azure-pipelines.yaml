@@ -179,7 +179,7 @@ stages:
       displayName: Apply DSC
       #dependsOn: Deploy_Terraform
       pool:
-        vmImage: windows-latest
+        vmImage: ubuntu-latest
       variables:
         - name: resourceName
           value: vh-infra-core-ado
