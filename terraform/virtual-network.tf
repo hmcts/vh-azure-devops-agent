@@ -60,7 +60,7 @@ locals {
 }
 
 resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
-  for_each = ado_TO_hubs
+  for_each = local.ado_TO_hubs
 
   name                      = "vh-infra-core-ado-TO-${each.key}"
   resource_group_name       = azurerm_resource_group.vh_infra_core_ado.name
