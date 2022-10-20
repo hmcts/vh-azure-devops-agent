@@ -129,7 +129,7 @@ resource "azurerm_virtual_machine_extension" "dsc" {
         {
           "configurationArguments": {
               "RegistrationUrl": "${azurerm_automation_account.vh_infra_core_ado.dsc_server_endpoint}",
-              "NodeConfigurationName": "adoagent.localhost",
+              "NodeConfigurationName": "SelfHostedAgent.localhost",
               "ConfigurationMode": "${local.dsc_ConfigurationMode}",
               "ConfigurationModeFrequencyMins": 15,
               "RefreshFrequencyMins": 30,
