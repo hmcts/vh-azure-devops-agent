@@ -13,7 +13,7 @@ resources:
       endpoint: hmcts
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 ##############################
 # Parameters. ################
@@ -173,6 +173,8 @@ stages:
             planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
+      ############################################
+      # Apply DSC Configuration. #################
     - job: Apply_DSC
       displayName: Apply DSC
       dependsOn: Deploy_Terraform
