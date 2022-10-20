@@ -49,14 +49,18 @@ data "azurerm_virtual_network" "core-infra-vnet-mgmt" {
   provider            = azurerm.mgmt_peer
 }
 
-resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
-  for_each = {
+locals {
+  ado_TO_hubs = vars.env != "stg" ? {} : {
     "hmcts-hub-nonprodi"   = data.azurerm_virtual_network.hmcts-hub-nonprodi.id
     "ukw-hub-nonprodi"     = data.azurerm_virtual_network.ukw-hub-nonprodi.id
     "hmcts-hub-prod-int"   = data.azurerm_virtual_network.hmcts-hub-prod-int.id
     "hmcts-hub-sbox-int"   = data.azurerm_virtual_network.hmcts-hub-sbox-int.id
     "core-infra-vnet-mgmt" = data.azurerm_virtual_network.core-infra-vnet-mgmt.id
   }
+}
+
+resource "azurerm_virtual_network_peering" "vh_infra_core_ " {
+  for_each = ado_TO_hubs
 
   name                      = "vh-infra-core-ado-TO-${each.key}"
   resource_group_name       = azurerm_resource_group.vh_infra_core_ado.name
