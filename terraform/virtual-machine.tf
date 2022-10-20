@@ -84,7 +84,7 @@ resource "azurerm_managed_disk" "vh_ado_agent" {
 
 }
 
-resource "azurerm_virtual_machine_data_disk_attachment" "example" {
+resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
   for_each = local.vms
 
   managed_disk_id    = azurerm_managed_disk.vh_ado_agent[each.value.name].id

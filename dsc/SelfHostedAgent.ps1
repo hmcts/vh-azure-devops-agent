@@ -117,8 +117,14 @@ Configuration SelfHostedAgent
                 ######################################
                 # Install Agent. #####################
                 ######################################
-                Add-Type -AssemblyName System.IO.Compression.FileSystem
-                [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $installDir)
+                try {
+                    Add-Type -AssemblyName System.IO.Compression.FileSystem
+                    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $installDir)
+                }
+                catch {
+                    Write-Output "Zip Already Extracted."
+                }
+
                 Set-Location -Path $installDir
                 .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool 'VH Self Hosted' --agent $agentName --acceptTeeEula --runAsService --unattended
             }
