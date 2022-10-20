@@ -194,14 +194,14 @@ stages:
 
       - ${{ each vm in parameters.vmNames }}:
         - task: AzurePowerShell@5
-          taskName: Apply_DSC_{{ vm }}
-          displayName: Apply DSC {{ vm }}
+          name: Apply_DSC
+          displayName: Apply DSC ${{ vm }}
           inputs: 
             azureSubscription: $(serviceConnection)
             scriptType: inlineScript
             inline: |
               $params = @{
-                'vmName'         = "{{ vm }}"
+                'vmName'         = "${{ vm }}"
                 'azureDevOpsURL' = "$(devOpsURL)"
                 'azureDevOpsPAT' = "$(patToken)"
                 'numberOfAgents' = "$(agentCount)"
@@ -209,5 +209,5 @@ stages:
 
               Start-AzAutomationDscCompilationJob -ResourceGroupName "$(resourceName)"  -AutomationAccountName "$(resourceName)" -ConfigurationName "SelfHostedAgent" -Parameters $params
 
-              Register-AzAutomationDscNode -AzureVMName "{{ vm }}" -ResourceGroupName "$(resourceName)"  -AutomationAccountName "$(resourceName)" -NodeConfigurationName "SelfHostedAgent.localhost" `
+              Register-AzAutomationDscNode -AzureVMName "${{ vm }}" -ResourceGroupName "$(resourceName)"  -AutomationAccountName "$(resourceName)" -NodeConfigurationName "SelfHostedAgent.localhost" `
                                             -ConfigurationMode ApplyAndAutocorrect
