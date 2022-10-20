@@ -167,7 +167,7 @@ resource "azurerm_virtual_machine_extension" "AADLoginForWindows" {
   virtual_machine_id         = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
   publisher                  = "Microsoft.Azure.ActiveDirectory"
   type                       = "AADLoginForWindows"
-  type_handler_version       = "1.0.0.1"
+  type_handler_version       = "1.0"
   auto_upgrade_minor_version = true
 
   depends_on = [
