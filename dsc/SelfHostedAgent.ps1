@@ -12,7 +12,10 @@ Configuration SelfHostedAgent
         [int32]$numberOfAgents,
 
         [parameter(mandatory=$true)]
-        [string]$azureDevOpsURL
+        [string]$azureDevOpsURL,
+
+        [parameter(mandatory=$true)]
+        [string]$vmName
     )
 
     Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
@@ -68,7 +71,7 @@ Configuration SelfHostedAgent
         File "AgentDirectory_0$agent"
         {
             Type            = 'Directory'
-            DestinationPath = "F:\AzureDevOpsAgents\$(hostname)_agent-0$agent"
+            DestinationPath = "F:\AzureDevOpsAgents\$vmName`_agent-0$agent"
             Ensure          = "Present"
             DependsOn       = '[Script]MountDisk', '[File]AzureDevOpsAgents'
         }  
@@ -77,7 +80,7 @@ Configuration SelfHostedAgent
         {
             TestScript = {
                 $agent         = $using:agent
-                $agentName     = "$(hostname)_agent-0$agent"
+                $agentName     = "$using:vmName`_agent-0$agent"
                 $serviceStatus = Get-Service -Name "vstsagent.hmcts.VH Self Hosted.$agentName" -ErrorAction SilentlyContinue
 
                 if ($serviceStatus.Length -gt 0) {
@@ -93,8 +96,8 @@ Configuration SelfHostedAgent
                 # Prepare Vars. ######################
                 ######################################
                 $agent      = $using:agent
-                $installDir = "F:\AzureDevOpsAgents\$(hostname)_agent-0$agent"
-                $agentName  = "$(hostname)_agent-0$agent"
+                $installDir = "F:\AzureDevOpsAgents\$using:vmName`_agent-0$agent"
+                $agentName  = "$using:vmName`_agent-0$agent"
                 $zipPath    = 'C:\Temp\agent.zip'
 
                 ######################################
@@ -122,7 +125,7 @@ Configuration SelfHostedAgent
     
             GetScript = {
                 $agent         = $using:agent
-                $agentName     = "$(hostname)_agent-0$agent"
+                $agentName     = "$using:vmName`_agent-0$agent"
                 $serviceStatus = Get-Service -Name "vstsagent.hmcts.VH Self Hosted.$agentName" -ErrorAction SilentlyContinue
 
                 if ($serviceStatus.Length -gt 0) {

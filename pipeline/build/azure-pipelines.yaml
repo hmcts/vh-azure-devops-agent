@@ -70,6 +70,7 @@ stages:
       azureDevOpsURL: $(devOpsURL)
       numberOfAgents: ${{ variables.agentCount }}
       azureDevOpsPAT: $(patToken)
+      vmName: vh-infra-core-ado
 
 ############################################
 # Terraform Plan. ##########################
@@ -105,6 +106,7 @@ stages:
         azureDevOpsURL: $(devOpsURL)
         numberOfAgents: ${{ variables.agentCount }}
         azureDevOpsPAT: $(patToken)
+        vmName: vh-infra-core-ado
 
 ############################################
 # Manual Validation. #######################

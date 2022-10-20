@@ -2,7 +2,7 @@ parameters:
   - name: azureDevOpsPAT
   - name: numberOfAgents
   - name: azureDevOpsURL
-
+  - name: vmName
 steps:
 
   - task: PowerShell@2
@@ -13,5 +13,5 @@ steps:
         cd ./dsc
         Install-Module cChoco -Force
         . ./SelfHostedAgent.ps1
-        SelfHostedAgent -OutputPath ./ -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} 
+        SelfHostedAgent -OutputPath ./ -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }}
         Get-Content ./localhost.mof | Set-Content -Encoding utf8 "../terraform/localhost.mof"

@@ -8,6 +8,8 @@ parameters:
   - name: numberOfAgents
   - name: azureDevOpsPAT
     type: string
+  - name: vmName
+    type: string
 
 jobs:
 - job: TerraformValidate
@@ -21,6 +23,7 @@ jobs:
       azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
       numberOfAgents: ${{ parameters.numberOfAgents }}
       azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
+      vmName: ${{ parameters.vmName }}
       
   - template: ./tf-install.yaml
     parameters:
