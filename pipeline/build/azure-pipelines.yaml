@@ -15,6 +15,8 @@ resources:
 pool:
   vmImage: 'windows-latest'
 
+##############################
+# Parameters. ################
 parameters:
   - name: env
     displayName: 'Environment to deploy to'
@@ -24,6 +26,14 @@ parameters:
       - dev
       - stg
 
+  - name: vmNames
+    displayName: 'Agent Machine Names'
+    type: object
+    default:
+      - vh-infra-core-ado
+
+##############################
+# Variables. #################
 variables:
   - group: vh-azure-devops-agent
   
@@ -70,7 +80,7 @@ stages:
       azureDevOpsURL: $(devOpsURL)
       numberOfAgents: ${{ variables.agentCount }}
       azureDevOpsPAT: $(patToken)
-      vmName: vh-infra-core-ado
+      vmName: ${{ parameters.vmNames[0] }}
 
 ############################################
 # Terraform Plan. ##########################
@@ -162,3 +172,35 @@ stages:
             subscription: $(serviceConnection)
             planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+
+    - job: Apply_DSC
+      displayName: Apply DSC
+      dependsOn: Deploy_Terraform
+      variables:
+        - name: resourceName
+          value: vh-infra-core-ado
+      steps:
+      - task: AzurePowerShell@5
+        inputs: 
+          azureSubscription: $(serviceConnection)
+          scriptType: inlineScript
+          inline: |
+            Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" -AutomationAccountName "$(resourceName)" -ResourceGroupName "$(resourceName)"  -Published
+
+      - ${{ each vm in parameters.vmNames }}:
+        - task: AzurePowerShell@5
+          inputs: 
+            azureSubscription: $(serviceConnection)
+            scriptType: inlineScript
+            inline: |
+              $params = @{
+                'vmName'         = "{{ vm }}"
+                'azureDevOpsURL' = "$(devOpsURL)"
+                'azureDevOpsPAT' = "$(patToken)"
+                'numberOfAgents' = "$(agentCount)"
+              }
+
+              Start-AzAutomationDscCompilationJob -ResourceGroupName "$(resourceName)"  -AutomationAccountName "$(resourceName)" -ConfigurationName "SelfHostedAgent" -Parameters $params
+
+              Register-AzAutomationDscNode -AzureVMName "{{ vm }}" -ResourceGroupName "$(resourceName)"  -AutomationAccountName "$(resourceName)" -NodeConfigurationName "SelfHostedAgent.localhost" `
+                                            -ConfigurationMode ApplyAndAutocorrect
