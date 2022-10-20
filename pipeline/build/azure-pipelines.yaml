@@ -178,19 +178,24 @@ stages:
     - job: Apply_DSC
       displayName: Apply DSC
       dependsOn: Deploy_Terraform
+      pool:
+        vmImage: windows-latest
       variables:
         - name: resourceName
           value: vh-infra-core-ado
       steps:
       - task: AzurePowerShell@5
+        displayName: Import DSC Script
         inputs: 
           azureSubscription: $(serviceConnection)
           scriptType: inlineScript
           inline: |
-            Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" -AutomationAccountName "$(resourceName)" -ResourceGroupName "$(resourceName)"  -Published
+            Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" -AutomationAccountName "$(resourceName)" -ResourceGroupName "$(resourceName)" -Published
 
       - ${{ each vm in parameters.vmNames }}:
         - task: AzurePowerShell@5
+          taskName: Apply_DSC_{{ vm }}
+          displayName: Apply DSC {{ vm }}
           inputs: 
             azureSubscription: $(serviceConnection)
             scriptType: inlineScript
