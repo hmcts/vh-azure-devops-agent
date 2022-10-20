@@ -96,7 +96,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
 resource "azurerm_virtual_machine_extension" "ps_remoting" {
   for_each = local.vms
 
-  name                 = "psRemoting-${each.value.name}"
+  name                 = "PostDeploymentScript"
   virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
@@ -123,13 +123,13 @@ resource "azurerm_virtual_machine_extension" "dsc" {
   virtual_machine_id   = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
   publisher            = "Microsoft.Powershell"
   type                 = "DSC"
-  type_handler_version = "2.83"
+  type_handler_version = "2.76"
 
   settings = <<SETTINGS_JSON
         {
           "configurationArguments": {
               "RegistrationUrl": "${azurerm_automation_account.vh_infra_core_ado.dsc_server_endpoint}",
-              "NodeConfigurationName": "localhost",
+              "NodeConfigurationName": "adoagent.localhost",
               "ConfigurationMode": "${local.dsc_ConfigurationMode}",
               "ConfigurationModeFrequencyMins": 15,
               "RefreshFrequencyMins": 30,

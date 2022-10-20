@@ -18,6 +18,4 @@ resource "azurerm_automation_dsc_nodeconfiguration" "adoagent" {
   depends_on = [
     azurerm_automation_dsc_configuration.vh_infra_core_ado
   ]
-
 }
-
