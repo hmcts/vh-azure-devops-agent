@@ -59,7 +59,7 @@ locals {
   }
 }
 
-resource "azurerm_virtual_network_peering" "vh_infra_core_ " {
+resource "azurerm_virtual_network_peering" "vh_infra_core_ado_TO_hubs" {
   for_each = ado_TO_hubs
 
   name                      = "vh-infra-core-ado-TO-${each.key}"
