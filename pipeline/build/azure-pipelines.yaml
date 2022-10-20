@@ -191,7 +191,7 @@ stages:
           scriptType: inlineScript
           targetAzurePs: latestVersion
           inline: |
-            Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" -AutomationAccountName "$(resourceName)" -ResourceGroupName "$(resourceName)" -Published
+            Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" -AutomationAccountName "$(resourceName)" -ResourceGroupName "$(resourceName)" -Published -Force
 
       - ${{ each vm in parameters.vmNames }}:
         - task: AzurePowerShell@5
