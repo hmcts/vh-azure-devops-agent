@@ -12,7 +12,7 @@ locals {
   sku                   = "win11-21h2-pro"
   version               = "latest"
   dsc_ConfigurationMode = "ApplyAndAutoCorrect"
-  winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; powershell Enable-PsRemoting -Force; powershell exit 0"
+  winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; powershell Enable-PsRemoting -SkipNetworkProfileCheck -Force; powershell exit 0"
 }
 
 # Create Virtual Machine
