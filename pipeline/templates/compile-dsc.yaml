@@ -14,5 +14,5 @@ steps:
         Install-Module cChoco -Force
         . ./SelfHostedAgent.ps1
         SelfHostedAgent -OutputPath ./ -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }}
-        Move-Item -Path C:\SelfHostedAgent.ps1 -Destination "../terraform/SelfHostedAgent.ps1"
+        Move-Item -Path ./SelfHostedAgent.ps1 -Destination "../terraform/SelfHostedAgent.ps1"
         Get-Content ./localhost.mof | Set-Content -Encoding utf8 "../terraform/localhost.mof"
