@@ -3,13 +3,6 @@ parameters:
     type: string
   - name: terraformVersion
     type: string
-  - name: azureDevOpsURL
-    type: string
-  - name: numberOfAgents
-  - name: azureDevOpsPAT
-    type: string
-  - name: vmName
-    type: string
 
 jobs:
 - job: TerraformValidate
@@ -17,13 +10,6 @@ jobs:
   pool:
     vmImage: 'windows-latest'
   steps:
-
-  # - template: ./compile-dsc.yaml
-  #   parameters:
-  #     azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
-  #     numberOfAgents: ${{ parameters.numberOfAgents }}
-  #     azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
-  #     vmName: ${{ parameters.vmName }}
       
   - template: ./tf-install.yaml
     parameters:

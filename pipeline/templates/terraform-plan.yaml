@@ -9,23 +9,9 @@ parameters:
   - name: customCommandOptions
     type: string
     default: ''
-  - name: azureDevOpsURL
-    type: string
-  - name: numberOfAgents
-  - name: azureDevOpsPAT
-    type: string
-  - name: vmName
-    type: string
-
+  
 steps:
 
-  # - template: ./compile-dsc.yaml
-  #   parameters:
-  #     azureDevOpsURL: ${{ parameters.azureDevOpsURL }}
-  #     numberOfAgents: ${{ parameters.numberOfAgents }}
-  #     azureDevOpsPAT: ${{ parameters.azureDevOpsPAT }}
-  #     vmName: ${{ parameters.vmName }}
-  
   - task: TerraformCLI@0
     displayName: Terraform Plan
     inputs:

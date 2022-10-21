@@ -77,10 +77,13 @@ stages:
     parameters:
       terraformPath: $(workDir)
       terraformVersion: $(tfVersion)
+  
+  - template: /pipeline/templates/compile-dsc.yaml
+    parameters:
+      azureDevOpsPAT: $(patToken) 
+      numberOfAgents: ${{ variables.agentCount }} 
       azureDevOpsURL: $(devOpsURL)
-      numberOfAgents: ${{ variables.agentCount }}
-      azureDevOpsPAT: $(patToken)
-      vmName: ${{ parameters.vmNames[0] }}
+      vmName: ${{ parameters.vmNames[0] }} 
 
 ############################################
 # Terraform Plan. ##########################

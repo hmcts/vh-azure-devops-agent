@@ -1,10 +1,8 @@
 parameters:
   - name: patToken
     type: string
-
   - name: workingDirectory
     type: string
-
   - name: numberOfAgents
     type: string
     values:
@@ -12,7 +10,6 @@ parameters:
     - 2
     - 3
     - 4
-  
   - name: devOpsURL
     type: string
 
