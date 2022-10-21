@@ -96,8 +96,8 @@ stages:
 # Terraform Plan. ##########################
 - stage: Plan
   displayName: 'Terraform Plan'
-  dependsOn:
-    - CIBuild
+  # dependsOn:
+  #   - CIBuild
   jobs:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
