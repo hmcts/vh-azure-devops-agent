@@ -24,7 +24,7 @@ steps:
       targetAzurePs: latestVersion
       inline: |
         Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
-                                            -AutomationAccountName "$(automationAccountName)"`
+                                            -AutomationAccountName "$(automationAccountName)" `
                                             -ResourceGroupName "$(ResourceGroupName)" `
                                             -Published -Force
 
