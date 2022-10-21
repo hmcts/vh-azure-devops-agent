@@ -47,6 +47,10 @@ resource "azurerm_windows_virtual_machine" "vh_ado_agent" {
   admin_username = var.vm_username
   admin_password = random_password.password.result
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   os_disk {
     name                 = each.value.os_disk
     caching              = "ReadWrite"
