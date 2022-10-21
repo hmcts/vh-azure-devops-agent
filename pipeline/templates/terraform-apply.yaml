@@ -17,7 +17,7 @@ steps:
     commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"
 
 - powershell: |
-    $terraformOutput = Get-Content .\sampl.json | ConvertFrom-Json
+    $terraformOutputs = terraform output -json | ConvertFrom-Json
     $terraformOutput | Get-Member -MemberType NoteProperty | % { 
         $o = $terraformOutput.($_.Name)
         $data = $o.value
