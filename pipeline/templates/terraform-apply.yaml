@@ -18,6 +18,7 @@ steps:
 
 - powershell: |
     $terraformOutput = terraform output -json | ConvertFrom-Json
+    Write-Host $terraformOutput
     $terraformOutput | Get-Member -MemberType NoteProperty | % { 
         $o = $terraformOutput.($_.Name)
         $data = $($o.value)

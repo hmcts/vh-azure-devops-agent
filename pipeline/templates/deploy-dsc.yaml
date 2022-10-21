@@ -38,18 +38,18 @@ steps:
         inline: |
           $params = @{
             'vmName'         = "${{ vm }}"
-            'azureDevOpsURL' = ""${{ parameters.devOpsURL }}"
-            'azureDevOpsPAT' = ""${{ parameters.patToken }}"
-            'numberOfAgents' = ""${{ parameters.agentCount }}"
+            'azureDevOpsURL' = "${{ parameters.devOpsURL }}"
+            'azureDevOpsPAT' = "${{ parameters.patToken }}"
+            'numberOfAgents' = "${{ parameters.agentCount }}"
           }
 
-          Start-AzAutomationDscCompilationJob -ResourceGroupName ""${{ parameters.ResourceGroupName }}" `
-                                              -AutomationAccountName ""${{ parameters.automationAccountName }}" `
+          Start-AzAutomationDscCompilationJob -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                              -AutomationAccountName "${{ parameters.automationAccountName }}" `
                                               -ConfigurationName "SelfHostedAgent" `
                                               -Parameters $params
 
           Register-AzAutomationDscNode -AzureVMName "${{ vm }}" `
-                                        -ResourceGroupName ""${{ parameters.ResourceGroupName }}" `
-                                        -AutomationAccountName ""${{ parameters.automationAccountName }}" `
+                                        -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                        -AutomationAccountName "${{ parameters.automationAccountName }}" `
                                         -NodeConfigurationName "SelfHostedAgent.localhost" `
                                         -ConfigurationMode ApplyAndAutocorrect
