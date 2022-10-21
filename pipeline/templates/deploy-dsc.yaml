@@ -28,9 +28,8 @@ steps:
                                             -ResourceGroupName "$(ResourceGroupName)" `
                                             -Published -Force
 
-  - ${{ each vm in split(parameters.vmNames, ' ') }}:
+  - ${{ each vm in split(parameters.vmNames, ',') }}:
     - task: AzurePowerShell@5
-      name: Apply_DSC_${{ vm }}
       displayName: Apply DSC ${{ vm }}
       inputs: 
         azureSubscription: $(serviceConnection)
