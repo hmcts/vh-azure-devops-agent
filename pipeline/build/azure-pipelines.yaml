@@ -181,7 +181,7 @@ stages:
 
       ############################################
       # Apply DSC Configuration. #################
-    - template: /pipeline/templates/compile-dsc.yaml
+    - template: /pipeline/templates/deploy-dsc.yaml
       parameters:
         serviceConnection: $(serviceConnection)
         ResourceGroupName: $(ResourceGroupName)
