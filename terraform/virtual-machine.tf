@@ -131,3 +131,9 @@ resource "azurerm_virtual_machine_extension" "AADLoginForWindows" {
   ]
 
 }
+
+resource "azurerm_role_assignment" "IAM_VMLogin" {
+  scope                = azurerm_resource_group.vh_infra_core_ado.id
+  role_definition_name = "Virtual Machine Administrator Login"
+  principal_id         = "5c77fdba-1174-4bf3-8faa-934133dac70d" #BG for test
+}
