@@ -188,13 +188,13 @@ stages:
         tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
       steps:
         - powershell: Write-Output $(tf_vms)
-        # - template: /pipeline/templates/deploy-dsc.yaml
-        #   parameters:
-        #     serviceConnection: $(serviceConnection)
-        #     ResourceGroupName: $(ResourceGroupName)
-        #     automationAccountName: $(ResourceGroupName)
-        #     patToken: $(patToken) 
-        #     agentCount: ${{ variables.agentCount }} 
-        #     devOpsURL: $(devOpsURL)
-        #     vmNames: $(tf_vms)
+        - template: /pipeline/templates/deploy-dsc.yaml
+          parameters:
+            serviceConnection: $(serviceConnection)
+            ResourceGroupName: $(ResourceGroupName)
+            automationAccountName: $(ResourceGroupName)
+            patToken: $(patToken) 
+            agentCount: ${{ variables.agentCount }} 
+            devOpsURL: $(devOpsURL)
+            vmNames: $(tf_vms)
       
