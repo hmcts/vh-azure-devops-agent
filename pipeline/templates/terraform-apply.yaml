@@ -17,10 +17,10 @@ steps:
     commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"
 
 - powershell: |
-    $terraformOutputs = terraform output -json | ConvertFrom-Json
+    $terraformOutput = terraform output -json | ConvertFrom-Json
     $terraformOutput | Get-Member -MemberType NoteProperty | % { 
         $o = $terraformOutput.($_.Name)
-        $data = $o.value
+        $data = $($o.value)
         if($o.type -eq "list") {
             $data = $($o.value) -join ","
         } 
