@@ -21,7 +21,7 @@ steps:
     $outputName = $terraformOutputs | Get-Member -MemberType NoteProperty | % Name
     $values = $terraformOutputs.$outputName.Value
 
-    Write-Host "##vso[task.setvariable variable=$outputName;isoutput=true]$values 
+    Write-Host "##vso[task.setvariable variable=$outputName;isoutput=true]$values"
 
     Write-Output $values
   name: terraformOutput
