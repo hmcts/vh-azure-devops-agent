@@ -15,3 +15,7 @@ steps:
     command: apply
     environmentServiceName: ${{ parameters.subscription }}
     commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"
+
+- script: Write-Host "##vso[task.setvariable variable=tf_vms;isoutput=true]$(tf_apply.tf_vm_names)"
+  name: terraformOutput
+  displayName: Read terraform outputs
