@@ -8,6 +8,7 @@ parameters:
 
 steps:
 - task: TerraformCLI@0
+  name : tf_apply
   displayName: Terraform Apply
   inputs:
     workingDirectory: ${{ parameters.workingDirectory }}

@@ -67,6 +67,13 @@ variables:
   - name: artifactName
     value: $(Build.BuildId)-AzureDevOps-Agent
 
+  - name: resourceGroupName
+    ${{ if eq( parameters.env, 'stg') }}:
+      value: vh-infra-core-ado
+    ${{ else }}:
+      value: vh-infra-ado-${{ lower(parameters.env) }}
+  
+
 ############################################
 # Terraform CI. ############################
 stages:
@@ -83,7 +90,7 @@ stages:
       azureDevOpsPAT: $(patToken) 
       numberOfAgents: ${{ variables.agentCount }} 
       azureDevOpsURL: $(devOpsURL)
-      vmName: ${{ parameters.vmNames[0] }} 
+      vmName: 'localhost' 
 
 ############################################
 # Terraform Plan. ##########################
@@ -115,7 +122,7 @@ stages:
       parameters:
         subscription: $(serviceConnection)
         workingDirectory: $(workDir)
-        customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ parameters.env }}.tfvars  -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
   
 ############################################
 # Manual Validation. #######################
@@ -174,39 +181,13 @@ stages:
 
       ############################################
       # Apply DSC Configuration. #################
-    - job: Apply_DSC
-      displayName: Apply DSC
-      dependsOn: Deploy_Terraform
-      variables:
-        - name: resourceName
-          value: vh-infra-core-ado
-      steps:
-      - task: AzurePowerShell@5
-        displayName: Import DSC Script
-        inputs: 
-          azureSubscription: $(serviceConnection)
-          scriptType: inlineScript
-          targetAzurePs: latestVersion
-          inline: |
-            Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" -AutomationAccountName "$(resourceName)" -ResourceGroupName "$(resourceName)" -Published -Force
-
-      - ${{ each vm in parameters.vmNames }}:
-        - task: AzurePowerShell@5
-          name: Apply_DSC
-          displayName: Apply DSC ${{ vm }}
-          inputs: 
-            azureSubscription: $(serviceConnection)
-            scriptType: inlineScript
-            targetAzurePs: latestVersion
-            inline: |
-              $params = @{
-                'vmName'         = "${{ vm }}"
-                'azureDevOpsURL' = "$(devOpsURL)"
-                'azureDevOpsPAT' = "$(patToken)"
-                'numberOfAgents' = "$(agentCount)"
-              }
-
-              Start-AzAutomationDscCompilationJob -ResourceGroupName "$(resourceName)"  -AutomationAccountName "$(resourceName)" -ConfigurationName "SelfHostedAgent" -Parameters $params
-
-              Register-AzAutomationDscNode -AzureVMName "${{ vm }}" -ResourceGroupName "$(resourceName)"  -AutomationAccountName "$(resourceName)" -NodeConfigurationName "SelfHostedAgent.localhost" `
-                                            -ConfigurationMode ApplyAndAutocorrect
+    - template: /pipeline/templates/compile-dsc.yaml
+      parameters:
+        serviceConnection: $(serviceConnection)
+        ResourceGroupName: ${{ parameters.ResourceGroupName }}
+        automationAccountName: 
+        patToken: $(patToken) 
+        agentCount: ${{ variables.agentCount }} 
+        devOpsURL: $(devOpsURL)
+        vmNames: ${{ tf_apply.tf_vm_names}} 
+  
