@@ -181,8 +181,8 @@ stages:
 
   ############################################
   # Apply DSC Configuration. #################
-    - job: Apply_DSC
-      displayName: Apply DSC
+    - job: Deploy_DSC
+      displayName: Deploy DSC
       dependsOn: Deploy_Terraform
       variables:
         tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
