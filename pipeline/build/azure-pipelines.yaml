@@ -73,6 +73,9 @@ variables:
     ${{ else }}:
       value: vh-infra-ado-${{ lower(parameters.env) }}
   
+  - name: tf_vms
+    value: []    
+  
 
 ############################################
 # Terraform CI. ############################
@@ -185,13 +188,14 @@ stages:
       displayName: Apply DSC
       dependsOn: Deploy_Terraform
       steps:
-        - template: /pipeline/templates/deploy-dsc.yaml
-          parameters:
-            serviceConnection: $(serviceConnection)
-            ResourceGroupName: $(ResourceGroupName)
-            automationAccountName: $(ResourceGroupName)
-            patToken: $(patToken) 
-            agentCount: ${{ variables.agentCount }} 
-            devOpsURL: $(devOpsURL)
-            vmNames: $(tf_vms)
+        - script: echo $(tf_vms)
+        # - template: /pipeline/templates/deploy-dsc.yaml
+        #   parameters:
+        #     serviceConnection: $(serviceConnection)
+        #     ResourceGroupName: $(ResourceGroupName)
+        #     automationAccountName: $(ResourceGroupName)
+        #     patToken: $(patToken) 
+        #     agentCount: ${{ variables.agentCount }} 
+        #     devOpsURL: $(devOpsURL)
+        #     vmNames: $(tf_vms)
       
