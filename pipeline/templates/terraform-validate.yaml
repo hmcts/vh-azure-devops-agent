@@ -8,7 +8,7 @@ jobs:
 - job: TerraformValidate
   displayName: 'Validate Terraform'
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
       
   - template: ./tf-install.yaml

@@ -11,6 +11,8 @@ parameters:
 jobs:
 - job: CompileDSC
   displayName: 'Compile DSC'
+  pool:
+    vmImage: 'windows-latest'
   steps:
 
     - task: PowerShell@2
