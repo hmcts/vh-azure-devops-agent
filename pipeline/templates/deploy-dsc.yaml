@@ -24,8 +24,8 @@ steps:
       targetAzurePs: latestVersion
       inline: |
         Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
-                                            -AutomationAccountName "$(automationAccountName)" `
-                                            -ResourceGroupName "$(ResourceGroupName)" `
+                                            -AutomationAccountName "${{ parameters.automationAccountName  }}" `
+                                            -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
                                             -Published -Force
 
   - ${{ each vm in split(parameters.vmNames, ',') }}:
@@ -38,18 +38,18 @@ steps:
         inline: |
           $params = @{
             'vmName'         = "${{ vm }}"
-            'azureDevOpsURL' = "$(devOpsURL)"
-            'azureDevOpsPAT' = "$(patToken)"
-            'numberOfAgents' = "$(agentCount)"
+            'azureDevOpsURL' = ""${{ parameters.devOpsURL }}"
+            'azureDevOpsPAT' = ""${{ parameters.patToken }}"
+            'numberOfAgents' = ""${{ parameters.agentCount }}"
           }
 
-          Start-AzAutomationDscCompilationJob -ResourceGroupName "$(ResourceGroupName)" `
-                                              -AutomationAccountName "$(automationAccountName)" `
+          Start-AzAutomationDscCompilationJob -ResourceGroupName ""${{ parameters.ResourceGroupName }}" `
+                                              -AutomationAccountName ""${{ parameters.automationAccountName }}" `
                                               -ConfigurationName "SelfHostedAgent" `
                                               -Parameters $params
 
           Register-AzAutomationDscNode -AzureVMName "${{ vm }}" `
-                                        -ResourceGroupName "$(ResourceGroupName)" `
-                                        -AutomationAccountName "$(automationAccountName)" `
+                                        -ResourceGroupName ""${{ parameters.ResourceGroupName }}" `
+                                        -AutomationAccountName ""${{ parameters.automationAccountName }}" `
                                         -NodeConfigurationName "SelfHostedAgent.localhost" `
                                         -ConfigurationMode ApplyAndAutocorrect
