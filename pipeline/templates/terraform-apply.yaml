@@ -26,3 +26,5 @@ steps:
     Write-Output $values
   name: terraformOutput
   displayName: Read terraform outputs
+  workingDirectory: ${{ parameters.workingDirectory }}
+  
