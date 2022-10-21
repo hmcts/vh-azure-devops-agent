@@ -6,7 +6,6 @@ parameters:
 - name: automationAccountName
   type: string
 - name: vmNames
-  type: list
 - name: devOpsURL
   type: string
 - name: patToken
@@ -15,46 +14,42 @@ parameters:
   type: string
 
 
-- job: Apply_DSC
-    displayName: Apply DSC
-    dependsOn: Deploy_Terraform
+steps:
+  - task: AzurePowerShell@5
+    displayName: Import DSC Script
+    inputs: 
+      azureSubscription: $(serviceConnection)
+      scriptType: inlineScript
+      targetAzurePs: latestVersion
+      inline: |
+        Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
+                                            -AutomationAccountName "$(automationAccountName)"`
+                                            -ResourceGroupName "$(ResourceGroupName)" `
+                                            -Published -Force
 
-    steps:
+  - ${{ each vm in parameters.vmNames }}:
     - task: AzurePowerShell@5
-      displayName: Import DSC Script
+      name: Apply_DSC
+      displayName: Apply DSC ${{ vm }}
       inputs: 
         azureSubscription: $(serviceConnection)
         scriptType: inlineScript
         targetAzurePs: latestVersion
         inline: |
-          Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
-                                              -AutomationAccountName "$(automationAccountName)"`
-                                              -ResourceGroupName "$(ResourceGroupName)" `
-                                              -Published -Force
+          $params = @{
+            'vmName'         = "${{ vm }}"
+            'azureDevOpsURL' = "$(devOpsURL)"
+            'azureDevOpsPAT' = "$(patToken)"
+            'numberOfAgents' = "$(agentCount)"
+          }
 
-    - ${{ each vm in parameters.vmNames }}:
-      - task: AzurePowerShell@5
-        name: Apply_DSC
-        displayName: Apply DSC ${{ vm }}
-        inputs: 
-          azureSubscription: $(serviceConnection)
-          scriptType: inlineScript
-          targetAzurePs: latestVersion
-          inline: |
-            $params = @{
-              'vmName'         = "${{ vm }}"
-              'azureDevOpsURL' = "$(devOpsURL)"
-              'azureDevOpsPAT' = "$(patToken)"
-              'numberOfAgents' = "$(agentCount)"
-            }
+          Start-AzAutomationDscCompilationJob -ResourceGroupName "$(ResourceGroupName)" `
+                                              -AutomationAccountName "$(automationAccountName)" `
+                                              -ConfigurationName "SelfHostedAgent" `
+                                              -Parameters $params
 
-            Start-AzAutomationDscCompilationJob -ResourceGroupName "$(ResourceGroupName)" `
-                                                -AutomationAccountName "$(automationAccountName)" `
-                                                -ConfigurationName "SelfHostedAgent" `
-                                                -Parameters $params
-
-            Register-AzAutomationDscNode -AzureVMName "${{ vm }}" `
-                                         -ResourceGroupName "$(ResourceGroupName)" `
-                                         -AutomationAccountName "$(automationAccountName)" `
-                                         -NodeConfigurationName "SelfHostedAgent.localhost" `
-                                         -ConfigurationMode ApplyAndAutocorrect
+          Register-AzAutomationDscNode -AzureVMName "${{ vm }}" `
+                                        -ResourceGroupName "$(ResourceGroupName)" `
+                                        -AutomationAccountName "$(automationAccountName)" `
+                                        -NodeConfigurationName "SelfHostedAgent.localhost" `
+                                        -ConfigurationMode ApplyAndAutocorrect

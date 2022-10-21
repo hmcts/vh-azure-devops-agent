@@ -179,15 +179,19 @@ stages:
             planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
-      ############################################
-      # Apply DSC Configuration. #################
-    - template: /pipeline/templates/deploy-dsc.yaml
-      parameters:
-        serviceConnection: $(serviceConnection)
-        ResourceGroupName: $(ResourceGroupName)
-        automationAccountName: $(ResourceGroupName)
-        patToken: $(patToken) 
-        agentCount: ${{ variables.agentCount }} 
-        devOpsURL: $(devOpsURL)
-        vmNames: $(tf_vms)
-  
+  ############################################
+  # Apply DSC Configuration. #################
+    - job: Apply_DSC
+      displayName: Apply DSC
+      dependsOn: Deploy_Terraform
+      steps:
+        - template: /pipeline/templates/deploy-dsc.yaml
+          parameters:
+            serviceConnection: $(serviceConnection)
+            ResourceGroupName: $(ResourceGroupName)
+            automationAccountName: $(ResourceGroupName)
+            patToken: $(patToken) 
+            agentCount: ${{ variables.agentCount }} 
+            devOpsURL: $(devOpsURL)
+            vmNames: $(tf_vms)
+      
