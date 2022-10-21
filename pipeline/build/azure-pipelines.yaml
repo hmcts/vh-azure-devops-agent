@@ -185,7 +185,7 @@ stages:
       displayName: Apply DSC
       dependsOn: Deploy_Terraform
       steps:
-        - script: echo $(tf_vms)
+        - script: echo $(terraformOutput.tf_vm_names)
         # - template: /pipeline/templates/deploy-dsc.yaml
         #   parameters:
         #     serviceConnection: $(serviceConnection)

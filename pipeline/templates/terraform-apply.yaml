@@ -17,7 +17,7 @@ steps:
     commandOptions: -input=false -auto-approve "${{ parameters.planLocation }}"
 
 - powershell: |
-    $terraformOutput = Get-Content "$(terraformApply.jsonOutputVariablesPath)" | ConvertFrom-Json
+    $terraformOutput = terraform output -json | ConvertFrom-Json
     $terraformOutput | Get-Member -MemberType NoteProperty | % { $o = $terraformOutput.($_.Name); Write-Host "##vso[task.setvariable variable=$($_.Name);isoutput=true;issecret=$($o.sensitive)]$($o.value)" }
   name: terraformOutput
   displayName: Read terraform outputs
