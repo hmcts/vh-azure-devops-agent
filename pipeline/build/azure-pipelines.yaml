@@ -71,10 +71,7 @@ variables:
     ${{ if eq( parameters.env, 'stg') }}:
       value: vh-infra-core-ado
     ${{ else }}:
-      value: vh-infra-ado-${{ lower(parameters.env) }}
-  
-  - name: tf_vms
-    value: []    
+      value: vh-infra-ado-${{ lower(parameters.env) }} 
   
 
 ############################################
