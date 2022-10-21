@@ -8,14 +8,17 @@ parameters:
   - name: vmName
     type: string
 
-steps:
+jobs:
+- job: CompileDSC
+  displayName: 'Compile DSC'
+  steps:
 
-  - task: PowerShell@2
-    displayName: 'Compile DSC'
-    inputs:
-      targetType: 'inline'
-      script: |
-        cd ./dsc
-        Install-Module cChoco -Force
-        . ./SelfHostedAgent.ps1
-        SelfHostedAgent -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }}
+    - task: PowerShell@2
+      displayName: 'Compile SelfHostedAgent.ps1'
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd ./dsc
+          Install-Module cChoco -Force
+          . ./SelfHostedAgent.ps1
+          SelfHostedAgent -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }}
