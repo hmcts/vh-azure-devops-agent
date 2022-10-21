@@ -23,6 +23,7 @@ steps:
 
     Write-Host "##vso[task.setvariable variable=$outputName;isoutput=true]$values"
 
+    Write-Output $outputName
     Write-Output $values
   name: terraformOutput
   displayName: Read terraform outputs
