@@ -77,20 +77,20 @@ variables:
 ############################################
 # Terraform CI. ############################
 stages:
-- stage: CIBuild
-  displayName: 'Terraform CI'
-  jobs: 
-  - template: /pipeline/templates/terraform-validate.yaml
-    parameters:
-      terraformPath: $(workDir)
-      terraformVersion: $(tfVersion)
+# - stage: CIBuild
+#   displayName: 'Terraform CI'
+#   jobs: 
+#   - template: /pipeline/templates/terraform-validate.yaml
+#     parameters:
+#       terraformPath: $(workDir)
+#       terraformVersion: $(tfVersion)
   
-  - template: /pipeline/templates/compile-dsc.yaml
-    parameters:
-      azureDevOpsPAT: $(patToken) 
-      numberOfAgents: ${{ variables.agentCount }} 
-      azureDevOpsURL: $(devOpsURL)
-      vmName: 'localhost' 
+#   - template: /pipeline/templates/compile-dsc.yaml
+#     parameters:
+#       azureDevOpsPAT: $(patToken) 
+#       numberOfAgents: ${{ variables.agentCount }} 
+#       azureDevOpsURL: $(devOpsURL)
+#       vmName: 'localhost' 
 
 ############################################
 # Terraform Plan. ##########################
