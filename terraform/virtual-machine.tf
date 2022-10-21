@@ -7,10 +7,10 @@ locals {
       data_disk = "vh-ado-agent-0${item + 1}-DataDisk"
     }
   }
-  publisher             = "MicrosoftWindowsDesktop"
-  offer                 = "windows-10"
-  sku                   = "win10-21h2-pro-g2"
-  version               = "latest"
+  publisher = "MicrosoftWindowsDesktop"
+  offer     = "windows-10"
+  sku       = "win10-21h2-pro-g2"
+  version   = "latest"
 }
 
 # Create Virtual Machine

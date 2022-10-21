@@ -1,5 +1,5 @@
 locals {
-  winscript             = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; powershell Enable-PsRemoting -SkipNetworkProfileCheck -Force; powershell exit 0"
+  winscript = "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; powershell Enable-PsRemoting -SkipNetworkProfileCheck -Force; powershell exit 0"
 }
 
 resource "azurerm_virtual_machine_extension" "ps_remoting" {
