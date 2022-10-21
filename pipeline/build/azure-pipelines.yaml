@@ -184,8 +184,10 @@ stages:
     - job: Apply_DSC
       displayName: Apply DSC
       dependsOn: Deploy_Terraform
+      variables:
+        tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
       steps:
-        - powershell: Write-Output $(terraformOutput.tf_vm_names)
+        - powershell: Write-Output $(tf_vms)
         # - template: /pipeline/templates/deploy-dsc.yaml
         #   parameters:
         #     serviceConnection: $(serviceConnection)
