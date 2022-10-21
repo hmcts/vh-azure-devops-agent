@@ -196,5 +196,5 @@ stages:
             patToken: $(patToken) 
             agentCount: ${{ variables.agentCount }} 
             devOpsURL: $(devOpsURL)
-            vmNames: $(tf_vms)
+            vmNames: ${{ variables.tf_vms }}
       
