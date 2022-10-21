@@ -184,8 +184,8 @@ stages:
     - template: /pipeline/templates/compile-dsc.yaml
       parameters:
         serviceConnection: $(serviceConnection)
-        ResourceGroupName: ${{ parameters.ResourceGroupName }}
-        automationAccountName: 
+        ResourceGroupName: $(ResourceGroupName)
+        automationAccountName: $(ResourceGroupName)
         patToken: $(patToken) 
         agentCount: ${{ variables.agentCount }} 
         devOpsURL: $(devOpsURL)
