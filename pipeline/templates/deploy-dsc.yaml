@@ -5,7 +5,8 @@ parameters:
   type: string
 - name: automationAccountName
   type: string
-- name: vmNames
+- name: vmName
+  type: string
 - name: devOpsURL
   type: string
 - name: patToken
@@ -27,7 +28,7 @@ steps:
                                             -ResourceGroupName "$(ResourceGroupName)" `
                                             -Published -Force
 
-  - ${{ each vm in parameters.vmNames }}:
+  - ${{ each vm in split(parameters.vmNames, ', ') }}:
     - task: AzurePowerShell@5
       name: Apply_DSC
       displayName: Apply DSC ${{ vm }}
