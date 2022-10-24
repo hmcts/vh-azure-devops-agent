@@ -41,7 +41,7 @@ resource "azurerm_key_vault" "vh_infra_core_ado" {
 resource "azurerm_key_vault_access_policy" "DTS_Contributors" {
   key_vault_id = azurerm_key_vault.vh_infra_core_ado.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = "2161f92a1a1-e687-4a79-919c-7d67e7a8dcd1" # DTS Contributors 
+  object_id    = "1f92a1a1-e687-4a79-919c-7d67e7a8dcd1" # DTS Contributors 
 
   secret_permissions = [
     "Get", "List"
