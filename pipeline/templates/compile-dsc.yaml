@@ -7,6 +7,8 @@ parameters:
     type: string
   - name: vmName
     type: string
+  - name: agentPool
+    type: string
 
 jobs:
 - job: CompileDSC
@@ -23,4 +25,4 @@ jobs:
           cd ./dsc
           Install-Module cChoco -Force
           . ./SelfHostedAgent.ps1
-          SelfHostedAgent -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }}
+          SelfHostedAgent -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }} -agentPool ${{ parameters.agentPool }}
