@@ -13,6 +13,8 @@ parameters:
   type: string
 - name: agentCount
   type: string
+- name: agentPool
+  type: string
 
 
 steps:
@@ -41,6 +43,7 @@ steps:
             'azureDevOpsURL' = "${{ parameters.devOpsURL }}"
             'azureDevOpsPAT' = "${{ parameters.patToken }}"
             'numberOfAgents' = "${{ parameters.agentCount }}"
+            'agentPool'      = "${{ parameters.agentPool }}"
           }
 
           Start-AzAutomationDscCompilationJob -ResourceGroupName "${{ parameters.ResourceGroupName }}" `

@@ -196,4 +196,53 @@ stages:
             agentCount: ${{ variables.agentCount }} 
             devOpsURL: $(devOpsURL)
             vmNames: $(tf_vms)
-      
+            agentPool: $(agentPool)
+
+  ############################################
+  # Manual Validation of deletion. #######################
+  - ${{ if eq( parameters.env, 'dev' ) }}:
+    - stage: Wait_Destroy
+      dependsOn:
+        - Deploy_DSC
+      jobs:
+        - job: WaitForApproval
+          displayName: "Wait for approval"
+          pool: server
+          steps:
+            - template: /pipeline/templates/wait.yaml
+
+  # ############################################
+  # # Terraform Destroy. #########################
+  - stage: RemoveDevInfra
+    displayName: Terraform Destroy
+    dependsOn:
+      - Wait_Destroy
+      - Deploy_Terraform
+    variables:
+        tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
+    jobs:
+    - job: Deploy_Terraform
+      displayName: Destroy Infrastructure
+      steps:
+        - template: /pipeline/templates/terraform-prep.yaml
+          parameters:
+            terraformVersion: $(tfVersion)
+            serviceConnection: $(serviceConnection)
+            resourceGroup: $(stateResourceGroup)
+            location: $(azureLocation)
+            storageAccount: $(stateStorageAccount)
+            containerName: $(stateContainerName)
+            stateKey: $(stateKey)
+            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+
+        - template: /pipeline/templates/terraform-destroy.yaml
+          parameters:
+            subscription: $(serviceConnection)
+            planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
+            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+        
+        - template: /pipeline/templates/remove-agents.yaml
+          parameters:
+            subscription: $(serviceConnection)
+            planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
+            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'

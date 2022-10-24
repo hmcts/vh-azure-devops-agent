@@ -15,7 +15,10 @@ Configuration SelfHostedAgent
         [string]$azureDevOpsURL,
 
         [parameter(mandatory=$true)]
-        [string]$vmName
+        [string]$vmName,
+
+        [parameter(mandatory=$true)]
+        [string]$agentPool
     )
 
     Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
@@ -126,7 +129,7 @@ Configuration SelfHostedAgent
                 }
 
                 Set-Location -Path $installDir
-                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool 'VH Self Hosted' --agent $agentName --acceptTeeEula --runAsService --unattended
+                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool $agentPool --agent $agentName --acceptTeeEula --runAsService --unattended
             }
     
             GetScript = {
