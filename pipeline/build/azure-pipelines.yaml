@@ -77,27 +77,27 @@ variables:
 ############################################
 # Terraform CI. ############################
 stages:
-# - stage: CIBuild
-#   displayName: 'Terraform CI'
-#   jobs: 
-#   - template: /pipeline/templates/terraform-validate.yaml
-#     parameters:
-#       terraformPath: $(workDir)
-#       terraformVersion: $(tfVersion)
+- stage: CIBuild
+  displayName: 'Terraform CI'
+  jobs: 
+  - template: /pipeline/templates/terraform-validate.yaml
+    parameters:
+      terraformPath: $(workDir)
+      terraformVersion: $(tfVersion)
   
-#   - template: /pipeline/templates/compile-dsc.yaml
-#     parameters:
-#       azureDevOpsPAT: $(patToken) 
-#       numberOfAgents: ${{ variables.agentCount }} 
-#       azureDevOpsURL: $(devOpsURL)
-#       vmName: 'localhost' 
+  - template: /pipeline/templates/compile-dsc.yaml
+    parameters:
+      azureDevOpsPAT: $(patToken) 
+      numberOfAgents: ${{ variables.agentCount }} 
+      azureDevOpsURL: $(devOpsURL)
+      vmName: 'localhost' 
 
 ############################################
 # Terraform Plan. ##########################
 - stage: Plan
   displayName: 'Terraform Plan'
-  # dependsOn:
-  #   - CIBuild
+  dependsOn:
+    - CIBuild
   jobs:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
@@ -235,7 +235,7 @@ stages:
             destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
             cleanDestinationFolder: false
             overwriteExistingFiles: true
-            
+
         - template: /pipeline/templates/get-peer-spn.yaml
           parameters:
             peerServiceConnection: 'GlobalNetworkPeering'
@@ -256,7 +256,9 @@ stages:
             subscription: $(serviceConnection)
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
             customCommandOptions: '-var-file=./vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
-
+    - job:
+      displayName: Remove Build Agents
+      steps:
         - template: /pipeline/templates/remove-agents.yaml
           parameters:
             agentPool: $(agentPool)
