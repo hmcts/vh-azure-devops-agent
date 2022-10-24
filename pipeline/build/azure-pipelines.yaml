@@ -91,6 +91,7 @@ stages:
       numberOfAgents: ${{ variables.agentCount }} 
       azureDevOpsURL: $(devOpsURL)
       vmName: 'localhost' 
+      agentPool: $(agentPool)
 
 ############################################
 # Terraform Plan. ##########################
