@@ -203,7 +203,7 @@ stages:
   - ${{ if eq( parameters.env, 'dev' ) }}:
     - stage: Wait_Destroy
       dependsOn:
-        - Deploy_DSC
+        - DeployAzureAgent
       jobs:
         - job: WaitForApproval
           displayName: "Wait for approval"
@@ -215,11 +215,7 @@ stages:
   # # Terraform Destroy. #########################
   - stage: RemoveDevInfra
     displayName: Terraform Destroy
-    dependsOn:
-      - Wait_Destroy
-      - Deploy_Terraform
-    variables:
-        tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
+    dependsOn: Wait_Destroy
     jobs:
     - job: Deploy_Terraform
       displayName: Destroy Infrastructure
