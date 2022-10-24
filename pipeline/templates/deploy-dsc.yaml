@@ -36,9 +36,6 @@ steps:
         scriptType: inlineScript
         targetAzurePs: latestVersion
         inline: |
-          write-host ${{ parameters.vmNames }}
-          write-host ${{ vm }}
-          
           $params = @{
             'vmName'         = "${{ vm }}"
             'azureDevOpsURL' = "${{ parameters.devOpsURL }}"
