@@ -220,6 +220,14 @@ stages:
     - job: Deploy_Terraform
       displayName: Destroy Infrastructure
       steps:
+        - checkout: none
+        
+        - task: DownloadPipelineArtifact@2
+          displayName: Download Terraform Artifacts
+          inputs:
+            artifact: '$(artifactName)'
+            targetPath: '$(Pipeline.Workspace)/$(artifactName)'
+            
         - template: /pipeline/templates/terraform-prep.yaml
           parameters:
             terraformVersion: $(tfVersion)
