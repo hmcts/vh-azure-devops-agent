@@ -46,6 +46,8 @@ steps:
             'agentPool'      = "${{ parameters.agentPool }}"
           }
 
+          Write-Host $params
+
           Start-AzAutomationDscCompilationJob -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
                                               -AutomationAccountName "${{ parameters.automationAccountName }}" `
                                               -ConfigurationName "SelfHostedAgent" `
