@@ -235,6 +235,10 @@ stages:
             destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
             cleanDestinationFolder: false
             overwriteExistingFiles: true
+            
+        - template: /pipeline/templates/get-peer-spn.yaml
+          parameters:
+            peerServiceConnection: 'GlobalNetworkPeering'
 
         - template: /pipeline/templates/terraform-prep.yaml
           parameters:
