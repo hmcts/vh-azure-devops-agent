@@ -242,6 +242,5 @@ stages:
         
         - template: /pipeline/templates/remove-agents.yaml
           parameters:
-            subscription: $(serviceConnection)
-            planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
-            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+            agentPool: $(agentPool)
+            PAT: $(patToken)
