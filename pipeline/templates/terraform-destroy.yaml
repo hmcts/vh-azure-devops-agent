@@ -3,6 +3,8 @@ parameters:
     type: string
   - name: workingDirectory
     type: string
+  - name: customCommandOptions
+    type: string
 
 steps:
 - task: TerraformCLI@0
@@ -12,4 +14,4 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     command: destroy
     environmentServiceName: ${{ parameters.subscription }}
-    commandOptions: -input=false -auto-approve 
+    commandOptions: -input=false -auto-approve ${{ parameters.customCommandOptions }}
