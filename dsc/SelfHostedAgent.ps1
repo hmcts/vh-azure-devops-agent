@@ -129,7 +129,7 @@ Configuration SelfHostedAgent
                 }
 
                 Set-Location -Path $installDir
-                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool $agentPool --agent $agentName --acceptTeeEula --runAsService --unattended
+                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool $agentPool --agent "$agentName" --acceptTeeEula --runAsService --unattended
             }
     
             GetScript = {
