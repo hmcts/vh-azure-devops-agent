@@ -98,7 +98,7 @@ Configuration SelfHostedAgent
                 ######################################
                 # Prepare Vars. ######################
                 ######################################
-                $agent      = $using:agent
+                $agent      = cagent
                 $installDir = "F:\AzureDevOpsAgents\$using:vmName`_agent-0$agent"
                 $agentName  = "$using:vmName`_agent-0$agent"
                 $zipPath    = 'C:\Temp\agent.zip'
@@ -129,7 +129,7 @@ Configuration SelfHostedAgent
                 }
 
                 Set-Location -Path $installDir
-                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool $agentPool --agent "$agentName" --acceptTeeEula --runAsService --unattended
+                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool $using:agentPool --agent $agentName --acceptTeeEula --runAsService --unattended
             }
     
             GetScript = {
