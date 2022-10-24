@@ -251,7 +251,7 @@ stages:
           parameters:
             subscription: $(serviceConnection)
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-            customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+            customCommandOptions: '-var-file=./vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
 
         - template: /pipeline/templates/remove-agents.yaml
           parameters:
