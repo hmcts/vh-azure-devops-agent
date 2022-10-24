@@ -227,7 +227,15 @@ stages:
           inputs:
             artifact: '$(artifactName)'
             targetPath: '$(Pipeline.Workspace)/$(artifactName)'
-            
+
+        - task: ExtractFiles@1
+          displayName: 'Extract Terraform Artifacts'
+          inputs:
+            archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
+            destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
+            cleanDestinationFolder: false
+            overwriteExistingFiles: true
+
         - template: /pipeline/templates/terraform-prep.yaml
           parameters:
             terraformVersion: $(tfVersion)
