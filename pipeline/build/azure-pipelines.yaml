@@ -65,7 +65,7 @@ variables:
     value: 1.1.9
 
   - name: serviceConnection
-    value: DTS-SHAREDSERVICES-${{ upper(parameters.env) }}-Video Hearings
+    value: DTS-SHAREDSERVICES-${{ upper(variables.env) }}-Video Hearings
 
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
