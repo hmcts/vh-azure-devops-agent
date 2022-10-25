@@ -82,10 +82,11 @@ Configuration SelfHostedAgent
         Script "AzureDevOpsAgent-0$agent"
         {
             TestScript = {
+                $agentPool     = $using:agentPool
                 $agent         = $using:agent
                 $agentName     = "$using:vmName`_agent-0$agent"
-                $serviceStatus = Get-Service -Name "vstsagent.hmcts.VH Self Hosted.$agentName" -ErrorAction SilentlyContinue
-
+                $serviceStatus = Get-Service -Name "vstsagent.hmcts.$agentPool.$agentName" -ErrorAction SilentlyContinue
+                                                    
                 if ($serviceStatus.Length -gt 0) {
                     return $true
                 }
@@ -98,7 +99,8 @@ Configuration SelfHostedAgent
                 ######################################
                 # Prepare Vars. ######################
                 ######################################
-                $agent      = cagent
+                $agent      = $using:agent
+                $agentPool  = $using:agentPool
                 $installDir = "F:\AzureDevOpsAgents\$using:vmName`_agent-0$agent"
                 $agentName  = "$using:vmName`_agent-0$agent"
                 $zipPath    = 'C:\Temp\agent.zip'
@@ -129,13 +131,16 @@ Configuration SelfHostedAgent
                 }
 
                 Set-Location -Path $installDir
-                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool $using:agentPool --agent $agentName --acceptTeeEula --runAsService --unattended
+                Set-Content -Path ./TEST.txt -Value "--url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool '$agentPool' --agent $agentName --acceptTeeEula --runAsService --unattended"
+                .\config.cmd --url $using:azureDevOpsURL --auth pat --token $using:AzureDevOpsPAT --pool $agentPool --agent $agentName --acceptTeeEula --runAsService --unattended
+
             }
     
             GetScript = {
-                $agent         = $using:agent
+                $agent         = $using:agents
+                $agentPool     = $using:agentPool
                 $agentName     = "$using:vmName`_agent-0$agent"
-                $serviceStatus = Get-Service -Name "vstsagent.hmcts.VH Self Hosted.$agentName" -ErrorAction SilentlyContinue
+                $serviceStatus = Get-Service -Name "vstsagent.hmcts.$agentPool.$agentName" -ErrorAction SilentlyContinue
 
                 if ($serviceStatus.Length -gt 0) {
                     @{ Result = "$agentName IS Installed." }
