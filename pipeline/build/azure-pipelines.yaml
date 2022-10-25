@@ -21,7 +21,10 @@ parameters:
   - name: env
     displayName: 'Environment to deploy to'
     type: string
-    default: dev
+    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+      default: stg
+    ${{ else }}:
+      default: dev
     values:
       - dev
       - stg
@@ -85,13 +88,13 @@ stages:
       terraformPath: $(workDir)
       terraformVersion: $(tfVersion)
   
-  # - template: /pipeline/templates/compile-dsc.yaml
-  #   parameters:
-  #     azureDevOpsPAT: $(patToken) 
-  #     numberOfAgents: ${{ variables.agentCount }} 
-  #     azureDevOpsURL: $(devOpsURL)
-  #     vmName: 'localhost' 
-  #     agentPool: $(agentPool)
+  - template: /pipeline/templates/compile-dsc.yaml
+    parameters:
+      azureDevOpsPAT: $(patToken) 
+      numberOfAgents: ${{ variables.agentCount }} 
+      azureDevOpsURL: $(devOpsURL)
+      vmName: 'localhost' 
+      agentPool: $(agentPool)
 
 ############################################
 # Terraform Plan. ##########################
