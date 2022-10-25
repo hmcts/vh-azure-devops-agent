@@ -27,4 +27,4 @@ jobs:
           Install-Module cChoco -Force
           . ./SelfHostedAgent.ps1
           Write-Host "Creating MOF"
-          SelfHostedAgent -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }} -agentPool ${{ parameters.agentPool }}
+          SelfHostedAgent -azureDevOpsPAT ${{ parameters.azureDevOpsPAT }} -numberOfAgents ${{ parameters.numberOfAgents }} -azureDevOpsURL ${{ parameters.azureDevOpsURL }} -vmName ${{ parameters.vmName }} -agentPool '${{ parameters.agentPool }}'
