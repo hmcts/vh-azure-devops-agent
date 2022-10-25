@@ -1,5 +1,4 @@
-trigger:
-  - master
+trigger: none
 
 pr: 
   - master
@@ -21,9 +20,8 @@ parameters:
   - name: env
     displayName: 'Environment to deploy to'
     type: string
-    default: default
+    default: dev
     values:
-      - default
       - dev
       - stg
 
@@ -41,14 +39,6 @@ variables:
   - ${{ if eq( parameters.env, 'dev') }}:
     - group: vh-azure-devops-agent-dev
 
-  - name: env
-    ${{ if and(eq(variables['Build.SourceBranchName'], 'master'), eq(parameters.env, 'default')) }}:
-      value: stg
-    ${{ elseif and(eq(variables['Build.Reason'], 'PullRequest'), eq(parameters.env, 'default')) }}:
-      value: dev
-    ${{ else }}:
-      value: ${{parameters.env}}
-
   - name: agentCount
     value: 2
     
@@ -65,7 +55,7 @@ variables:
     value: 1.1.9
 
   - name: serviceConnection
-    value: DTS-SHAREDSERVICES-${{ upper(variables.env) }}-Video Hearings
+    value: DTS-SHAREDSERVICES-${{ upper(parameters.env) }}-Video Hearings
 
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
@@ -77,10 +67,10 @@ variables:
     value: $(Build.BuildId)-AzureDevOps-Agent
 
   - name: resourceGroupName
-    ${{ if eq( variables.env, 'stg') }}:
+    ${{ if eq( parameters.env, 'stg') }}:
       value: vh-infra-core-ado
     ${{ else }}:
-      value: vh-infra-ado-${{ lower(variables.env) }} 
+      value: vh-infra-ado-${{ lower(parameters.env) }} 
   
 
 ############################################
@@ -132,11 +122,11 @@ stages:
       parameters:
         subscription: $(serviceConnection)
         workingDirectory: $(workDir)
-        customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
   
 ############################################
 # Manual Validation. #######################
-- ${{ if or( eq( variables['Build.SourceBranchName'], 'master' ), eq( variables.env, 'dev' ) ) }}:
+- ${{ if or( eq( variables['Build.SourceBranchName'], 'master' ), eq( parameters.env, 'dev' ) ) }}:
   - stage: Wait
     dependsOn:
       - Plan
@@ -210,7 +200,7 @@ stages:
 
   ############################################
   # Manual Validation of deletion. #######################
-  - ${{ if eq( variables.env, 'dev' ) }}:
+  - ${{ if eq( parameters.env, 'dev' ) }}:
     - stage: Wait_Destroy
       dependsOn:
         - DeployAzureAgent
@@ -265,7 +255,7 @@ stages:
           parameters:
             subscription: $(serviceConnection)
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-            customCommandOptions: '-var-file=./vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+            customCommandOptions: '-var-file=./vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
     - job:
       displayName: Remove Build Agents
       steps:
