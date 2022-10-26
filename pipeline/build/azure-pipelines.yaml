@@ -70,7 +70,7 @@ variables:
     value: 'https://dev.azure.com/hmcts'
  
   - name: artifactName
-    value: $(Build.BuildId)-AzureDevOps-Agent
+    value: $(Build.BuildId)-${{ variables.env }}-AzureDevOps-Agent
 
   - name: resourceGroupName
     ${{ if eq( variables.env, 'stg') }}:
@@ -108,6 +108,11 @@ stages:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
     steps:
+    - powershell: |
+        write-host ${{ variables.env }}
+        write-host $(env)
+        write-host "${{variables['Build.SourceBranch']}}"
+        write-host "${{variables['Build.SourceBranchName']}}" 
 
     - template: /pipeline/templates/get-peer-spn.yaml
       parameters:
@@ -191,7 +196,7 @@ stages:
       displayName: Deploy DSC
       dependsOn: Deploy_Terraform
       variables:
-        tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
+        tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] # look to add rg name also
       steps:
         - template: /pipeline/templates/deploy-dsc.yaml
           parameters:
