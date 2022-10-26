@@ -18,6 +18,9 @@ pool:
 ##############################
 # Parameters. ################
 parameters:
+  - name: destroy_dev
+    type: boolean
+    default: true
   - name: env
     displayName: 'Environment to deploy to'
     type: string
@@ -210,7 +213,7 @@ stages:
 
   ############################################
 # Manual Validation of deletion. #######################
-- ${{ if contains(variables['Build.SourceBranch'], 'refs/pull') }}:
+- ${{ if and(or(contains(variables['Build.SourceBranch'], 'refs/pull'), eq(parameters.env, 'dev')), parameters.destroy_dev ) }}: # will run destroy if auto PR or manual DEV
   - stage: Wait_Destroy
     dependsOn:
       - DeployAzureAgent
