@@ -111,11 +111,6 @@ stages:
   - job: Terraform_Plan
     displayName: 'Terraform Plan'
     steps:
-    - powershell: |
-        write-host ${{ variables.env }}
-        write-host $(env)
-        write-host "${{variables['Build.SourceBranch']}}"
-        write-host "${{variables['Build.SourceBranchName']}}" 
 
     - template: /pipeline/templates/get-peer-spn.yaml
       parameters:
