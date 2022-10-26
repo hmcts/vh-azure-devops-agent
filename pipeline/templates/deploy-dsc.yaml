@@ -16,7 +16,6 @@ parameters:
 - name: agentPool
   type: string
 
-
 steps:
   - task: AzurePowerShell@5
     displayName: Import DSC Script
@@ -28,7 +27,8 @@ steps:
         Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
                                             -AutomationAccountName "${{ parameters.automationAccountName  }}" `
                                             -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
-                                            -Published -Force
+                                            -Published `
+                                            -Force
 
   - ${{ each vm in split(parameters.vmNames, ',') }}:
     - task: AzurePowerShell@5
@@ -48,13 +48,20 @@ steps:
 
           Write-Host $params
 
-          Start-AzAutomationDscCompilationJob -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
-                                              -AutomationAccountName "${{ parameters.automationAccountName }}" `
-                                              -ConfigurationName "SelfHostedAgent" `
-                                              -Parameters $params
+          $CompilationJob = Start-AzAutomationDscCompilationJob -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                                                -AutomationAccountName "${{ parameters.automationAccountName }}" `
+                                                                -ConfigurationName "SelfHostedAgent" `
+                                                                -Parameters $params
+
+          # wait for compilation to complete
+          while($null -eq $CompilationJob.EndTime -and $null -eq $CompilationJob.Exception)
+          {
+              $CompilationJob = $CompilationJob | Get-AzAutomationDscCompilationJob
+              Start-Sleep -Seconds 3
+          }
 
           Register-AzAutomationDscNode -AzureVMName "${{ vm }}" `
-                                        -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
-                                        -AutomationAccountName "${{ parameters.automationAccountName }}" `
-                                        -NodeConfigurationName "SelfHostedAgent.localhost" `
-                                        -ConfigurationMode ApplyAndAutocorrect
+                                       -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                       -AutomationAccountName "${{ parameters.automationAccountName }}" `
+                                       -NodeConfigurationName "SelfHostedAgent.localhost" `
+                                       -ConfigurationMode ApplyAndAutocorrect
