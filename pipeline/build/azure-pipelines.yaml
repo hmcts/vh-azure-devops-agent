@@ -213,53 +213,53 @@ stages:
 
   # ############################################
   # # Terraform Destroy. #########################
-  - stage: RemoveDevInfra
-    displayName: Terraform Destroy
-    dependsOn: Wait_Destroy
-    jobs:
-    - job: Deploy_Terraform
-      displayName: Destroy Infrastructure
-      steps:
-        - checkout: none
-        
-        - task: DownloadPipelineArtifact@2
-          displayName: Download Terraform Artifacts
-          inputs:
-            artifact: '$(artifactName)'
-            targetPath: '$(Pipeline.Workspace)/$(artifactName)'
+    - stage: RemoveDevInfra
+      displayName: Terraform Destroy
+      dependsOn: Wait_Destroy
+      jobs:
+      - job: Deploy_Terraform
+        displayName: Destroy Infrastructure
+        steps:
+          - checkout: none
+          
+          - task: DownloadPipelineArtifact@2
+            displayName: Download Terraform Artifacts
+            inputs:
+              artifact: '$(artifactName)'
+              targetPath: '$(Pipeline.Workspace)/$(artifactName)'
 
-        - task: ExtractFiles@1
-          displayName: 'Extract Terraform Artifacts'
-          inputs:
-            archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
-            destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
-            cleanDestinationFolder: false
-            overwriteExistingFiles: true
+          - task: ExtractFiles@1
+            displayName: 'Extract Terraform Artifacts'
+            inputs:
+              archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
+              destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
+              cleanDestinationFolder: false
+              overwriteExistingFiles: true
 
-        - template: /pipeline/templates/get-peer-spn.yaml
-          parameters:
-            peerServiceConnection: 'GlobalNetworkPeering'
+          - template: /pipeline/templates/get-peer-spn.yaml
+            parameters:
+              peerServiceConnection: 'GlobalNetworkPeering'
 
-        - template: /pipeline/templates/terraform-prep.yaml
-          parameters:
-            terraformVersion: $(tfVersion)
-            serviceConnection: $(serviceConnection)
-            resourceGroup: $(stateResourceGroup)
-            location: $(azureLocation)
-            storageAccount: $(stateStorageAccount)
-            containerName: $(stateContainerName)
-            stateKey: $(stateKey)
-            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+          - template: /pipeline/templates/terraform-prep.yaml
+            parameters:
+              terraformVersion: $(tfVersion)
+              serviceConnection: $(serviceConnection)
+              resourceGroup: $(stateResourceGroup)
+              location: $(azureLocation)
+              storageAccount: $(stateStorageAccount)
+              containerName: $(stateContainerName)
+              stateKey: $(stateKey)
+              workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
-        - template: /pipeline/templates/terraform-destroy.yaml
-          parameters:
-            subscription: $(serviceConnection)
-            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-            customCommandOptions: '-var-file=./vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
-    - job:
-      displayName: Remove Build Agents
-      steps:
-        - template: /pipeline/templates/remove-agents.yaml
-          parameters:
-            agentPool: $(agentPool)
-            PAT: $(patToken)
+          - template: /pipeline/templates/terraform-destroy.yaml
+            parameters:
+              subscription: $(serviceConnection)
+              workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+              customCommandOptions: '-var-file=./vars/adoagent-${{ parameters.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ parameters.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+      - job:
+        displayName: Remove Build Agents
+        steps:
+          - template: /pipeline/templates/remove-agents.yaml
+            parameters:
+              agentPool: $(agentPool)
+              PAT: $(patToken)
