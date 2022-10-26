@@ -46,20 +46,20 @@ steps:
             'agentPool'      = "${{ parameters.agentPool }}"
           }
 
-          Write-Host $params
-
+          Write-Host "Compiling DSC..."
           $CompilationJob = Start-AzAutomationDscCompilationJob -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
                                                                 -AutomationAccountName "${{ parameters.automationAccountName }}" `
                                                                 -ConfigurationName "SelfHostedAgent" `
                                                                 -Parameters $params
 
-          # wait for compilation to complete
           while($null -eq $CompilationJob.EndTime -and $null -eq $CompilationJob.Exception)
           {
               $CompilationJob = $CompilationJob | Get-AzAutomationDscCompilationJob
+              Write-Host "Waiting for completion..."
               Start-Sleep -Seconds 3
           }
 
+          Write-Host "Registering node: ${{ vm }} with config: SelfHostedAgent.localhost"
           Register-AzAutomationDscNode -AzureVMName "${{ vm }}" `
                                        -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
                                        -AutomationAccountName "${{ parameters.automationAccountName }}" `
