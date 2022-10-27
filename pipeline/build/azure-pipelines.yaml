@@ -75,13 +75,6 @@ variables:
   - name: artifactName
     value: $(Build.BuildId)-${{ variables.env }}-AzureDevOps-Agent
 
-  - name: resourceGroupName
-    ${{ if eq( variables.env, 'stg') }}:
-      value: vh-infra-core-ado
-    ${{ else }}:
-      value: vh-infra-ado-${{ lower(variables.env) }} 
-  
-
 ############################################
 # Terraform CI. ############################
 stages:
@@ -193,7 +186,8 @@ stages:
     displayName: Deploy DSC
     dependsOn: Deploy_Terraform
     variables:
-      tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] # look to add rg name also
+      tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
+      ResourceGroupName: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.resource_group_name'] ]
     steps:
       - template: /pipeline/templates/deploy-dsc.yaml
         parameters:
