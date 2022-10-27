@@ -163,7 +163,14 @@ stages:
           destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
           cleanDestinationFolder: false
           overwriteExistingFiles: true
-    
+
+      - ${{ if or( eq(variables['Build.SourceBranchName'], 'master'), eq(parameters.env, 'stg') ) }}:
+        - template:  templates\Azure\Common\unlock-resource-group.yml@templates
+          parameters:
+            subscriptionName:  $(serviceConnection)
+            resourceGroupName: "vh-infra-core-ado"
+            lockName: "stg-lock"
+
       - template: /pipeline/templates/terraform-prep.yaml
         parameters:
           terraformVersion: $(tfVersion)
