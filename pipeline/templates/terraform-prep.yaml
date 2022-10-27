@@ -2,26 +2,19 @@ parameters:
   - name: terraformVersion
     type: string
     default: 1.1.7
-
   - name: serviceConnection
     type: string
-
   - name: resourceGroup
     type: string
-
   - name: location
     type: string
     default: uksouth
-
   - name: storageAccount
     type: string
-
   - name: containerName
     type: string
-
   - name: stateKey
     type: string
-
   - name: workingDirectory
     type: string
 
@@ -30,11 +23,6 @@ steps:
   - template: ./tf-install.yaml
     parameters:
       terraformVersion: ${{ parameters.terraformVersion }}
-
-  - task: TerraformCLI@0
-    displayName: 'Check Terraform Version'
-    inputs:
-      command: version
 
   - task: TerraformCLI@0
     displayName: Terraform Init

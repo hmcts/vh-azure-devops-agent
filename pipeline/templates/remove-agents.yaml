@@ -1,0 +1,13 @@
+parameters:
+  - name: agentPool
+    type: string
+  - name: PAT
+    type: string
+
+steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'filePath'
+    filePath: "$(System.DefaultWorkingDirectory)/pipeline/scripts/remove-agents.ps1"
+    arguments: "-PAT ${{ parameters.PAT }} -OrganizationName hmcts -AgentPoolName '${{ parameters.agentPool }}'"
+  displayName: 'Remove Dev Agents From Agent Pool'

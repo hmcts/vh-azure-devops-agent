@@ -37,16 +37,13 @@ resource "azurerm_key_vault" "vh_infra_core_ado" {
   }
   tags = local.common_tags
 }
-# resource "azurerm_key_vault_access_policy" "temp" {
-#   key_vault_id = azurerm_key_vault.vh_infra_core_ado.id
-#   tenant_id    = data.azurerm_client_config.current.tenant_id
-#   object_id    = "216a0f7e-97b3-4ebc-ad19-9ccdd0f59077"
 
-#   key_permissions = [
-#     "Get",
-#   ]
+resource "azurerm_key_vault_access_policy" "DTS_Contributors" {
+  key_vault_id = azurerm_key_vault.vh_infra_core_ado.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = "1f92a1a1-e687-4a79-919c-7d67e7a8dcd1" # DTS Contributors 
 
-#   secret_permissions = [
-#     "Get", "Set", "List", "Delete", "Purge"
-#   ]
-# }
+  secret_permissions = [
+    "Get", "List"
+  ]
+}

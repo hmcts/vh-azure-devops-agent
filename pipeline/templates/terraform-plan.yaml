@@ -9,8 +9,11 @@ parameters:
   - name: customCommandOptions
     type: string
     default: ''
-
+  - name: artifactName
+    type: string
+  
 steps:
+
   - task: TerraformCLI@0
     displayName: Terraform Plan
     inputs:
@@ -31,4 +34,4 @@ steps:
     inputs:
       targetPath: '${{ parameters.workingDirectory }}/$(Build.BuildId)-AzureDevOps-Agent.zip'
       publishLocation: pipeline
-      artifact: '$(Build.BuildId)-AzureDevOps-Agent'
+      artifact: ${{ parameters.artifactName }} #'$(Build.BuildId)-AzureDevOps-Agent'

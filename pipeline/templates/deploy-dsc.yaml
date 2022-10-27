@@ -1,0 +1,67 @@
+parameters:
+- name: serviceConnection
+  type: string
+- name: ResourceGroupName
+  type: string
+- name: automationAccountName
+  type: string
+- name: vmNames
+  type: string
+- name: devOpsURL
+  type: string
+- name: patToken
+  type: string
+- name: agentCount
+  type: string
+- name: agentPool
+  type: string
+
+steps:
+  - task: AzurePowerShell@5
+    displayName: Import DSC Script
+    inputs: 
+      azureSubscription: $(serviceConnection)
+      scriptType: inlineScript
+      targetAzurePs: latestVersion
+      inline: |
+        Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
+                                            -AutomationAccountName "${{ parameters.automationAccountName  }}" `
+                                            -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                            -Published `
+                                            -Force
+
+  - ${{ each vm in split(parameters.vmNames, ',') }}:
+    - task: AzurePowerShell@5
+      displayName: Apply DSC ${{ vm }}
+      inputs: 
+        azureSubscription: $(serviceConnection)
+        scriptType: inlineScript
+        targetAzurePs: latestVersion
+        inline: |
+          $params = @{
+            'vmName'         = "${{ vm }}"
+            'azureDevOpsURL' = "${{ parameters.devOpsURL }}"
+            'azureDevOpsPAT' = "${{ parameters.patToken }}"
+            'numberOfAgents' = "${{ parameters.agentCount }}"
+            'agentPool'      = "${{ parameters.agentPool }}"
+          }
+
+          Write-Host "Compiling DSC..."
+          $CompilationJob = Start-AzAutomationDscCompilationJob -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                                                -AutomationAccountName "${{ parameters.automationAccountName }}" `
+                                                                -ConfigurationName "SelfHostedAgent" `
+                                                                -Parameters $params
+
+          while($null -eq $CompilationJob.EndTime -and $null -eq $CompilationJob.Exception)
+          {
+              $CompilationJob = $CompilationJob | Get-AzAutomationDscCompilationJob
+              Write-Host "Waiting for completion..."
+              Start-Sleep -Seconds 3
+          }
+
+          Write-Host "Registering node: ${{ vm }} with config: SelfHostedAgent.localhost"
+          Register-AzAutomationDscNode -AzureVMName "${{ vm }}" `
+                                       -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                       -AutomationAccountName "${{ parameters.automationAccountName }}" `
+                                       -NodeConfigurationName "SelfHostedAgent.localhost" `
+                                       -ConfigurationMode ApplyAndAutocorrect
