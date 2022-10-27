@@ -73,7 +73,7 @@ variables:
     value: 'https://dev.azure.com/hmcts'
  
   - name: artifactName
-    value: $(Build.BuildId)-${{ variables.env }}-AzureDevOps-Agent
+    value: $(Build.BuildId)-AzureDevOps-Agent
 
 ############################################
 # Terraform CI. ############################
