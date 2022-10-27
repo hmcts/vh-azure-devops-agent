@@ -9,6 +9,8 @@ parameters:
   - name: customCommandOptions
     type: string
     default: ''
+  - name: artifactName
+    type: string
   
 steps:
 
@@ -32,4 +34,4 @@ steps:
     inputs:
       targetPath: '${{ parameters.workingDirectory }}/$(Build.BuildId)-AzureDevOps-Agent.zip'
       publishLocation: pipeline
-      artifact: '$(Build.BuildId)-AzureDevOps-Agent'
+      artifact: ${{ parameters.artifactName }} #'$(Build.BuildId)-AzureDevOps-Agent'

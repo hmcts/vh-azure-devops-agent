@@ -123,6 +123,7 @@ stages:
     - template: /pipeline/templates/terraform-plan.yaml
       parameters:
         subscription: $(serviceConnection)
+        artifactName: $(artifactName)
         workingDirectory: $(workDir)
         customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
   
