@@ -189,12 +189,13 @@ stages:
     variables:
       tf_vms: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.tf_vm_names'] ] 
       ResourceGroupName: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.resource_group_name'] ]
+      automationAccountName: $[ dependencies.Deploy_Terraform.outputs['terraformOutput.automationAccountName'] ]
     steps:
       - template: /pipeline/templates/deploy-dsc.yaml
         parameters:
           serviceConnection: $(serviceConnection)
           ResourceGroupName: $(ResourceGroupName)
-          automationAccountName: $(ResourceGroupName)
+          automationAccountName: $(automationAccountName)
           patToken: $(patToken) 
           agentCount: ${{ variables.agentCount }} 
           devOpsURL: $(devOpsURL)
