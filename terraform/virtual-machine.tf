@@ -91,6 +91,6 @@ resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
 
   managed_disk_id    = azurerm_managed_disk.vh_ado_agent[each.value.name].id
   virtual_machine_id = azurerm_windows_virtual_machine.vh_ado_agent[each.value.name].id
-  lun                = "0"
+  lun                = "1"
   caching            = "ReadWrite"
 }
