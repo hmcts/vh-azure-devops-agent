@@ -19,14 +19,14 @@ resource "azurerm_network_security_rule" "DenyAllInbound" {
   network_security_group_name = azurerm_network_security_group.vh_infra_core_ado_nsg.name
 }
 resource "azurerm_network_security_rule" "AllowRDP" {
-  name                        = "AllowRDP"
+  name                        = "AllowRDPfromVPN"
   priority                    = 4095
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "3389"
-  source_address_prefixes     = ["10.11.8.0/23", "10.96.64.0/18"] # hub & core vnet address spaces 
+  source_address_prefixe      = "10.99.19.0/24" 
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.vh_infra_core_ado.name
   network_security_group_name = azurerm_network_security_group.vh_infra_core_ado_nsg.name
