@@ -26,7 +26,7 @@ resource "azurerm_network_security_rule" "AllowRDP" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "3389"
-  source_address_prefix       = "10.99.19.0/24" 
+  source_address_prefix       = "10.99.19.0/24"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.vh_infra_core_ado.name
   network_security_group_name = azurerm_network_security_group.vh_infra_core_ado_nsg.name
