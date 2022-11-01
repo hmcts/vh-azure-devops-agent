@@ -26,10 +26,28 @@ rt_name = "vh-ado-agent-rt-01"
 route_table = {
   route = [
     {
+      name                   = "ss_prod_vnet"
+      address_prefix         = "10.144.0.0/18"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.11.8.36"
+    }
+    {
       name                   = "ss_stg_vnet"
       address_prefix         = "10.148.0.0/18"
       next_hop_type          = "VirtualAppliance"
       next_hop_in_ip_address = "10.11.8.36"
+    }
+    {
+      name                   = "ss_test_vnet"
+      address_prefix         = "10.141.0.0/18"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.11.72.36"
+    }
+    {
+      name                   = "ss_dev_vnet"
+      address_prefix         = "10.145.0.0/18"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "10.11.72.36"
     } 
   ]
 }
