@@ -190,6 +190,16 @@ Configuration SelfHostedAgent
     cChocoPackageInstaller Chrome
     {
         Name     = "googlechrome"
-        Version  = "106.0.5249.119"
+        Version  = "107.0.5304.88"
+    }
+    cChocoPackageInstaller dotnet6sdk
+    {
+        Name     = "dotnet-sdk"
+        Version  = "6.0.402"
+    }
+    cChocoPackageInstaller chromedriver
+    {
+        Name     = "selenium-chrome-driver"
+        Version  = "107.0.5304.62"
     }
 }
