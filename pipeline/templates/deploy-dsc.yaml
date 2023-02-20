@@ -28,10 +28,9 @@ steps:
       inline: |        
         $env = "${{ parameters.environment }}"
         $envTag = "development"
-        switch -Wildcard ($env)
+        if ($env -eq "stg")
         {
-          '*dev*'  { $envTag = "development"}
-          '*stg*'  { $envTag = "staging"}
+          $envTag = "staging"
         }
 
         $tags = @{
