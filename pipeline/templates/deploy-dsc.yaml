@@ -28,15 +28,18 @@ steps:
       inline: |        
         $env = "${{ parameters.environment }}"
         $envTag = "development"
+        $criticality = "Low"
         if ($env -eq "stg")
         {
           $envTag = "staging"
+          $criticality = "High"
         }
 
         $tags = @{
           'application' = "video-hearings-service"
           'builtFrom'   = "HMCTS/vh-azure-devops-agent"
           'businessArea'= "CrossCutting"
+          'criticality' = $criticality
           'environment' = $envTag
           }
         
