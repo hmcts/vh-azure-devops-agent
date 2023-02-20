@@ -37,7 +37,8 @@ steps:
           'application' ="video-hearings-service"
           'builtFrom'   ="HMCTS/vh-azure-devops-agent"
           'businessArea'="CrossCutting"
-          'environment' ="${{ env }}"}
+          'environment' ="${{ env }}"
+          }
         
         Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
                                             -AutomationAccountName "${{ parameters.automationAccountName  }}" `
