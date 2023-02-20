@@ -208,6 +208,7 @@ stages:
           devOpsURL: $(devOpsURL)
           vmNames: $(tf_vms)
           agentPool: $(agentPool)
+          environment: ${{ variables.env }}
 
   ############################################
 # Manual Validation of deletion. #######################
