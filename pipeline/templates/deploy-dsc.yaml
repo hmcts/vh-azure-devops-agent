@@ -27,6 +27,7 @@ steps:
       targetAzurePs: latestVersion
       inline: |        
         $env = "${{ parameters.environment }}"
+        $envTag = "development"
         switch -Wildcard ($env)
         {
           '*dev*'  { $envTag = "development"}
