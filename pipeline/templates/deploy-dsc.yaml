@@ -45,7 +45,7 @@ steps:
                                             -AutomationAccountName "${{ parameters.automationAccountName  }}" `
                                             -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
                                             -Tags $tags`
-                                            -Published`
+                                            -Published `
                                             -Force
 
   - ${{ each vm in split(parameters.vmNames, ',') }}:
