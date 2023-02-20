@@ -25,12 +25,25 @@ steps:
       azureSubscription: $(serviceConnection)
       scriptType: inlineScript
       targetAzurePs: latestVersion
-      inline: |
+      inline: |        
+        $env = "${{ parameters.environment }}"
+        switch -Wildcard ($env)
+        {
+          '*dev*'  { $envTag = "development"}
+          '*stg*'  { $envTag = "staging"}
+        }
+
+        $tags = @{
+          'application' ="video-hearings-service"
+          'builtFrom'   ="HMCTS/vh-azure-devops-agent"
+          'businessArea'="CrossCutting"
+          'environment' ="${{ env }}"}
+        
         Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
                                             -AutomationAccountName "${{ parameters.automationAccountName  }}" `
                                             -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
-                                            -Tags @{application="video-hearings-service";builtFrom="HMCTS/vh-azure-devops-agent";businessArea="CrossCutting";environment="${{ parameters.environment }}"}
-                                            -Published `
+                                            -Tags $tags`
+                                            -Published`
                                             -Force
 
   - ${{ each vm in split(parameters.vmNames, ',') }}:
