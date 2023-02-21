@@ -39,6 +39,8 @@ resource "azurerm_virtual_machine_extension" "AADLoginForWindows" {
     azurerm_virtual_machine_extension.ps_remoting
   ]
 
+  tags = local.common_tags
+
 }
 
 resource "azurerm_role_assignment" "IAM_VMLogin" {
