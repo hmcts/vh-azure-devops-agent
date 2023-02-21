@@ -36,11 +36,11 @@ steps:
         }
 
         $tags = @{
-          'application' = "video-hearings-service"
-          'builtFrom'   = "HMCTS/vh-azure-devops-agent"
-          'businessArea'= "CrossCutting"
-          'criticality' = $criticality
-          'environment' = $envTag
+          "application" = "video-hearings-service"
+          "builtFrom"   = "HMCTS/vh-azure-devops-agent"
+          "businessArea"= "CrossCutting"
+          "criticality" = $criticality
+          "environment" = $envTag
           }
         
         Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
