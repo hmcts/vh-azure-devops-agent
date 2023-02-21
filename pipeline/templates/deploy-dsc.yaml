@@ -34,8 +34,8 @@ steps:
           $envTag = "staging"
           $criticality = "High"
         }
-
-        [System.Collections.Dictionary]$tags = @{
+        
+        [Collections.Generic.Dictionary[[String],[String]]]$tags = @{
           "application" = "video-hearings-service"
           "builtFrom"   = "HMCTS/vh-azure-devops-agent"
           "businessArea"= "CrossCutting"
