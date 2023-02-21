@@ -35,7 +35,7 @@ steps:
           $criticality = "High"
         }
 
-        $tags = @{
+        [System.Collections.Dictionary]$tags = @{
           "application" = "video-hearings-service"
           "builtFrom"   = "HMCTS/vh-azure-devops-agent"
           "businessArea"= "CrossCutting"
