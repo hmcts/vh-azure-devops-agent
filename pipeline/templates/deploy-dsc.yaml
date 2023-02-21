@@ -25,10 +25,20 @@ steps:
       azureSubscription: $(serviceConnection)
       scriptType: inlineScript
       targetAzurePs: latestVersion
-      inline: |
+      inline: |        
+        $env = "${{ parameters.environment }}"
+        $envTag = "development"
+        $criticality = "Low"
+        if ($env -eq "stg")
+        {
+          $envTag = "staging"
+          $criticality = "High"
+        }
+        
         Import-AzAutomationDscConfiguration -SourcePath "$(System.DefaultWorkingDirectory)/dsc/SelfHostedAgent.ps1" `
                                             -AutomationAccountName "${{ parameters.automationAccountName  }}" `
                                             -ResourceGroupName "${{ parameters.ResourceGroupName }}" `
+                                            -Tags @{application="video-hearings-service";builtFrom="HMCTS/vh-azure-devops-agent";businessArea="Cross-Cutting";criticality=$criticality;environment=$envTag}`
                                             -Published `
                                             -Force
 
