@@ -4,6 +4,8 @@ This repository contains the pipeline and terraform code to deploy Windows Azure
 
 As the agents are generically used across all environments. They are deployed and hosted within the `DTS-SHAREDSERVICES-STG` subscription.
 
+Pull requests are deployed to the `DTS-SHAREDSERVICES-DEV` environment for testing and this is removed when merging to master.
+
 ## Agent Count
 You can amend how many agents will be deployed on each VM by editing the variable `agentCount` in the file `pipeline\variables\common.yaml`
 
