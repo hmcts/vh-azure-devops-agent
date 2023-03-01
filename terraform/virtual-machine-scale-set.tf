@@ -3,49 +3,35 @@ resource "tls_private_key" "vmss" {
   rsa_bits  = 4096
 }
 
-resource "azurerm_virtual_machine_scale_set" "vh_ado_agent_vmss" {
+resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
   name                = "vh-ado-agent-vmss"
   location            = azurerm_resource_group.vh_infra_core_ado.location
   resource_group_name = azurerm_resource_group.vh_infra_core_ado.name
 
-  automatic_os_upgrade = false
-  upgrade_policy_mode  = "Manual"
+  sku       = "Standard_D4s_v3"
+  instances = 1
 
-  sku {
-    name     = "Standard_D4s_v3"
-    tier     = "Standard"
-    capacity = 1
+  admin_username = "adoagent"
+
+  admin_ssh_key {
+    username   = "adoagent"
+    public_key = tls_private_key.vmss.public_key_openssh
   }
 
-  storage_profile_image_reference {
+  source_image_reference {
     publisher = "canonical"
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts-gen2"
     version   = "latest"
   }
 
-  storage_profile_os_disk {
-    name          = "vh-ado-agent-vmss_OsDisk"
-    caching       = "ReadWrite"
-    create_option = "FromImage"
+  os_disk {
+    storage_account_type = "Premium_LRS"
+    caching              = "ReadWrite"
   }
 
-  os_profile {
-    computer_name_prefix = "vh-ado-agent-vmss"
-    admin_username       = "adoagent"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/adoagent/.ssh/authorized_keys"
-      key_data = tls_private_key.vmss.public_key_openssh
-    }
-  }
-
-  network_profile {
-    name    = "vh-ado-agent-vmss"
+  network_interface {
+    name    = "vh-ado-agent-nic"
     primary = true
 
     ip_configuration {
