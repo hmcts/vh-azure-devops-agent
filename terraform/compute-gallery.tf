@@ -19,4 +19,6 @@ resource "azurerm_shared_image" "ubuntu22_ado_agent" {
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts-gen2"
   }
+
+  tags = local.common_tags
 }
