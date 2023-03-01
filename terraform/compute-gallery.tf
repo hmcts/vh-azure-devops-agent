@@ -1,5 +1,5 @@
-resource "azurerm_shared_image_gallery" "vh_infra_ado_cg" {
-  name                = "vh-infra-core-ado"
+resource "azurerm_shared_image_gallery" "vhinfracoreado" {
+  name                = "vhinfracoreado"
   location            = azurerm_resource_group.vh_infra_core_ado.location
   resource_group_name = azurerm_resource_group.vh_infra_core_ado.name
   description         = "Compute Gallery for VM Images"
@@ -9,7 +9,7 @@ resource "azurerm_shared_image_gallery" "vh_infra_ado_cg" {
 
 resource "azurerm_shared_image" "ubuntu22_ado_agent" {
   name                = "ubuntu22-ado-agent"
-  gallery_name        = azurerm_shared_image_gallery.vh_infra_ado_cg.name
+  gallery_name        = azurerm_shared_image_gallery.vhinfracoreado.name
   location            = azurerm_resource_group.vh_infra_core_ado.location
   resource_group_name = azurerm_resource_group.vh_infra_core_ado.name
   os_type             = "Linux"
