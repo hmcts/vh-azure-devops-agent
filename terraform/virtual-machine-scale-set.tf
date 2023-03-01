@@ -28,7 +28,6 @@ resource "azurerm_virtual_machine_scale_set" "vh_ado_agent_vmss" {
     name              = "vh-ado-agent-vmss_OsDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
   }
 
   os_profile {
