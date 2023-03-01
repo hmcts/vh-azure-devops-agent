@@ -25,6 +25,7 @@ resource "azurerm_virtual_machine_scale_set" "vh_ado_agent_vmss" {
   }
 
   storage_profile_os_disk {
+    name          = ""
     caching       = "ReadWrite"
     create_option = "FromImage"
   }
