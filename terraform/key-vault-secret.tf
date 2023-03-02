@@ -1,4 +1,3 @@
-
 resource "azurerm_key_vault_secret" "keyvault_vh_agent_secret" {
   name            = "vh-devops-agent-password"
   value           = random_password.password.result

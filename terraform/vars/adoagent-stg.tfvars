@@ -51,3 +51,5 @@ route_table = {
     } 
   ]
 }
+
+compute_gallery_name = "vhinfracoreado"
