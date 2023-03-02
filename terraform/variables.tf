@@ -93,3 +93,7 @@ variable "route_table" {
   default     = {}
 }
 
+variable "compute_gallery_name" {
+  description = "name given to Azure Compute Gallery"
+  type        = string
+}
