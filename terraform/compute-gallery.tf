@@ -13,6 +13,7 @@ resource "azurerm_shared_image" "ubuntu22_ado_agent" {
   location            = azurerm_resource_group.vh_infra_core_ado.location
   resource_group_name = azurerm_resource_group.vh_infra_core_ado.name
   os_type             = "Linux"
+  hyper_v_generation  = "V2"
 
   identifier {
     publisher = "cannonical"
