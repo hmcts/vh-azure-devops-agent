@@ -14,12 +14,12 @@ steps:
   displayName: Packer Format
 
 - pwsh: |
-    $version = Get-Date -Format 'ddmmyyyy.0.0'
+    $version = Get-Date -Format 'ddMMyyyy.0.0'
     Write-Host "##[command]Release Version $version"
     Write-Host "##vso[task.setvariable variable=imageVersion]$version"
   displayName: Create Release Version
 
-- pwsh:
+- pwsh: |
     $packerFile = "${{ parameters.packerConfigFile }}"
     $variableFile = "${{ parameters.packerVarFile }}"
     $date =  Get-Date -Format 'ddmmyyyy'
