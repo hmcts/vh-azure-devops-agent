@@ -1,0 +1,29 @@
+parameters:
+  - name: azureSubscription
+    type: string
+
+  - name: packerConfigFile
+    type: string
+
+  - name: packerVarFile
+    type: string
+
+steps:
+- pwsh:
+    packer fmt -recursive -check .
+  displayName: Packer Format
+
+- pwsh: |
+    $version = Get-Date -Format 'ddmmyyyy.0.0'
+    Write-Host "##[command]Release Version $version"
+    Write-Host "##vso[task.setvariable variable=imageVersion]$version"
+  displayName: Create Release Version
+
+- pwsh:
+    $packerFile = "${{ parameters.packerConfigFile }}"
+    $variableFile = "${{ parameters.packerVarFile }}"
+    $date =  Get-Date -Format 'ddmmyyyy'
+    $image = "ubuntu2204-devops-$date"
+
+    packer build -force -var-file=$variableFile -var image_name=$image -var image_version=$(imageVersion) $packerFile 
+  displayName: Packer Build Image

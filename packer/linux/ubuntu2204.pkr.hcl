@@ -41,7 +41,7 @@ variable "image_os" {
 
 variable "image_version" {
   type    = string
-  default = "dev"
+  default = "0.0.1"
 }
 
 variable "imagedata_file" {
@@ -84,9 +84,26 @@ variable "vm_size" {
   default = "Standard_D4s_v4"
 }
 
+variable "image_name" {
+  type = string
+}
+
+variable "image_definition_name" {
+  type    = string
+  default = "ubuntu2204-devops"
+}
+
+variable "tags" {
+  type = map(string)
+}
+
+variable "gallery_name" {
+  type = string
+}
+
 
 source "azure-arm" "build_vhd" {
-  build_resource_group_name = "vh-infra-ado-dev"
+  build_resource_group_name = var.build_resource_group_name
 
   image_offer     = "0001-com-ubuntu-server-jammy"
   image_publisher = "canonical"
@@ -96,26 +113,20 @@ source "azure-arm" "build_vhd" {
   os_type         = "Linux"
   vm_size         = var.vm_size
 
-  managed_image_name                = "ubuntu22-20230227"
-  managed_image_resource_group_name = "vh-infra-ado-dev"
+  managed_image_name                = var.image_name
+  managed_image_resource_group_name = var.build_resource_group_name
 
   use_azure_cli_auth = true
 
   shared_image_gallery_destination {
-    gallery_name   = "vhinfracoreado"
-    image_name     = "ubuntu22-ado-agent"
-    image_version  = "20230227.2.0"
-    resource_group = "vh-infra-ado-dev"
+    gallery_name   = var.gallery_name
+    image_name     = var.image_definition_name
+    image_version  = var.image_version
+    resource_group = var.build_resource_group_name
     subscription   = var.subscription_id
   }
 
-  azure_tags = {
-    environment = "development"
-    criticality = "Low"
-    builtFrom   = "hmcts/devops"
-    application = "video-hearing-service"
-    businessArea = "Cross-Cutting"
-  }
+  azure_tags = var.tags
 }
 
 build {
@@ -123,54 +134,54 @@ build {
 
   provisioner "shell" {
     execute_command = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    inline          = ["mkdir ${var.image_folder}", "chmod 777 ${var.image_folder}"] 
+    inline          = ["mkdir ${var.image_folder}", "chmod 777 ${var.image_folder}"]
   }
 
   provisioner "shell" {
     execute_command = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    script          = "${path.root}/scripts/base/apt-mock.sh" 
+    script          = "${path.root}/scripts/base/apt-mock.sh"
   }
 
   provisioner "shell" {
     environment_vars = ["DEBIAN_FRONTEND=noninteractive"]
     execute_command  = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    scripts          = ["${path.root}/scripts/base/repos.sh"] 
+    scripts          = ["${path.root}/scripts/base/repos.sh"]
   }
 
   provisioner "shell" {
     environment_vars = ["DEBIAN_FRONTEND=noninteractive"]
     execute_command  = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    script           = "${path.root}/scripts/base/apt.sh" 
+    script           = "${path.root}/scripts/base/apt.sh"
   }
 
   provisioner "shell" {
     execute_command = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    script          = "${path.root}/scripts/base/limits.sh" 
+    script          = "${path.root}/scripts/base/limits.sh"
   }
 
   provisioner "file" {
     destination = "${var.helper_script_folder}"
-    source      = "${path.root}/scripts/helpers" 
+    source      = "${path.root}/scripts/helpers"
   }
 
   provisioner "file" {
     destination = "${var.installer_script_folder}"
-    source      = "${path.root}/scripts/installers" 
+    source      = "${path.root}/scripts/installers"
   }
 
   provisioner "file" {
     destination = "${var.image_folder}"
-    source      = "${path.root}/post-generation" 
+    source      = "${path.root}/post-generation"
   }
 
   provisioner "file" {
     destination = "${var.image_folder}"
-    source      = "${path.root}/scripts/tests" 
+    source      = "${path.root}/scripts/tests"
   }
 
   provisioner "file" {
     destination = "${var.installer_script_folder}/toolset.json"
-    source      = "${path.root}/toolsets/toolset-2204.json" 
+    source      = "${path.root}/toolsets/toolset-2204.json"
   }
 
   provisioner "shell" {
@@ -206,18 +217,18 @@ build {
   provisioner "shell" {
     environment_vars = ["HELPER_SCRIPTS=${var.helper_script_folder}", "INSTALLER_SCRIPT_FOLDER=${var.installer_script_folder}", "DEBIAN_FRONTEND=noninteractive"]
     execute_command  = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    scripts          = [
-                        "${path.root}/scripts/installers/azcopy.sh",
-                        "${path.root}/scripts/installers/azure-cli.sh",
-                        "${path.root}/scripts/installers/azure-devops-cli.sh",
-                        "${path.root}/scripts/installers/dotnetcore-sdk.sh",
-                        "${path.root}/scripts/installers/git.sh",
-                        "${path.root}/scripts/installers/github-cli.sh",
-                        "${path.root}/scripts/installers/kubernetes-tools.sh",
-                        "${path.root}/scripts/installers/mssql-cmd-tools.sh",
-                        "${path.root}/scripts/installers/terraform.sh",
-                        "${path.root}/scripts/installers/packer.sh"
-                        ]
+    scripts = [
+      "${path.root}/scripts/installers/azcopy.sh",
+      "${path.root}/scripts/installers/azure-cli.sh",
+      "${path.root}/scripts/installers/azure-devops-cli.sh",
+      "${path.root}/scripts/installers/dotnetcore-sdk.sh",
+      "${path.root}/scripts/installers/git.sh",
+      "${path.root}/scripts/installers/github-cli.sh",
+      "${path.root}/scripts/installers/kubernetes-tools.sh",
+      "${path.root}/scripts/installers/mssql-cmd-tools.sh",
+      "${path.root}/scripts/installers/terraform.sh",
+      "${path.root}/scripts/installers/packer.sh"
+    ]
   }
 
   provisioner "shell" {
