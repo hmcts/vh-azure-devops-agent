@@ -23,6 +23,11 @@ pool:
 ##############################
 # Parameters. ################
 parameters:
+  - name: runTerraform
+    displayName: Run Terraform
+    type: boolean
+    default: false
+
   - name: env
     displayName: 'Environment to deploy to'
     type: string
@@ -80,90 +85,29 @@ variables:
 ############################################
 # Terraform CI. ############################
 stages:
-- stage: CIBuild
-  displayName: 'Terraform CI'
-  jobs: 
-  - template: /pipeline/templates/terraform-validate.yaml
-    parameters:
-      terraformPath: $(workDir)
-      terraformVersion: $(tfVersion)
-
-############################################
-# Terraform Plan. ##########################
-- stage: Plan
-  displayName: 'Terraform Plan'
-  dependsOn:
-    - CIBuild
-  jobs:
-  - job: Terraform_Plan
-    displayName: 'Terraform Plan'
-    steps:
-
-    - template: /pipeline/templates/get-peer-spn.yaml
+- ${{ if eq(parameters.runTerraform, true) ]}:
+  - stage: CIBuild
+    displayName: 'Terraform CI'
+    jobs: 
+    - template: /pipeline/templates/terraform-validate.yaml
       parameters:
-        peerServiceConnection: 'GlobalNetworkPeering'
-
-    - template: /pipeline/templates/terraform-prep.yaml
-      parameters:
+        terraformPath: $(workDir)
         terraformVersion: $(tfVersion)
-        serviceConnection: $(serviceConnection)
-        resourceGroup: $(stateResourceGroup)
-        location: $(azureLocation)
-        storageAccount: $(stateStorageAccount)
-        containerName: $(stateContainerName)
-        stateKey: $(stateKey)
-        workingDirectory: $(workDir)
 
-    - template: /pipeline/templates/terraform-plan.yaml
-      parameters:
-        subscription: $(serviceConnection)
-        artifactName: $(artifactName)
-        workingDirectory: $(workDir)
-        customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID) -target="azurerm_shared_image.ubuntu2204_devops" -target="azurerm_resource_group.vh_infra_core_ado" -target="azurerm_shared_image_gallery.vhinfracoreado"'
-  
-############################################
-# Manual Validation. #######################
-- stage: Wait
-  dependsOn:
-    - Plan
-  jobs:
-    - job: WaitForApproval
-      displayName: "Wait for approval"
-      pool: server
+  ############################################
+  # Terraform Plan. ##########################
+  - stage: Plan
+    displayName: 'Terraform Plan'
+    dependsOn:
+      - CIBuild
+    jobs:
+    - job: Terraform_Plan
+      displayName: 'Terraform Plan'
       steps:
-        - template: /pipeline/templates/wait.yaml
 
-# ############################################
-# # Terraform Apply. #########################
-- stage: DeployAzureAgent
-  displayName: Terraform Apply
-  dependsOn: Wait
-  jobs:
-  - job: Deploy_Terraform
-    displayName: Deploy DevOps Agent
-    steps:
-      - checkout: none
-      
-      - task: DownloadPipelineArtifact@2
-        displayName: Download Terraform Artifacts
-        inputs:
-          artifact: '$(artifactName)'
-          targetPath: '$(Pipeline.Workspace)/$(artifactName)'
-
-      - task: ExtractFiles@1
-        displayName: 'Extract Terraform Artifacts'
-        inputs:
-          archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
-          destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
-          cleanDestinationFolder: false
-          overwriteExistingFiles: true
-
-      - ${{ if or( eq(variables['Build.SourceBranchName'], 'master'), eq(parameters.env, 'stg') ) }}:
-        - template:  templates\Azure\Common\unlock-resource-group.yml@templates
-          parameters:
-            subscriptionName:  $(serviceConnection)
-            resourceGroupName: "vh-infra-core-ado"
-            lockName: "stg-lock"
+      - template: /pipeline/templates/get-peer-spn.yaml
+        parameters:
+          peerServiceConnection: 'GlobalNetworkPeering'
 
       - template: /pipeline/templates/terraform-prep.yaml
         parameters:
@@ -174,18 +118,78 @@ stages:
           storageAccount: $(stateStorageAccount)
           containerName: $(stateContainerName)
           stateKey: $(stateKey)
-          workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+          workingDirectory: $(workDir)
 
-      - template: /pipeline/templates/terraform-apply.yaml
+      - template: /pipeline/templates/terraform-plan.yaml
         parameters:
           subscription: $(serviceConnection)
-          planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
-          workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+          artifactName: $(artifactName)
+          workingDirectory: $(workDir)
+          customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID) -target="azurerm_shared_image.ubuntu2204_devops" -target="azurerm_resource_group.vh_infra_core_ado" -target="azurerm_shared_image_gallery.vhinfracoreado"'
+    
+  ############################################
+  # Manual Validation. #######################
+  - stage: Wait
+    dependsOn:
+      - Plan
+    jobs:
+      - job: WaitForApproval
+        displayName: "Wait for approval"
+        pool: server
+        steps:
+          - template: /pipeline/templates/wait.yaml
+
+  # ############################################
+  # # Terraform Apply. #########################
+  - stage: DeployAzureAgent
+    displayName: Terraform Apply
+    dependsOn: Wait
+    jobs:
+    - job: Deploy_Terraform
+      displayName: Deploy DevOps Agent
+      steps:
+        - checkout: none
+        
+        - task: DownloadPipelineArtifact@2
+          displayName: Download Terraform Artifacts
+          inputs:
+            artifact: '$(artifactName)'
+            targetPath: '$(Pipeline.Workspace)/$(artifactName)'
+
+        - task: ExtractFiles@1
+          displayName: 'Extract Terraform Artifacts'
+          inputs:
+            archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
+            destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
+            cleanDestinationFolder: false
+            overwriteExistingFiles: true
+
+        - ${{ if or( eq(variables['Build.SourceBranchName'], 'master'), eq(parameters.env, 'stg') ) }}:
+          - template:  templates\Azure\Common\unlock-resource-group.yml@templates
+            parameters:
+              subscriptionName:  $(serviceConnection)
+              resourceGroupName: "vh-infra-core-ado"
+              lockName: "stg-lock"
+
+        - template: /pipeline/templates/terraform-prep.yaml
+          parameters:
+            terraformVersion: $(tfVersion)
+            serviceConnection: $(serviceConnection)
+            resourceGroup: $(stateResourceGroup)
+            location: $(azureLocation)
+            storageAccount: $(stateStorageAccount)
+            containerName: $(stateContainerName)
+            stateKey: $(stateKey)
+            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+
+        - template: /pipeline/templates/terraform-apply.yaml
+          parameters:
+            subscription: $(serviceConnection)
+            planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
+            workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
 - stage: PackerBuild
   displayName: Packer Build
-  dependsOn: 
-   - DeployAzureAgent
   jobs:
   - job: PackerBuild
     displayName: Packer Build
