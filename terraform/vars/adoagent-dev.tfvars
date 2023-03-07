@@ -21,7 +21,7 @@ dns_zone = []
 dns_zone_sandbox = []
 
 # route table
-rt_name = "vh-infra-ado-dev-rt-01"
+rt_name = "vh-infra-ado-dev-rt"
 
 route_table = {
   route = [

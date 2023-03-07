@@ -15,6 +15,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
 
   source_image_id = "${azurerm_shared_image.ubuntu2204_devops.id}/versions/07032023.0.0"
 
+  upgrade_mode = "Automatic"
+
   admin_ssh_key {
     username   = var.vm_username
     public_key = tls_private_key.vmss.public_key_openssh
