@@ -12,8 +12,7 @@ resources:
       ref: refs/heads/master
       endpoint: hmcts
 
-pool:
-  vmImage: 'ubuntu-latest'
+pool: VH Self Hosted Dev
 
 ##############################
 # Parameters. ################
