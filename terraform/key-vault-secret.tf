@@ -6,3 +6,21 @@ resource "azurerm_key_vault_secret" "keyvault_vh_agent_secret" {
   expiration_date = "2030-05-31T00:00:00Z" # PASSWORD WILL EXPIRE 31st May 2030 ##
   tags            = local.common_tags
 }
+
+resource "azurerm_key_vault_secret" "vmss-ssh-private-key" {
+  name            = "vmss-ssh-private-key"
+  value           = tls_private_key.vmss.private_key_openssh
+  content_type    = "password"
+  key_vault_id    = azurerm_key_vault.vh_infra_core_ado.id
+  expiration_date = "2030-05-31T00:00:00Z" # PASSWORD WILL EXPIRE 31st May 2030 ##
+  tags            = local.common_tags
+}
+
+resource "azurerm_key_vault_secret" "vmss-ssh-public-key" {
+  name            = "vmss-ssh-public-key"
+  value           = tls_private_key.vmss.public_key_openssh
+  content_type    = "password"
+  key_vault_id    = azurerm_key_vault.vh_infra_core_ado.id
+  expiration_date = "2030-05-31T00:00:00Z" # PASSWORD WILL EXPIRE 31st May 2030 ##
+  tags            = local.common_tags
+}
