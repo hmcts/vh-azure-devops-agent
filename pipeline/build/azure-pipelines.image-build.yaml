@@ -189,6 +189,6 @@ stages:
         inputs:
           azureSubcription: $(serviceConnection)
           scriptType: bash
-          scriptionLocation: inlineScript
+          scriptLocation: inlineScript
           inlineScript: |
             packer build -force "$(System.DefaultWorkingDirectory)/packer/linux/ubuntu2204.pkr.hcl"
