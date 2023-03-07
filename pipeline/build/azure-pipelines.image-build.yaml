@@ -188,5 +188,5 @@ stages:
       - template: /pipeline/templates/packer-build.yml
         parameters:
           azureSubscription: $(serviceConnection)
-          packerConfigFile: /packer/linux/ubuntu2204.pkr.hcl
-          packerVarFile: /packer/linux/variables/$(env).pkrvars.hcl
+          packerConfigFile: packer/linux/ubuntu2204.pkr.hcl
+          packerVarFile: packer/linux/variables/$(env).pkrvars.hcl
