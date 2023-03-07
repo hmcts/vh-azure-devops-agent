@@ -99,6 +99,6 @@ variable "compute_gallery_name" {
 }
 
 variable "vmss_name" {
-  description = "name of virtual machine scale set"
+  description = "name of Virtual Machine Scale Set"
   type        = string
 }

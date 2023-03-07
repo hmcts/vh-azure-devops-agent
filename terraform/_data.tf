@@ -8,3 +8,4 @@ data "azurerm_resource_group" "dns_sandbox" {
   provider = azurerm.sandbox_dns
 }
 
+data "azurerm_client_config" "current" {}
