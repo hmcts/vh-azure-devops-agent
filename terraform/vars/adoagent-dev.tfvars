@@ -1,17 +1,17 @@
 # Create Resource Group
-rg_name = "vh-infra-ado-dev"
+rg_name = "vh-infra-ado-dev-rg"
 
 # Create Virtual Network
-vnet_name                    = "vh-infra-ado-dev"
+vnet_name                    = "vh-infra-ado-dev-vnet"
 vnet_ip_address              = ["10.10.52.0/24"]
-subnet_name_vh_agent         = "vh-infra-core-ado-snet"
+subnet_name_vh_agent         = "vh-infra-ado-dev-snet"
 subnet_name_vh_agent_address = "10.10.52.0/27"
 
 # Key Vault
-key_vault_name = "vh-infra-ado-dev"
+key_vault_name = "vh-infra-ado-dev-kv"
 
 # Create Virtual Machine
-vm_username = "vhadoagent"
+vm_username = "adoagent"
 
 # Network Security Group
 nsg_name = "vh-infra-ado-dev-nsg"
@@ -34,4 +34,4 @@ route_table = {
   ]
 }
 
-compute_gallery_name = "vhinfracoreado"
+compute_gallery_name = "vh_infra_ado_dev_gal"

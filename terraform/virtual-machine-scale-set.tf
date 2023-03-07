@@ -11,12 +11,12 @@ resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
   sku       = "Standard_D4s_v4"
   instances = 1
 
-  admin_username = "adoagent"
+  admin_username = var.vm_username
 
   source_image_id = "${azurerm_shared_image.ubuntu22_ado_agent.id}/versions/20230227.2.0"
 
   admin_ssh_key {
-    username   = "adoagent"
+    username   = var.vm_username
     public_key = tls_private_key.vmss.public_key_openssh
   }
 
