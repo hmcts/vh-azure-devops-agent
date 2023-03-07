@@ -85,7 +85,7 @@ variables:
 ############################################
 # Terraform CI. ############################
 stages:
-- ${{ if eq(parameters.runTerraform, true) ]}:
+- ${{ if eq(parameters.runTerraform, true) }}:
   - stage: CIBuild
     displayName: 'Terraform CI'
     jobs: 
