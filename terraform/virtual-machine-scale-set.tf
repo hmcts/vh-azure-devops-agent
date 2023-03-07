@@ -13,7 +13,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
 
   admin_username = var.vm_username
 
-  source_image_id = "${azurerm_shared_image.ubuntu22_ado_agent.id}/versions/20230227.2.0"
+  source_image_id = "${azurerm_shared_image.ubuntu2204_devops.id}/versions/20230227.2.0"
 
   admin_ssh_key {
     username   = var.vm_username
