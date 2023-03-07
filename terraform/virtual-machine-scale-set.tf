@@ -15,8 +15,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
 
   source_image_id = azurerm_shared_image.ubuntu2204_devops.id
 
-  upgrade_mode = "Automatic"
-
   admin_ssh_key {
     username   = var.vm_username
     public_key = tls_private_key.vmss.public_key_openssh
@@ -25,11 +23,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
   os_disk {
     storage_account_type = "Premium_LRS"
     caching              = "ReadWrite"
-  }
-
-  automatic_os_upgrade_policy {
-    enable_automatic_os_upgrade = true
-    disable_automatic_rollback  = true
   }
 
   network_interface {
