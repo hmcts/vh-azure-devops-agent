@@ -22,8 +22,8 @@ steps:
 - pwsh: |
     $packerFile = "${{ parameters.packerConfigFile }}"
     $variableFile = "${{ parameters.packerVarFile }}"
-    $date =  Get-Date -Format 'ddmmyyyy'
+    $date =  Get-Date -Format 'ddMMyyyy'
     $image = "ubuntu2204-devops-$date"
 
-    packer build -force -var-file=$variableFile -var image_name=$image -var image_version=$(imageVersion) $packerFile 
+    packer build -force -var-file="$variableFile" -var image_name="$image" -var image_version="$(imageVersion)" $packerFile 
   displayName: Packer Build Image
