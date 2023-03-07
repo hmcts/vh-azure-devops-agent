@@ -35,3 +35,5 @@ route_table = {
 }
 
 compute_gallery_name = "vh_infra_ado_dev_gal"
+
+vmss_name = "vh-infra-ado-dev-vmss"

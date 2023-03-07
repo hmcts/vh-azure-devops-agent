@@ -97,3 +97,8 @@ variable "compute_gallery_name" {
   description = "name given to Azure Compute Gallery"
   type        = string
 }
+
+variable "vmss_name" {
+  description = "name of virtual machine scale set"
+  type        = string
+}
