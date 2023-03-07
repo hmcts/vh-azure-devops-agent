@@ -221,6 +221,7 @@ build {
       "${path.root}/scripts/installers/azcopy.sh",
       "${path.root}/scripts/installers/azure-cli.sh",
       "${path.root}/scripts/installers/azure-devops-cli.sh",
+      "${path.root}/scripts/installers/basic.sh",
       "${path.root}/scripts/installers/dotnetcore-sdk.sh",
       "${path.root}/scripts/installers/git.sh",
       "${path.root}/scripts/installers/github-cli.sh",
