@@ -1,5 +1,5 @@
-build_resource_group_name = "vh-infra-core-ado"
-gallery_name              = "vhinfracoreado"
+build_resource_group_name = "vh-infra-ado-stg-rg"
+gallery_name              = "vh_infra_core_stg_gal"
 tags = {
   environment  = "Staging"
   criticality  = "Low"
