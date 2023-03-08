@@ -227,6 +227,7 @@ build {
       "${path.root}/scripts/installers/github-cli.sh",
       "${path.root}/scripts/installers/java-tools.sh",
       "${path.root}/scripts/installers/kubernetes-tools.sh",
+      "${path.root}/scripts/installers/mono.sh",
       "${path.root}/scripts/installers/mssql-cmd-tools.sh",
       "${path.root}/scripts/installers/terraform.sh",
       "${path.root}/scripts/installers/packer.sh"

@@ -199,7 +199,8 @@
             "7.0"
         ],
         "tools": [
-            { "name": "nbgv", "test": "nbgv --version", "getversion" : "nbgv --version" }
+            { "name": "nbgv", "test": "nbgv --version", "getversion" : "nbgv --version" },
+            { "name": "dotnet-ef", "test": "dotnet-ef --version", "getversion" : "dotnet-ef --version" }
         ]
     },
     "clang": {

@@ -8,6 +8,12 @@ parameters:
   - name: packerVarFile
     type: string
 
+  - name: environment
+    type: string
+    values:
+    - dev
+    - stg
+
 steps:
 - pwsh:
     packer fmt -recursive -check .
@@ -32,3 +38,43 @@ steps:
       $image = "ubuntu2204-devops-$date"
 
       packer build -force -var-file="$variableFile" -var image_name="$image" -var image_version="$(imageVersion)" $packerFile
+
+- task: AzureCLI@2
+  displayName: Remove Image Versions
+  inputs:
+    azureSubscription: ${{ parameters.azureSubscription }}
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      $env = "${{ parameters.environment }}"
+      $oldImagesDate = (Get-Date).AddDays(-60)
+      $imageVersions = az sig image-version list  --resource-group "vh-infra-ado-$env-rg" --gallery-name "vh_infra_ado_${env}_gal" --gallery-image-definition "ubuntu2204-devops" | ConvertFrom-Json
+
+      foreach ($image in $imageVersions) {
+        if ($image.publishingProfile.PublishedDate -lt $oldImagesDate) {
+          $imageName = $image.Name
+          Write-Host "##[warning]Deleting Image $imageName, Please Wait..."
+          az sig image-version delete --resource-group "vh-infra-ado-$env-rg" --gallery-name "vh_infra_ado_${env}_gal" --gallery-image-definition "ubuntu2204-devops" --gallery-image-version $imageName
+        }
+      }
+
+- task: AzureCLI@2
+  displayName: Remove Images
+  inputs:
+    azureSubscription: ${{ parameters.azureSubscription }}
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      $env = "${{ parameters.environment }}"
+      $images = az image list -g vh-infra-ado-$env-rg --query "[? contains(name,'ubuntu2204-devops')]" | ConvertFrom-Json
+      foreach ($image in $images) {
+        $imageName = $image.Name
+        $imageDate = ($image.Name -Split '-')[2]
+        $oldDate = (Get-Date).AddDays(-60)
+        $oldImageDate = Get-Date -Date $oldDate -Format 'ddMMyyyy'
+
+        if ($imageDate -lt $oldImageDate) {
+          Write-Host "##[warning]Deleting Image $imageName, Please Wait..."
+          az image delete -g vh-infra-ado-$env-rg -n $imageName
+        }
+      }

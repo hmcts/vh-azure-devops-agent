@@ -199,3 +199,4 @@ stages:
           azureSubscription: $(serviceConnection)
           packerConfigFile: packer/linux/ubuntu2204.pkr.hcl
           packerVarFile: packer/linux/variables/$(env).pkrvars.hcl
+          environment: $(env)
