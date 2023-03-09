@@ -24,7 +24,7 @@ parameters:
 
   - name: environment
     type: string
-    default: Dev
+    default: Stg
     values:
       - Dev
       - Stg
