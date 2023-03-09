@@ -39,12 +39,6 @@ variable "vm_username" {
   type        = string
 }
 
-variable "vm_count" {
-  description = "Count of how many VMs to create"
-  type        = number
-  default     = 1
-}
-
 variable "nsg_name" {
   description = "Name for the network security group"
   type        = string

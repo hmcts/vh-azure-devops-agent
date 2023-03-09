@@ -12,46 +12,34 @@ resources:
       ref: refs/heads/master
       endpoint: hmcts
 
-pool: VH Self Hosted Dev
+pool:
+  vmImage: 'ubuntu-latest'
 
 ##############################
 # Parameters. ################
 parameters:
-  - name: destroy_dev
+  - name: destroyInfra
     type: boolean
-    default: true
-  - name: env
-    displayName: 'Environment to deploy to'
+    default: false
+
+  - name: environment
     type: string
-    default: default
+    default: Dev
     values:
-      - default
-      - dev
-      - stg
+      - Dev
+      - Stg
 
 ##############################
 # Variables. #################
 variables:
   - name: env
-    ${{ if and( eq(parameters.env, 'default'), contains(variables['Build.SourceBranch'], 'refs/pull') )  }}:
-      value: dev
-    ${{ elseif and( eq(parameters.env, 'default'), eq(variables['Build.SourceBranchName'], 'master') ) }}:
-      value: stg
-    ${{ elseif and( eq(parameters.env, 'default'), or( not(eq(variables['Build.SourceBranchName'], 'master')), not(contains(variables['Build.SourceBranch'], 'refs/pull')))) }}:
-        value: dev
-    ${{ else }}:
-      value: ${{ parameters.env }}
+    value: ${{ lower(parameters.environment) }}
 
-  - group: vh-azure-devops-agent
-  
   - ${{ if eq( variables.env, 'dev') }}:
     - group: vh-azure-devops-agent-dev
 
-  - name: agentCount
-    value: 2
-    
-  - name: vmCount
-    value: 1
+  - ${{ if eq( variables.env, 'stg') }}:
+    - group: vh-azure-devops-agent
 
   - name: azureLocation
     value: 'uk south'
@@ -67,9 +55,6 @@ variables:
 
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
-
-  - name: devOpsURL
-    value: 'https://dev.azure.com/hmcts'
  
   - name: artifactName
     value: $(Build.BuildId)-AzureDevOps-Agent
@@ -116,7 +101,7 @@ stages:
         subscription: $(serviceConnection)
         artifactName: $(artifactName)
         workingDirectory: $(workDir)
-        customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+        customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ variables.env }}.tfvars -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
   
 ############################################
 # Manual Validation. #######################
@@ -124,11 +109,11 @@ stages:
   dependsOn:
     - Plan
   jobs:
-    - job: WaitForApproval
-      displayName: "Wait for approval"
-      pool: server
-      steps:
-        - template: /pipeline/templates/wait.yaml
+  - job: WaitForApproval
+    displayName: "Approval Gate"
+    pool: server
+    steps:
+      - template: /pipeline/templates/wait.yaml
 
 # ############################################
 # # Terraform Apply. #########################
@@ -155,7 +140,7 @@ stages:
           cleanDestinationFolder: false
           overwriteExistingFiles: true
 
-      - ${{ if or( eq(variables['Build.SourceBranchName'], 'master'), eq(parameters.env, 'stg') ) }}:
+      - ${{ if eq(parameters.environment, 'stg') }}:
         - template:  templates\Azure\Common\unlock-resource-group.yml@templates
           parameters:
             subscriptionName:  $(serviceConnection)
@@ -180,8 +165,8 @@ stages:
           workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
   ############################################
-# Manual Validation of deletion. #######################
-- ${{ if and(or(contains(variables['Build.SourceBranch'], 'refs/pull'), eq(parameters.env, 'dev')), parameters.destroy_dev ) }}: # will run destroy if auto PR or manual DEV
+# Manual Validation of deletion. #############
+- ${{ if eq(parameters.destroyInfra, true) }}:
   - stage: Wait_Destroy
     dependsOn:
       - DeployAzureAgent
@@ -236,7 +221,7 @@ stages:
           parameters:
             subscription: $(serviceConnection)
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-            customCommandOptions: '-var-file=./vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+            customCommandOptions: '-var-file=./vars/adoagent-${{ variables.env }}.tfvars -var env=${{ variables.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
     - job:
       displayName: Remove Build Agents
       steps:
