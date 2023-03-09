@@ -35,10 +35,10 @@ variables:
   - name: env
     value: ${{ lower(parameters.environment) }}
 
-  - ${{ if eq( variables.env, 'dev') }}:
+  - ${{ if eq(parameters.environment, 'Dev') }}:
     - group: vh-azure-devops-agent-dev
 
-  - ${{ if eq( variables.env, 'stg') }}:
+  - ${{ if eq(parameters.environment, 'Stg') }}:
     - group: vh-azure-devops-agent
 
   - name: azureLocation
