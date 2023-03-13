@@ -5,7 +5,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.95.0" # TODO change to newer version once this bug is resolved: https://github.com/hashicorp/terraform-provider-azurerm/issues/15404
+      version = "2.99.0" # TODO change to newer version once this bug is resolved: https://github.com/hashicorp/terraform-provider-azurerm/issues/15404
     }
   }
 }
