@@ -1,4 +1,12 @@
-trigger: none
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - packer/**
+    exclude:
+    - /**
 
 pr: none
 
@@ -28,38 +36,24 @@ parameters:
     type: boolean
     default: false
 
-  - name: env
-    displayName: 'Environment to deploy to'
+  - name: environment
     type: string
-    default: default
+    default: Stg
     values:
-      - default
-      - dev
-      - stg
+      - Dev
+      - Stg
 
 ##############################
 # Variables. #################
 variables:
   - name: env
-    ${{ if and( eq(parameters.env, 'default'), contains(variables['Build.SourceBranch'], 'refs/pull') )  }}:
-      value: dev
-    ${{ elseif and( eq(parameters.env, 'default'), eq(variables['Build.SourceBranchName'], 'master') ) }}:
-      value: stg
-    ${{ elseif and( eq(parameters.env, 'default'), or( not(eq(variables['Build.SourceBranchName'], 'master')), not(contains(variables['Build.SourceBranch'], 'refs/pull')))) }}:
-        value: dev
-    ${{ else }}:
-      value: ${{ parameters.env }}
+    value: ${{ lower(parameters.environment) }}
 
-  - group: vh-azure-devops-agent
-  
-  - ${{ if eq( variables.env, 'dev') }}:
+  - ${{ if eq(parameters.environment, 'Dev') }}:
     - group: vh-azure-devops-agent-dev
 
-  - name: agentCount
-    value: 2
-    
-  - name: vmCount
-    value: 1
+  - ${{ if eq(parameters.environment, 'Stg') }}:
+    - group: vh-azure-devops-agent
 
   - name: azureLocation
     value: 'uk south'
@@ -75,9 +69,6 @@ variables:
 
   - name: stateKey
     value: DevOpsAgent/AzureDevOpsAgent.tfstate
-
-  - name: devOpsURL
-    value: 'https://dev.azure.com/hmcts'
  
   - name: artifactName
     value: $(Build.BuildId)-AzureDevOps-Agent
@@ -91,7 +82,7 @@ stages:
     jobs: 
     - template: /pipeline/templates/terraform-validate.yaml
       parameters:
-        terraformPath: $(workDir)
+        terraformPath: $(terraformDir)
         terraformVersion: $(tfVersion)
 
   ############################################
@@ -104,7 +95,6 @@ stages:
     - job: Terraform_Plan
       displayName: 'Terraform Plan'
       steps:
-
       - template: /pipeline/templates/get-peer-spn.yaml
         parameters:
           peerServiceConnection: 'GlobalNetworkPeering'
@@ -118,14 +108,14 @@ stages:
           storageAccount: $(stateStorageAccount)
           containerName: $(stateContainerName)
           stateKey: $(stateKey)
-          workingDirectory: $(workDir)
+          workingDirectory: $(terraformDir)
 
       - template: /pipeline/templates/terraform-plan.yaml
         parameters:
           subscription: $(serviceConnection)
           artifactName: $(artifactName)
-          workingDirectory: $(workDir)
-          customCommandOptions: '-var-file=$(workDir)/vars/adoagent-${{ variables.env }}.tfvars -var vm_count=${{ variables.vmCount }} -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID) -target="azurerm_shared_image.ubuntu2204_devops" -target="azurerm_resource_group.vh_infra_core_ado" -target="azurerm_shared_image_gallery.vhinfracoreado"'
+          workingDirectory: $(terraformDir)
+          customCommandOptions: '-var-file=$(terraformDir)/vars/adoagent-${{ variables.env }}.tfvars -var env=${{ variables.env }} -out=$(Build.BuildId)-AzureDevOps-Agent.tfplan -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID) -target="azurerm_shared_image.ubuntu2204_devops" -target="azurerm_resource_group.vh_infra_core_ado" -target="azurerm_shared_image_gallery.vhinfracoreado"'
     
   ############################################
   # Manual Validation. #######################
@@ -133,11 +123,11 @@ stages:
     dependsOn:
       - Plan
     jobs:
-      - job: WaitForApproval
-        displayName: "Wait for approval"
-        pool: server
-        steps:
-          - template: /pipeline/templates/wait.yaml
+    - job: WaitForApproval
+      displayName: "Approval Gate"
+      pool: server
+      steps:
+        - template: /pipeline/templates/wait.yaml
 
   # ############################################
   # # Terraform Apply. #########################
@@ -164,7 +154,7 @@ stages:
             cleanDestinationFolder: false
             overwriteExistingFiles: true
 
-        - ${{ if or( eq(variables['Build.SourceBranchName'], 'master'), eq(parameters.env, 'stg') ) }}:
+        - ${{ if eq(parameters.env, 'Stg') }}:
           - template:  templates\Azure\Common\unlock-resource-group.yml@templates
             parameters:
               subscriptionName:  $(serviceConnection)

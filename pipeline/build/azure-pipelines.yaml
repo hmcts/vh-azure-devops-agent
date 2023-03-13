@@ -141,7 +141,7 @@ stages:
             cleanDestinationFolder: false
             overwriteExistingFiles: true
 
-        - ${{ if eq(parameters.environment, 'stg') }}:
+        - ${{ if eq(parameters.environment, 'Stg') }}:
           - template:  templates\Azure\Common\unlock-resource-group.yml@templates
             parameters:
               subscriptionName:  $(serviceConnection)
