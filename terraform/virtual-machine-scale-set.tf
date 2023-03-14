@@ -3,6 +3,13 @@ resource "tls_private_key" "vmss" {
   rsa_bits  = 4096
 }
 
+data "azurerm_shared_image" "devops-ubuntu" {
+  name                = "devops-ubuntu"
+  gallery_name        = "hmcts"
+  resource_group_name = "hmcts-image-gallery-rg"
+  provider            = azurerm.mgmt
+}
+
 resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
   name                = var.vmss_name
   location            = azurerm_resource_group.vh_infra_core_ado.location
@@ -13,7 +20,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vh_ado_agent_vmss" {
 
   admin_username = var.vm_username
 
-  source_image_id = azurerm_shared_image.ubuntu2204_devops.id
+  source_image_id = data.azurerm_shared_image.devops-ubuntu.id
 
   overprovision          = false
   single_placement_group = false
