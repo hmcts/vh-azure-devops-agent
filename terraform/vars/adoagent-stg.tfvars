@@ -52,6 +52,4 @@ route_table = {
   ]
 }
 
-compute_gallery_name = "vh_infra_ado_stg_gal"
-
 vmss_name = "vh-infra-ado-stg-vmss"
