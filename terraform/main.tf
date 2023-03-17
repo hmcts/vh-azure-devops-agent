@@ -19,4 +19,12 @@ module "ado_agent" {
     "builtFrom"    = "hmcts/vh-azure-devops-agent"
     "businessArea" = "Cross-Cutting"
   }
+
+  providers = {
+    azurerm.current_peering = azurerm.current_peering
+    azurerm.prod_peering    = azurerm.prod_peering
+    azurerm.nonprod_peering = azurerm.nonprod_peering
+    azurerm.sbox_peering    = azurerm.sbox_peering
+    azurerm.mgmt_peering    = azurerm.mgmt_peering
+  }
 }

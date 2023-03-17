@@ -8,3 +8,5 @@ resource "azurerm_resource_group" "vh_infra_core_ado" {
     "businessArea" = "Cross-Cutting"
   }
 }
+
+data "azurerm_client_config" "current" {}
