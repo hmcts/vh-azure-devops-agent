@@ -26,7 +26,7 @@ variable "subnet_name_vh_agent" {
 
 variable "subnet_name_vh_agent_address" {
   description = "The address of the ado agent on the subnet"
-  type        = string
+  type        = list(string)
 }
 
 variable "key_vault_name" {

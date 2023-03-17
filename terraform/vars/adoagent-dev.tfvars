@@ -5,7 +5,7 @@ rg_name = "vh-infra-ado-dev-rg"
 vnet_name                    = "vh-infra-ado-dev-vnet"
 vnet_ip_address              = ["10.10.52.0/24"]
 subnet_name_vh_agent         = "vh-infra-ado-dev-snet"
-subnet_name_vh_agent_address = "10.10.52.0/27"
+subnet_name_vh_agent_address = ["10.10.52.0/27"]
 
 # Key Vault
 key_vault_name = "vh-infra-ado-dev-kv"

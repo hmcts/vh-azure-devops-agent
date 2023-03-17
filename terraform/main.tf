@@ -10,6 +10,9 @@ module "ado_agent" {
   subnet_name           = var.subnet_name_vh_agent
   subnet_address_prefix = var.subnet_name_vh_agent_address
 
+  peering_client_id     = var.peering_client_id
+  peering_client_secret = var.peering_client_secret
+
   tags = {
     "environment"  = "development"
     "application"  = "vh-azure-devops-agent"
