@@ -21,6 +21,8 @@ module "ado_agent" {
 
   vmss_name = "vh-infra-ado-dev-vmss"
 
+  nsg_name = "vh-infra-ado-dev-nsg"
+
   tags = {
     "environment"  = "development"
     "application"  = "vh-azure-devops-agent"
