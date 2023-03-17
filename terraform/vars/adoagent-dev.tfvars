@@ -2,10 +2,10 @@
 rg_name = "vh-infra-ado-dev-rg"
 
 # Create Virtual Network
-vnet_name                    = "vh-infra-ado-dev-vnet"
-vnet_ip_address              = ["10.200.0.0/24"]
-subnet_name_vh_agent         = "vh-infra-ado-dev-snet"
-subnet_name_vh_agent_address = ["10.200.0.0/28"]
+vnet_name                    = "vh-infra-ado-dev-vnet-00"
+vnet_ip_address              = ["10.221.143.0/24"]
+subnet_name_vh_agent         = "vh-infra-ado-dev-snet-00"
+subnet_name_vh_agent_address = ["10.221.143.0/28"]
 
 # Key Vault
 key_vault_name = "vh-infra-ado-dev-kv"

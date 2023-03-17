@@ -17,6 +17,8 @@ module "ado_agent" {
 
   key_vault_name = "vh-infra-ado-dev-kv"
 
+  route_table_name = "vh-infra-ado-dev-rt"
+
   tags = {
     "environment"  = "development"
     "application"  = "vh-azure-devops-agent"
