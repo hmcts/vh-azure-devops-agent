@@ -55,3 +55,12 @@ provider "azurerm" {
   client_secret   = var.peering_client_secret
   tenant_id       = data.azurerm_client_config.current.tenant_id
 }
+
+provider "azurerm" {
+  features {}
+  alias           = "image_gallery"
+  subscription_id = "2b1afc19-5ca9-4796-a56f-574a58670244"
+  client_id       = var.peering_client_id
+  client_secret   = var.peering_client_secret
+  tenant_id       = data.azurerm_client_config.current.tenant_id
+}
