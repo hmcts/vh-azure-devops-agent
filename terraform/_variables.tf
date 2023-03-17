@@ -49,26 +49,16 @@ variable "env" {
   type        = string
 }
 
-variable "peer_client_id" {
-  description = "client id of peering spn"
+variable "peering_client_id" {
   type        = string
-  sensitive   = true
-  default     = ""
+  description = "client id with peering access"
 }
 
-variable "peer_client_secret" {
-  description = "client secret of peering spn"
+variable "peering_client_secret" {
   type        = string
-  sensitive   = true
-  default     = ""
+  description = "client id with peering access"
 }
 
-variable "peer_tenant_id" {
-  description = "tenant id of peering spn"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
 variable "dns_zone" {
   description = "private dns zone name"
   default     = {}
