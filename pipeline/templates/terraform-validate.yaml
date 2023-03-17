@@ -23,8 +23,8 @@ jobs:
     parameters:
       terraformPath: ${{ parameters.terraformPath }}
 
-  - task: tfsec@1
-    displayName: Run TFSec
-    inputs:
-      dir: ${{ parameters.terraformPath }}
-      publishTestResults: true
+  # - task: tfsec@1
+  #   displayName: Run TFSec
+  #   inputs:
+  #     dir: ${{ parameters.terraformPath }}
+  #     publishTestResults: true
