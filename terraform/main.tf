@@ -15,6 +15,8 @@ module "ado_agent" {
 
   dns_zones = ["dev.platform.hmcts.net", "demo.platform.hmcts.net"]
 
+  key_vault_name = "vh-infra-ado-dev-kv"
+
   tags = {
     "environment"  = "development"
     "application"  = "vh-azure-devops-agent"
