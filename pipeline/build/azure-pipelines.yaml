@@ -105,25 +105,86 @@ stages:
   
 ############################################
 # Manual Validation. #######################
-- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-  - stage: Wait
-    dependsOn:
-      - Plan
-    jobs:
-    - job: WaitForApproval
-      displayName: "Approval Gate"
-      pool: server
-      steps:
-        - template: /pipeline/templates/wait.yaml
+- stage: Wait
+  dependsOn:
+    - Plan
+  jobs:
+  - job: WaitForApproval
+    displayName: "Approval Gate"
+    pool: server
+    steps:
+      - template: /pipeline/templates/wait.yaml
 
-  ##############################################
-  # Terraform Apply. ###########################
-  - stage: DeployAzureAgent
-    displayName: Terraform Apply
-    dependsOn: Wait
+##############################################
+# Terraform Apply. ###########################
+- stage: DeployAzureAgent
+  displayName: Terraform Apply
+  dependsOn: Wait
+  jobs:
+  - job: Deploy_Terraform
+    displayName: Deploy DevOps Agent
+    steps:
+      - checkout: none
+      
+      - task: DownloadPipelineArtifact@2
+        displayName: Download Terraform Artifacts
+        inputs:
+          artifact: '$(artifactName)'
+          targetPath: '$(Pipeline.Workspace)/$(artifactName)'
+
+      - task: ExtractFiles@1
+        displayName: 'Extract Terraform Artifacts'
+        inputs:
+          archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
+          destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
+          cleanDestinationFolder: false
+          overwriteExistingFiles: true
+
+      - ${{ if eq(parameters.environment, 'Stg') }}:
+        - template:  templates\Azure\Common\unlock-resource-group.yml@templates
+          parameters:
+            subscriptionName:  $(serviceConnection)
+            resourceGroupName: "vh-infra-core-ado"
+            lockName: "stg-lock"
+
+      - template: /pipeline/templates/terraform-prep.yaml
+        parameters:
+          terraformVersion: $(tfVersion)
+          serviceConnection: $(serviceConnection)
+          resourceGroup: $(stateResourceGroup)
+          location: $(azureLocation)
+          storageAccount: $(stateStorageAccount)
+          containerName: $(stateContainerName)
+          stateKey: $(stateKey)
+          workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+
+      - template: /pipeline/templates/terraform-apply.yaml
+        parameters:
+          subscription: $(serviceConnection)
+          planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
+          workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
+
+############################################
+# Manual Validation of deletion. #############
+- ${{ if eq(parameters.destroyInfra, true) }}:
+  - stage: Wait_Destroy
+    dependsOn:
+      - DeployAzureAgent
+    jobs:
+      - job: WaitForApproval
+        displayName: "Wait for approval"
+        pool: server
+        steps:
+          - template: /pipeline/templates/wait.yaml
+
+# ############################################
+# # Terraform Destroy. #########################
+  - stage: RemoveInfra
+    displayName: Terraform Destroy
+    dependsOn: Wait_Destroy
     jobs:
     - job: Deploy_Terraform
-      displayName: Deploy DevOps Agent
+      displayName: Destroy Infrastructure
       steps:
         - checkout: none
         
@@ -141,12 +202,9 @@ stages:
             cleanDestinationFolder: false
             overwriteExistingFiles: true
 
-        - ${{ if eq(parameters.environment, 'Stg') }}:
-          - template:  templates\Azure\Common\unlock-resource-group.yml@templates
-            parameters:
-              subscriptionName:  $(serviceConnection)
-              resourceGroupName: "vh-infra-core-ado"
-              lockName: "stg-lock"
+        - template: /pipeline/templates/get-peer-spn.yaml
+          parameters:
+            peerServiceConnection: 'GlobalNetworkPeering'
 
         - template: /pipeline/templates/terraform-prep.yaml
           parameters:
@@ -159,67 +217,8 @@ stages:
             stateKey: $(stateKey)
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
 
-        - template: /pipeline/templates/terraform-apply.yaml
+        - template: /pipeline/templates/terraform-destroy.yaml
           parameters:
             subscription: $(serviceConnection)
-            planLocation: $(Pipeline.Workspace)/$(artifactName)/terraform/$(artifactName).tfplan
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-
-  ############################################
-  # Manual Validation of deletion. #############
-  - ${{ if eq(parameters.destroyInfra, true) }}:
-    - stage: Wait_Destroy
-      dependsOn:
-        - DeployAzureAgent
-      jobs:
-        - job: WaitForApproval
-          displayName: "Wait for approval"
-          pool: server
-          steps:
-            - template: /pipeline/templates/wait.yaml
-
-  # ############################################
-  # # Terraform Destroy. #########################
-    - stage: RemoveInfra
-      displayName: Terraform Destroy
-      dependsOn: Wait_Destroy
-      jobs:
-      - job: Deploy_Terraform
-        displayName: Destroy Infrastructure
-        steps:
-          - checkout: none
-          
-          - task: DownloadPipelineArtifact@2
-            displayName: Download Terraform Artifacts
-            inputs:
-              artifact: '$(artifactName)'
-              targetPath: '$(Pipeline.Workspace)/$(artifactName)'
-
-          - task: ExtractFiles@1
-            displayName: 'Extract Terraform Artifacts'
-            inputs:
-              archiveFilePatterns: '$(Pipeline.Workspace)/$(artifactName)/$(artifactName).zip'
-              destinationFolder: '$(Pipeline.Workspace)/$(artifactName)'
-              cleanDestinationFolder: false
-              overwriteExistingFiles: true
-
-          - template: /pipeline/templates/get-peer-spn.yaml
-            parameters:
-              peerServiceConnection: 'GlobalNetworkPeering'
-
-          - template: /pipeline/templates/terraform-prep.yaml
-            parameters:
-              terraformVersion: $(tfVersion)
-              serviceConnection: $(serviceConnection)
-              resourceGroup: $(stateResourceGroup)
-              location: $(azureLocation)
-              storageAccount: $(stateStorageAccount)
-              containerName: $(stateContainerName)
-              stateKey: $(stateKey)
-              workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-
-          - template: /pipeline/templates/terraform-destroy.yaml
-            parameters:
-              subscription: $(serviceConnection)
-              workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-              customCommandOptions: '-var-file=./vars/adoagent-${{ variables.env }}.tfvars -var env=${{ variables.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+            customCommandOptions: '-var-file=./vars/adoagent-${{ variables.env }}.tfvars -var env=${{ variables.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
