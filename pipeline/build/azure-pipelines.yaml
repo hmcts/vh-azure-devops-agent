@@ -20,7 +20,7 @@ pool:
 parameters:
   - name: destroyInfra
     type: boolean
-    default: false
+    default: true
 
   - name: environment
     type: string
