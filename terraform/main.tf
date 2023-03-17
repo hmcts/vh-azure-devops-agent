@@ -19,6 +19,8 @@ module "ado_agent" {
 
   route_table_name = "vh-infra-ado-dev-rt"
 
+  vmss_name = "vh-infra-ado-dev-vmss"
+
   tags = {
     "environment"  = "development"
     "application"  = "vh-azure-devops-agent"
