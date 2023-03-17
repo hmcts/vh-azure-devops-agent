@@ -32,4 +32,8 @@ module "ado_agent" {
     azurerm.mgmt_peering    = azurerm.mgmt_peering
     azurerm.dns             = azurerm.dns
   }
+
+  depends_on = [
+    azurerm_resource_group.vh_infra_core_ado
+  ]
 }
