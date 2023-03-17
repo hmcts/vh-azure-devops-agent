@@ -13,6 +13,8 @@ module "ado_agent" {
   peering_client_id     = var.peering_client_id
   peering_client_secret = var.peering_client_secret
 
+  dns_zones = ["dev.platform.hmcts.net", "demo.platform.hmcts.net"]
+
   tags = {
     "environment"  = "development"
     "application"  = "vh-azure-devops-agent"

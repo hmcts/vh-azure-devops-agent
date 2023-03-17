@@ -46,3 +46,12 @@ provider "azurerm" {
   client_secret   = var.peering_client_secret
   tenant_id       = data.azurerm_client_config.current.tenant_id
 }
+
+provider "azurerm" {
+  features {}
+  alias           = "dns"
+  subscription_id = "1baf5470-1c3e-40d3-a6f7-74bfbce4b348"
+  client_id       = var.peering_client_id
+  client_secret   = var.peering_client_secret
+  tenant_id       = data.azurerm_client_config.current.tenant_id
+}
