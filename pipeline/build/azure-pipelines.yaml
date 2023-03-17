@@ -221,4 +221,4 @@ stages:
           parameters:
             subscription: $(serviceConnection)
             workingDirectory: '$(Pipeline.Workspace)/$(artifactName)/terraform'
-            customCommandOptions: '-var-file=./vars/adoagent-${{ variables.env }}.tfvars -var env=${{ variables.env }} -var peer_client_id=$(Peering.PEER_CLIENT_ID) -var peer_client_secret=$(Peering.PEER_CLIENT_SECRET) -var peer_tenant_id=$(Peering.PEER_TENANT_ID)'
+            customCommandOptions: '-var-file=./vars/adoagent-${{ variables.env }}.tfvars -var env=${{ variables.env }} -var peering_client_id=$(Peering.PEER_CLIENT_ID) -var peering_client_secret=$(Peering.PEER_CLIENT_SECRET)'
