@@ -28,5 +28,6 @@ module "ado_agent" {
     azurerm.nonprod_peering = azurerm.nonprod_peering
     azurerm.sbox_peering    = azurerm.sbox_peering
     azurerm.mgmt_peering    = azurerm.mgmt_peering
+    azurerm.dns             = azurerm.dns
   }
 }
