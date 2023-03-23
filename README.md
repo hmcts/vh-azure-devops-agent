@@ -6,5 +6,5 @@ As the agents are used across all environments they are deployed and hosted with
 
 The Virtual Machine Scale Set is configured to pull the latest 'devops-ubuntu' Image from Azure Compute Gallery 'hmcts'.
 
-#### Terraform
+## Terraform
 Any changes to Terraform code should be raised via a pull request, any pull request which is raised will trigger a pipeline which runs a CI checks and Terraform Plan, once this pipeline has run succesfully and the pr has been approved, the pull request can then be merged to master, which will run trigger a pipeline to deploy the Terraform changes.
