@@ -35,11 +35,11 @@ parameters:
 variables:
   - name: env
     ${{ if and( eq(parameters.env, 'default'), contains(variables['Build.SourceBranch'], 'refs/pull') )  }}:
-      value: dev
+      value: stg
     ${{ elseif and( eq(parameters.env, 'default'), eq(variables['Build.SourceBranchName'], 'master') ) }}:
       value: stg
     ${{ elseif and( eq(parameters.env, 'default'), or( not(eq(variables['Build.SourceBranchName'], 'master')), not(contains(variables['Build.SourceBranch'], 'refs/pull')))) }}:
-        value: dev
+        value: stg
     ${{ else }}:
       value: ${{ parameters.env }}
 
