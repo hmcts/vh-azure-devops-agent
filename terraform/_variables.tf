@@ -44,7 +44,7 @@ variable "nsg_name" {
   type        = string
 }
 
-variable "environment" {
+variable "env" {
   description = "name of environment for tagging"
   type        = string
 }
