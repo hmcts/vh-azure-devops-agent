@@ -1,8 +1,8 @@
-module "ado_agent" {
-  source = "git::https://github.com/hmcts/cnp-terraform-module-azure-devops-agent.git?ref=VIH-9741"
+module "agent" {
+  source = "git::https://github.com/hmcts/terraform-module-azure-devops-agent.git?ref=VIH-9741"
 
-  resource_group_name = var.rg_name
-  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
 
   vnet_name          = var.vnet_name
   vnet_address_space = var.vnet_ip_address
@@ -13,22 +13,17 @@ module "ado_agent" {
   peering_client_id     = var.peering_client_id
   peering_client_secret = var.peering_client_secret
 
-  dns_zones = ["dev.platform.hmcts.net", "demo.platform.hmcts.net"]
+  dns_zones = var.dns_zone
 
-  key_vault_name = "vh-infra-ado-dev-kv"
+  key_vault_name = var.key_vault_name
 
-  route_table_name = "vh-infra-ado-dev-rt"
+  route_table_name = var.rt_name
 
-  vmss_name = "vh-infra-ado-dev-vmss"
+  vmss_name = var.vmss_name
 
-  nsg_name = "vh-infra-ado-dev-nsg"
+  nsg_name = var.nsg_name
 
-  tags = {
-    "environment"  = "development"
-    "application"  = "vh-azure-devops-agent"
-    "builtFrom"    = "hmcts/vh-azure-devops-agent"
-    "businessArea" = "Cross-Cutting"
-  }
+  tags = local.tags
 
   providers = {
     azurerm.current_peering = azurerm.current_peering
@@ -39,8 +34,4 @@ module "ado_agent" {
     azurerm.dns             = azurerm.dns
     azurerm.image_gallery   = azurerm.image_gallery
   }
-
-  depends_on = [
-    azurerm_resource_group.vh_infra_core_ado
-  ]
 }

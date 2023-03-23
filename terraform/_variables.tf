@@ -44,7 +44,7 @@ variable "nsg_name" {
   type        = string
 }
 
-variable "env" {
+variable "environment" {
   description = "name of environment for tagging"
   type        = string
 }
@@ -72,6 +72,7 @@ variable "rt_name" {
   description = "The name of the RT we create for the agent"
   type        = string
 }
+
 variable "route_table" {
   description = "The RT we create for the agent"
   default     = {}

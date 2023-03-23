@@ -1,6 +1,9 @@
 # Create Resource Group
 rg_name = "vh-infra-ado-stg-rg"
 
+# Environment for Tagging
+environment = "staging"
+
 # Create Virtual Network
 vnet_name                    = "vh-infra-ado-stg-vnet"
 vnet_ip_address              = ["10.10.52.0/24"]

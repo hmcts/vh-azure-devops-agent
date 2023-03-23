@@ -1,6 +1,9 @@
 # Create Resource Group
 rg_name = "vh-infra-ado-dev-rg"
 
+# Environment for Tagging
+environment = "development"
+
 # Create Virtual Network
 vnet_name                    = "vh-infra-ado-dev-vnet-00"
 vnet_ip_address              = ["10.221.143.0/24"]
