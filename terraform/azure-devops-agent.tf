@@ -1,5 +1,5 @@
 module "agent" {
-  source = "git::https://github.com/hmcts/terraform-module-azure-devops-agent.git?ref=VIH-9741"
+  source = "git::https://github.com/hmcts/terraform-module-azure-devops-agent.git?ref=v1.0.0"
 
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
