@@ -26,7 +26,7 @@ variable "subnet_name_vh_agent" {
 
 variable "subnet_name_vh_agent_address" {
   description = "The address of the ado agent on the subnet"
-  type        = string
+  type        = list(string)
 }
 
 variable "key_vault_name" {
@@ -39,12 +39,6 @@ variable "vm_username" {
   type        = string
 }
 
-variable "vm_count" {
-  description = "Count of how many VMs to create"
-  type        = number
-  default     = 1
-}
-
 variable "nsg_name" {
   description = "Name for the network security group"
   type        = string
@@ -55,26 +49,16 @@ variable "env" {
   type        = string
 }
 
-variable "peer_client_id" {
-  description = "client id of peering spn"
+variable "peering_client_id" {
   type        = string
-  sensitive   = true
-  default     = ""
+  description = "client id with peering access"
 }
 
-variable "peer_client_secret" {
-  description = "client secret of peering spn"
+variable "peering_client_secret" {
   type        = string
-  sensitive   = true
-  default     = ""
+  description = "client id with peering access"
 }
 
-variable "peer_tenant_id" {
-  description = "tenant id of peering spn"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
 variable "dns_zone" {
   description = "private dns zone name"
   default     = {}
@@ -88,12 +72,13 @@ variable "rt_name" {
   description = "The name of the RT we create for the agent"
   type        = string
 }
+
 variable "route_table" {
   description = "The RT we create for the agent"
   default     = {}
 }
 
-variable "compute_gallery_name" {
-  description = "name given to Azure Compute Gallery"
+variable "vmss_name" {
+  description = "name of Virtual Machine Scale Set"
   type        = string
 }
