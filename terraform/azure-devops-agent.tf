@@ -1,5 +1,5 @@
 module "agent" {
-  source = "git::https://github.com/hmcts/terraform-module-azure-devops-agent.git?ref=v1.0.0"
+  source = "git::https://github.com/hmcts/terraform-module-azure-devops-agent.git?ref=4x"
 
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -9,6 +9,8 @@ module "agent" {
 
   subnet_name           = var.subnet_name_vh_agent
   subnet_address_prefix = var.subnet_name_vh_agent_address
+
+  service_endpoints = var.service_endpoints
 
   peering_client_id     = var.peering_client_id
   peering_client_secret = var.peering_client_secret

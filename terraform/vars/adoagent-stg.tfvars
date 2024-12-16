@@ -23,3 +23,8 @@ rt_name = "vh-infra-ado-stg-rt"
 
 # vmss
 vmss_name = "vh-infra-ado-stg-vmss"
+
+# service endpoints
+service_endpoints = [
+  "Microsoft.Storage"
+]
