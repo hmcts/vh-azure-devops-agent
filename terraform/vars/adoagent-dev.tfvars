@@ -35,3 +35,8 @@ route_table = {
 }
 
 vmss_name = "vh-infra-ado-dev-vmss"
+
+# service endpoints
+service_endpoints = [
+  "Microsoft.Storage"
+]

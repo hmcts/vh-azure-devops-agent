@@ -29,6 +29,12 @@ variable "subnet_name_vh_agent_address" {
   type        = list(string)
 }
 
+variable "service_endpoints" {
+  type        = list(string)
+  description = "list of service endpoints assigned to subnet"
+  default     = []
+}
+
 variable "key_vault_name" {
   description = "The name of the keyvault we will create"
   type        = string
